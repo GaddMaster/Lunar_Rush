@@ -77,7 +77,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	auto MainMenuScene = MainMenu::createScene();
 	auto SinglePlayerMenuScene = SinglePlayerMenu::createScene();
 	auto FirstWorldScene = FirstWorld::createScene();
-	//auto SecondWorldScene = SecondWorld::createScene();
+	auto SecondWorldScene = SecondWorld::createScene();
 	auto EndingCreditsScene = EndingCredits::createScene();
 
 

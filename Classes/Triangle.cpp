@@ -7,7 +7,8 @@ USING_NS_CC;
 Triangle::Triangle()
 {
 	m_type = "triangle";
-	sprite = Sprite::create("Obstacles/triangle.png");
+	sprite = Sprite::create("Obstacles/trianglecircuit.png");
+	sprite->setScale(0.1);
 	mArray[0] = Vec2(-10 / TIscale, -11 / TIscale);
 	mArray[1] = Vec2(-13 / TIscale, -7 / TIscale);
 	mArray[2] = Vec2(-3 / TIscale, 13 / TIscale);
@@ -17,7 +18,7 @@ Triangle::Triangle()
 	mArray[6] = Vec2(-10 / TIscale, -11 / TIscale);
 	physicsBody = PhysicsBody::createPolygon(mArray, 7, PhysicsMaterial(1, 1, 1));
 	sprite->setPhysicsBody(physicsBody);
-	physicsBody->setCollisionBitmask(4);
+	physicsBody->setCollisionBitmask(9);
 	physicsBody->setContactTestBitmask(true);
 	physicsBody->setVelocityLimit(15);
 	physicsBody->setAngularDamping(10);

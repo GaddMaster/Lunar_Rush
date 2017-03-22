@@ -18,6 +18,13 @@
 #include "Rocket.h"
 #include "Explosion.h"
 #include "ExplosionLarge.h"
+#include "FinishLine.h"
+
+//ALL PICKUP OBJECT HEADER FILES INCLUDED - SAMANTHA MARAH
+#include "PickUps.h"
+#include "ThrusterPickup.h"
+#include "HealthPickup.h"
+#include "WeaponShieldPickup.h"
 
 class FirstWorld : public cocos2d::Layer
 {
@@ -59,11 +66,23 @@ class FirstWorld : public cocos2d::Layer
 		//AI TRACK WAY POINTS FUNCTION
 		void AIWayPoints();
 
+		//FINISH LINE FUNCTION
+		void finishLine();
+
 		//TRACK WAY POINTS 
 		void trackWayPoints();
 
 		//ADD VEHICLE OBJECTS
 		void vehicleObjects();
+
+		//THRUSTER PICKUP FUNCTION
+		void thrusterPickup();
+
+		//HEALTH PICKUP FUNCTION
+		void healthPickup();
+
+		//WEAPON/SHIELD PICKUP FUNCTION
+		void weaponShieldPickup();
 
 		//TRACK OBSTACLES
 		void obstacles();
@@ -79,6 +98,9 @@ class FirstWorld : public cocos2d::Layer
 
 		//LABELS - BACKWARDS NOTIFICATION
 		void labels();
+
+		//END RACE FUNCTION
+		void endRace();
 
 		//CAMERA
 		void moveWorld();
@@ -96,9 +118,25 @@ class FirstWorld : public cocos2d::Layer
 		cocos2d::Sprite* trackInSprite;
 		cocos2d::Sprite* trackOutSprite;
 		cocos2d::Sprite* trackInLetSprite;
+		cocos2d::Sprite* detectorSprite;
+		cocos2d::Sprite* preDetector1Sprite;
+		cocos2d::Sprite* preDetector2Sprite;
+		cocos2d::Sprite* hudTemplatesprite;
+		cocos2d::Sprite* backgroundBarSprite1;
+		cocos2d::Sprite* backgroundBarSprite2;
+		cocos2d::Sprite* healthBarSprite;
+		cocos2d::Sprite* thrusterBarSprite;
+		cocos2d::Sprite* damageBarSprite1;
+		cocos2d::Sprite* damageBarSprite2;
+		cocos2d::Sprite* speedIndicator;
 		cocos2d::PhysicsBody* trackInPhysics;
 		cocos2d::PhysicsBody* trackOutPhysics;
 		cocos2d::PhysicsBody* trackInLetPhyscis;
+		cocos2d::PhysicsBody* contactA;
+		cocos2d::PhysicsBody* contactB;
+		cocos2d::PhysicsBody* detectorPhysics;
+		cocos2d::PhysicsBody* preDetector1Physics;
+		cocos2d::PhysicsBody* preDetector2Physics;
 		Vehicle* playerVehicleObject;
 		Vehicle* enemyOneVehicleObject;
 
@@ -117,6 +155,12 @@ class FirstWorld : public cocos2d::Layer
 		bool backwards = false;
 		float weaponTimer;
 		bool activeWeaponTimer;
+		bool lapDetector1 = false;
+		bool lapDetector2 = false;
+		int lapCounter = 0;
+		int playerHealth = 100;
+		int playerThrusterfuel = 100;
+		int pickupID;
 
 		//ARRAYS, VECTOR AND LISTS
 		cocos2d::Vec2 trackInArray[63];
@@ -137,6 +181,8 @@ class FirstWorld : public cocos2d::Layer
 		std::vector<GameObjectPhysics*> objects;
 		std::vector<Vehicle*> vehicles;
 		std::vector<GameObject*> projectiles;
+		std::vector<PickUps*> weaponPickups;
+		std::vector<PickUps*>::iterator it;
 
 		//DIRECTIONAL VECTORS, INT & WAY POINT OBJECTS
 		std::vector<DirectionWayPoint*> directionalWayPoints;
@@ -160,6 +206,7 @@ class FirstWorld : public cocos2d::Layer
 		cocos2d::Label* slowDownStatus;
 		cocos2d::Label* angle;
 		cocos2d::Label* weaponLabel;
+		cocos2d::Label* lapNumber;
 		
 		//CAMERA - WORKING ON IT
 		cocos2d::Sprite* sprite;
@@ -171,5 +218,11 @@ class FirstWorld : public cocos2d::Layer
 		cocos2d::Label* timer;
 		cocos2d::DelayTime* delay;
 		Explosion* explosion;
+
+		cocos2d::ProgressTimer* healthTimer;
+		cocos2d::ProgressTimer* damageTimer1;
+		cocos2d::ProgressTimer* thrusterTimer;
+		cocos2d::ProgressTimer* damageTimer2;
+		cocos2d::ProgressTimer* speedTimer;
 };
 #endif

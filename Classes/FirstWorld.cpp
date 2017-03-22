@@ -3,29 +3,35 @@
 
 USING_NS_CC;
 
-//BITMASK///////////////////////////
-//Track Walls = Bitmask 1 Done
-//Finish Line Detector = Bitmask 2 Done
-//Finish Line Pre-Detector = Bitmask 3 Done
-//Player Ship = Bitmask 4 Done
-//Circle Circuit = Bitmask 5 Done
-//Square Circuit = Bitmask 5 Done
-//Thruster Pickup = Bitmask 6 Done
-//Health Pickup = Bitmask 7 Done
-//Weapon/Shield Pickup = Bitmask 8 Done
-//Z Ordering Global/////////////////
-//LAYER - Game	: 0
-//Track ZIndex	: 1
-//Finish Line	: 2
-//Vehicles		: 3
-//Weapons		: 4
-//Particles		: 5
-//WayPoints		: 2
-//Turret Head	: 4
-//Turret Body	: 3
-//PickUps		: 3
-//Obstacles		: 3
-//LAYER - HUD	: 1
+//LAYERS
+//Track Background = Layer 0 Done - SAMANTHA
+//Finish Line = Layer 0 Done - SAMANTHA
+//Track Walls = Layer 1 Done - SAMANTHA
+//Player Vehicle = Layer 2 Done - DANIEL
+//Health Pickup = Layer 2 Done - SAMANTHA
+//Thruster Pickup = Layer 2 Done - SAMANTHA
+//Weapon/Shield Pickup = Layer 2 Done - SAMANTHA
+//Circle = Layer2 Done - SAMUEL
+//Square = Layer 2 Done SAMUEL
+//Triangle = Layer 2 Done - SAMUEL
+//Turret Body = Layer 2 Done - SAMUEL
+//Turret Head = Layer 3 Done - SAMUEL
+
+
+//BITMASKS
+//Track Walls = Bitmask 1 Done - SAMANTHA
+//Finish Line Detector = Bitmask 2 Done - SAMANTHA
+//Finish Line Pre-Detector One = Bitmask 3 Done - SAMANTHA
+//Finish Line Pre-Detector Two = Bitmask 4 Done - SAMANTHA
+//Player Vehicle = Bitmask 5 Done - DANIEL
+//Thruster Pickup = Bitmask 6 Done - SAMANTHA
+//Health Pickup = Bitmask 7 Done - SAMANTHA
+//Weapon/Shield Pickup = Bitmask 8 Done - SAMANTHA
+//Circle = Bitmask 9 Done - SAMUEL
+//Square = Bitmask 9 Done - SAMUEL 
+//Triangle = Bitmask 9 Done - SAMUEL
+//Turret Body = Bitmask 10 Done - SAMUEL
+//Turret Bullet = Bitmask 11 - SAMUEL
 
 //CREATE SCENES AND LAYERS SAMUEL - PHYSCIS DEBUG OPTIONS- DANIEL
 cocos2d::Scene* FirstWorld::createScene()
@@ -72,11 +78,23 @@ bool FirstWorld::init()
 	//POINTS ON THE TRACK FOR THE AI TO FOLLOW - BASIC LEVEL EXAMPLE - SAMUEL
 	AIWayPoints();
 
+	//FINISH LINE FUNCTION - SAMANTHA
+	finishLine();
+
 	//TRACK DIRECTIONAL CONTROL - DANIEL
 	trackWayPoints();
 
 	//VEHICLE OBEJCTS CONSTRUCTION - DANIEL
 	vehicleObjects();
+
+	//THRUSTER PICKUP FUNCTION - SAMANTHA
+	thrusterPickup();
+
+	//HEALTH PICKUP FUNCTION - SAMANTHA
+	healthPickup();
+
+	//WEAPON/SHIELD PICKUP FUNCTION - SAMANTHA
+	weaponShieldPickup();
 
 	//OBSTACLES AND TRACK OBJECTS - SAMUEL
 	obstacles();
@@ -166,31 +184,326 @@ void FirstWorld::onTouchCancelled(Touch* touch, Event* event)
 //WHEN TWO PHYSICS OBJECTS COLLIDE FUCNTION - DANIEL
 bool FirstWorld::onContactBegin(cocos2d::PhysicsContact &contact)
 {
-	PhysicsBody *contactA = contact.getShapeA()->getBody();
-	PhysicsBody *contactB = contact.getShapeB()->getBody();
+	contactA = contact.getShapeA()->getBody();
+	contactB = contact.getShapeB()->getBody();
 
-	//CHECK WALL AND VEHICLE COLLISION
-	if (contactA->getCollisionBitmask() == 1 && contactB->getCollisionBitmask() == 2)
+	//PLAYER SHIP COMES IN CONTACT WITH WALL - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 1) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 1))
 	{
-		if (contactA == playerVehicleObject->getPhysicsBody()) { playerVehicleObject->setSpeed(120); }
-		return true;
-	}
-	else if (contactA->getCollisionBitmask() == 2 && contactB->getCollisionBitmask() == 1)
-	{
-		if (contactB == playerVehicleObject->getPhysicsBody()) { playerVehicleObject->setSpeed(120); }
+		CCLOG("There Is Contact Between The Wall And Player Ship");
+
 		return true;
 	}
 
-	if (contactA->getCollisionBitmask() == 2 && contactB->getCollisionBitmask() == 3)
+	//PLAYER SHIP COMES IN CONTACT WITH FINISH LINE PRE-DETECTOR2 - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 4) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 4))
 	{
-		this->removeChild(contactB->getNode(), true);
+		//SETS BOOL TO TRUE
+		lapDetector2 = true;
+
 		return true;
 	}
-	else if (contactA->getCollisionBitmask() == 3 && contactB->getCollisionBitmask() == 2)
+
+	//PLAYER SHIP COMES IN CONTACT WITH FINISH LINE PRE-DETECTOR1 - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 3) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 3))
 	{
-		this->removeChild(contactA->getNode(), true);
+		//SETS BOOL TO TRU
+		lapDetector1 = true;
+
 		return true;
 	}
+
+	//PLAYER SHIP COMES IN CONTACT WITH FINISH LINE - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 2) && (contactB->getCollisionBitmask() == 5) && (lapDetector2 == true) && (lapDetector1 == true) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 2) && (lapDetector2 == true) && (lapDetector1 == true))
+	{
+		CCLOG("There Is Contact Between The Finish Line And Player Ship");
+
+		//INCREMENTS THE LAP COUNTER
+		lapCounter++;
+
+		//SETS BOOL TO FALSE
+		lapDetector2 = false;
+		lapDetector1 = false;
+
+		return true;
+	}
+
+	//PLAYER SHIP COMES IN CONTACT WITH THRUSTER PICKUP - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 6))
+	{
+		CCLOG("There Is Contact Between The Thruster Pickup And The Player Ship");
+
+		//INCREMENT THRUSTERFUEL BY 20
+		playerThrusterfuel = playerThrusterfuel + 20;
+
+		//REMOVE THE SPRITE FROM SCENE
+		contactB->getNode()->removeFromParent();
+
+		return true;
+	}
+
+	if ((contactA->getCollisionBitmask() == 6) && (contactB->getCollisionBitmask() == 5))
+	{
+		CCLOG("There Is Contact Between The Thruster Pickup And The Player Ship");
+
+		//INCREMENT THRUSTERFUEL BY 20
+		playerThrusterfuel = playerThrusterfuel + 20;
+
+		//REMOVE THE SPRITE FROM SCENE
+		contactA->getNode()->removeFromParent();
+
+		return true;
+	}
+
+	//PLAYER SHIP COMES IN CONTACT WITH HEALTH PICKUP - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 7))
+	{
+		CCLOG("There Is Contact Between The Health Pickup And The Player Ship");
+
+		//INCREMENT PLAYERHEALTH BY 20
+		playerHealth = playerHealth + 20;
+
+		//REMOVE THE SPRITE FROM SCENE
+		contactB->getNode()->removeFromParent();
+
+		return true;
+	}
+
+	if ((contactA->getCollisionBitmask() == 7) && (contactB->getCollisionBitmask() == 5))
+	{
+		CCLOG("There Is Contact Between The Health Pickup And The Player Ship");
+
+		//INCREMENT PLAYERHEALTH BY 20
+		playerHealth = playerHealth + 20;
+
+		//REMOVE THE SPRITE FROM SCENE
+		contactA->getNode()->removeFromParent();
+
+		return true;
+	}
+
+	//PLAYER SHIP COMES IN CONTACT WITH WEAPON-SHIELD PICKUP - SAMANTHA
+	//ITERATES THROUGH LIST
+	for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+	{
+		if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 8) && (*it)->getID() == 1)
+		{
+			//RE-ITERATES THROUGH THE LIST
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS BULLETS BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(true);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("Gun Is Activated");
+
+				//REMOVES SPRITE
+				contactB->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 8) && (*it)->getID() == 2)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS ROCKET BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(true);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("Rocket Is Activated");
+
+				//REMOVES SPRITE
+				contactB->getNode()->removeFromParent();
+
+				return true;
+
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 8) && (*it)->getID() == 3)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS MINE BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(true);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("LandMine Is Activated");
+
+				//REMOVE SPRITE FROM SCENE
+				contactB->getNode()->removeFromParent();
+
+				return true;
+
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 8) && (*it)->getID() == 4)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS SHIELD BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(true);
+
+				CCLOG("Shield Is Activated");
+
+				//REMOVES SRITE FROM SCENE
+				contactB->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+	}
+
+	for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+	{
+		if ((contactA->getCollisionBitmask() == 8) && (contactB->getCollisionBitmask() == 5) && (*it)->getID() == 1)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS BULLETS BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(true);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("Gun Is Activated");
+
+				//REMOVE THE SPRITE FROM SCENE
+				contactA->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 8) && (contactB->getCollisionBitmask() == 5) && (*it)->getID() == 2)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS ROCKET BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(true);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("Rocket Is Activated");
+
+				//REMOVE THE SPRITE FROM SCENE
+				contactA->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 8) && (contactB->getCollisionBitmask() == 5) && (*it)->getID() == 3)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS MINE BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(true);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("LandMine Is Activated");
+
+				//REMOVE THE SPRITE FROM SCENE
+				contactA->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 8) && (contactB->getCollisionBitmask() == 5) && (*it)->getID() == 4)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS SHIELD BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(true);
+
+				CCLOG("Shield Is Activated");
+
+				//REMOVE THE SPRITE FROM SCENE
+				contactA->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+	}
+
+	//PLAYER SHIP COMES IN CONTACT WITH OBSTACLES - SAMUEL
+	if ((contactA->getCollisionBitmask() == 9) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 9))
+	{
+		CCLOG("There Is Contact Between The Obstacle And Player Ship");
+
+		return true;
+	};
+
+	//PLAYER SHIP COMES IN CONTACT WITH TURRET BODY - SAMUEL
+	if ((contactA->getCollisionBitmask() == 10) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 10))
+	{
+		CCLOG("There Is Contact Between The Turret Body And Player Ship");
+
+		return true;
+	};
+
+	//PLAYER SHIP COMES IN CONTACT WITH TURRET BULLET - SAMUEL
+	if ((contactA->getCollisionBitmask() == 11) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 11))
+	{
+		CCLOG("There Is Contact Between The Turret Bullet And Player Ship");
+		playerHealth = playerHealth - 20;
+
+		contactA->getNode()->removeFromParent();
+		return true;
+	};
+
+	if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 11) || (contactA->getCollisionBitmask() == 11) && (contactB->getCollisionBitmask() == 5))
+	{
+		CCLOG("There Is Contact Between The Turret Bullet And Player Ship");
+		playerHealth = playerHealth - 20;
+
+		contactB->getNode()->removeFromParent();
+		return true;
+	};
+
+	//TURRET BULLET COMES IN CONTACT WALL - SAMUEL
+	if ((contactA->getCollisionBitmask() == 11) && (contactB->getCollisionBitmask() == 1) || (contactA->getCollisionBitmask() == 1) && (contactB->getCollisionBitmask() == 11))
+	{
+		CCLOG("There Is Contact Between The Turret Bullet And Wall");
+
+		contactA->getNode()->removeFromParent();
+		return true;
+	};
+
+	if ((contactA->getCollisionBitmask() == 1) && (contactB->getCollisionBitmask() == 11) || (contactA->getCollisionBitmask() == 11) && (contactB->getCollisionBitmask() == 1))
+	{
+		CCLOG("There Is Contact Between The Wall And Turret Bullet");
+
+		contactB->getNode()->removeFromParent();
+		return true;
+	};
 
 	return true;
 };
@@ -220,6 +533,17 @@ double FirstWorld::keyPressedDuration(EventKeyboard::KeyCode code)
 //UPDATE FUCNTION - CALLED EVERY DELTA - DANIEL
 void FirstWorld::update(float delta)
 {
+	//UPDATES THE HUD LAYER POSITION - SAMANTHA
+	HUD->setPosition(playerVehicleObject->getSprite()->getPosition().x - visibleSize.width / 2, playerVehicleObject->getSprite()->getPosition().y - visibleSize.height / 2);
+
+	//UPDATES THE LAP NUMBER - SAMANTHA
+	lapNumber->setString("LAP NUMBER: " + std::to_string(lapCounter) + "/10");
+
+	//UPDATES TIMER - SAMUEL
+	time += delta;
+	__String *timeToDisplay = __String::createWithFormat("%.2f", time);
+	timer->setString(timeToDisplay->getCString());
+
 	//----------------------------------------------------------------
 	//PROJECTILES COLLISION - EXPLOSION ON COLLISION -  REDUCE HEALTH OF VEHICLES - DESTROY VEHICLE/OBJECTS
 	if (!projectiles.empty())
@@ -444,6 +768,146 @@ void FirstWorld::update(float delta)
 	}
 	//ENEMY ONE VEHICLE CALCULATION - DANIEL
 	//----------------------------------------------------------------
+
+	//THRUSTER FUEL PERCENTAGE - SAMANTHA
+	if (playerThrusterfuel == 100)
+	{
+		this->thrusterTimer->setPercentage(100);
+	}
+	if (playerThrusterfuel == 90)
+	{
+		this->thrusterTimer->setPercentage(90);
+	}
+	if (playerThrusterfuel == 80)
+	{
+		this->thrusterTimer->setPercentage(80);
+	}
+	if (playerThrusterfuel == 70)
+	{
+		this->thrusterTimer->setPercentage(70);
+	}
+	if (playerThrusterfuel == 60)
+	{
+		this->thrusterTimer->setPercentage(60);
+	}
+	if (playerThrusterfuel == 50)
+	{
+		this->thrusterTimer->setPercentage(50);
+	}
+	if (playerThrusterfuel == 40)
+	{
+		this->thrusterTimer->setPercentage(40);
+	}
+	if (playerThrusterfuel == 30)
+	{
+		this->thrusterTimer->setPercentage(30);
+	}
+	if (playerThrusterfuel == 20)
+	{
+		this->thrusterTimer->setPercentage(20);
+	}
+	if (playerThrusterfuel == 10)
+	{
+		this->thrusterTimer->setPercentage(10);
+	}
+	if (playerThrusterfuel == 0)
+	{
+		this->thrusterTimer->setPercentage(0);
+	}
+	if (playerThrusterfuel > 100)
+	{
+		playerThrusterfuel = 100;
+		this->thrusterTimer->setPercentage(100);
+	}
+
+	//HEALTH PERCENTAGE - SAMANTHA
+	if (playerHealth == 100)
+	{
+		this->healthTimer->setPercentage(100);
+	}
+	if (playerHealth == 90)
+	{
+		this->healthTimer->setPercentage(90);
+	}
+	if (playerHealth == 80)
+	{
+		this->healthTimer->setPercentage(80);
+	}
+	if (playerHealth == 70)
+	{
+		this->healthTimer->setPercentage(70);
+	}
+	if (playerHealth == 60)
+	{
+		this->healthTimer->setPercentage(60);
+	}
+	if (playerHealth == 50)
+	{
+		this->healthTimer->setPercentage(50);
+	}
+	if (playerHealth == 40)
+	{
+		this->healthTimer->setPercentage(40);
+	}
+	if (playerHealth == 30)
+	{
+		this->healthTimer->setPercentage(30);
+	}
+	if (playerHealth == 20)
+	{
+		this->healthTimer->setPercentage(20);
+	}
+	if (playerHealth == 10)
+	{
+		this->healthTimer->setPercentage(10);
+	}
+	if (playerHealth == 0)
+	{
+		this->healthTimer->setPercentage(0);
+	}
+	if (playerHealth > 100)
+	{
+		playerHealth = 100;
+		this->healthTimer->setPercentage(100);
+	}
+
+	//SPEED INDICATOR - SAMANTHA
+	if (playerVehicleObject->getSpeed() == 100)
+	{
+		this->speedTimer->setPercentage(100);
+	}
+
+	if (playerVehicleObject->getSpeed() >= 50 && playerVehicleObject->getSpeed() <= 100)
+	{
+		this->speedTimer->setPercentage(82);
+	}
+	if (playerVehicleObject->getSpeed() >= 40 && playerVehicleObject->getSpeed() <= 50)
+	{
+		this->speedTimer->setPercentage(66);
+	}
+	if (playerVehicleObject->getSpeed() >= 30 && playerVehicleObject->getSpeed() <= 40)
+	{
+		this->speedTimer->setPercentage(49);
+	}
+	if (playerVehicleObject->getSpeed() >= 20 && playerVehicleObject->getSpeed() <= 20)
+	{
+		this->speedTimer->setPercentage(33);
+	}
+	if (playerVehicleObject->getSpeed() >= 10 && playerVehicleObject->getSpeed() <= 20)
+	{
+		this->speedTimer->setPercentage(17);
+	}
+	if (playerVehicleObject->getSpeed() == 0)
+	{
+		this->speedTimer->setPercentage(0);
+	}
+	if (playerVehicleObject->getSpeed() > 100)
+	{
+		this->speedTimer->setPercentage(100);
+	}
+
+	//END RACE - SAMANTHA
+	this->endRace();
 };
 
 //TRACK POINTS FOR TRACK SPRITE AND PHYSICS BOUNDARIES - DANIEL
@@ -515,7 +979,7 @@ void FirstWorld::addTrack()
 	trackInArray[61] = Point(-2400 / TIscale, 700 / TIscale);
 	trackInArray[62] = Point(-2400 / TIscale, 1000 / TIscale);
 	trackInPhysics = PhysicsBody::createEdgePolygon(trackInArray, 63, PhysicsMaterial(1, 1, 1), 10);
-	trackInPhysics->setCollisionBitmask(2);
+	trackInPhysics->setCollisionBitmask(1);
 	trackInPhysics->setContactTestBitmask(true);
 	trackInSprite->setPhysicsBody(trackInPhysics);
 	//trackInSprite->setScale(1);
@@ -583,7 +1047,7 @@ void FirstWorld::addTrack()
 	trackOutArray[57] = Point(-2900 / TIscale, -1000 / TIscale);
 	trackOutArray[58] = Point(-2900 / TIscale, 1000 / TIscale);
 	trackOutPhysics = PhysicsBody::createEdgePolygon(trackOutArray, 59, PhysicsMaterial(1, 1, 1), 10);
-	trackOutPhysics->setCollisionBitmask(2);
+	trackOutPhysics->setCollisionBitmask(1);
 	trackOutPhysics->setContactTestBitmask(true);
 	trackOutSprite->setPhysicsBody(trackOutPhysics);
 	//trackOutSprite->setScale(1);
@@ -597,7 +1061,7 @@ void FirstWorld::addTrack()
 	trackInLetArray[3] = Point(50 / TIscale, -300 / TIscale);
 	trackInLetArray[4] = Point(-50 / TIscale, -400 / TIscale);
 	trackInLetPhyscis = PhysicsBody::createEdgePolygon(trackInLetArray, 5, PhysicsMaterial(1, 1, 1), 10);
-	trackInLetPhyscis->setCollisionBitmask(2);
+	trackInLetPhyscis->setCollisionBitmask(1);
 	trackInLetPhyscis->setContactTestBitmask(true);
 	trackInLetSprite->setPhysicsBody(trackInLetPhyscis);
 	trackInLetSprite->setPosition(cocos2d::Vec2(-2350 / TIscale, 0 / TIscale));
@@ -862,13 +1326,104 @@ void FirstWorld::AIWayPoints()
 	WayPoints[61][1] = cocos2d::Vec2(-2600 / TIscale, 650 / TIscale);//WAY POINT 62
 	WayPoints[61][2] = cocos2d::Vec2(-2700 / TIscale, 650 / TIscale);
 
-
+	
 	wayPointCounter = 0;
 	enemyOneCurrentWayPoint = WayPoints[wayPointCounter][enemyOneWayPointSkill];
 	wayPointSprite = Sprite::create("TrackOne/WayPoint.png");
 	wayPointSprite->setPosition(enemyOneCurrentWayPoint);
 	this->addChild(wayPointSprite, 2);
 }
+
+//FINISH LINE FUNCTION - SAMANTHA MARAH
+void FirstWorld::finishLine()
+{
+	//FINISH LINE - SAMANTHA
+	FinishLine* f1 = new FinishLine();
+
+	//Sets finishLineSprite Position
+	f1->getFinishLineSprite()->setPosition(-4115 / TIscale, -900 / TIscale);
+
+	//Sets The finishLineSprite Sprite To The Scene On Layer 0
+	this->addChild(f1->getFinishLineSprite(), 0);
+
+	//Creates Sprite For detectorSprite
+	//Is An Empty Sprite With No Image
+	detectorSprite = Sprite::create();
+
+	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
+	//Positions Are Being Parsed In To Create The Length Of The Physics Body
+	detectorPhysics = PhysicsBody::createEdgeSegment((Vec2(-4100 / TIscale, -700 / TIscale)), (Vec2(-3500 / TIscale, -700 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
+
+	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
+	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
+	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
+	//Know What Sprite Has Collided With Another.
+	detectorPhysics->setCollisionBitmask(2);
+
+	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
+	detectorPhysics->setContactTestBitmask(true);
+
+	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
+	detectorPhysics->setDynamic(false);
+
+	//Sets The Physics Body Onto The detectorSprite Itself
+	detectorSprite->setPhysicsBody(detectorPhysics);
+
+	//Sets The detectorSprite Sprite To The Scene On Layer 0
+	this->addChild(detectorSprite, 0);
+
+	//Creates Sprite For preDetector1Sprite
+	//Is An Empty Sprite With No Image
+	preDetector1Sprite = Sprite::create();
+
+	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
+	//Positions Are Being Parsed In To Create The Length Of The Physics Body
+	preDetector1Physics = PhysicsBody::createEdgeSegment((Vec2(-4100 / TIscale, -900 / TIscale)), (Vec2(-3500 / TIscale, -900 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
+
+	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
+	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
+	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
+	//Know What Sprite Has Collided With Another.
+	preDetector1Physics->setCollisionBitmask(3);
+
+	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
+	preDetector1Physics->setContactTestBitmask(true);
+
+	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
+	preDetector1Physics->setDynamic(false);
+
+	//Sets The Physics Body Onto The preDetector1Sprite Itself
+	preDetector1Sprite->setPhysicsBody(preDetector1Physics);
+
+	//Sets The preDetector1Sprite Sprite To The Scene On Layer 0
+	this->addChild(preDetector1Sprite, 0);
+
+	//Creates Sprite For preDetector2Sprite
+	//Is An Empty Sprite With No Image
+	preDetector2Sprite = Sprite::create();
+
+	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
+	//Positions Are Being Parsed In To Create The Length Of The Physics Body
+	preDetector2Physics = PhysicsBody::createEdgeSegment((Vec2(3700 / TIscale, 0 / TIscale)), (Vec2(4400 / TIscale, 0 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
+
+	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
+	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
+	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
+	//Know What Sprite Has Collided With Another.
+	preDetector2Physics->setCollisionBitmask(4);
+
+	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
+	preDetector2Physics->setContactTestBitmask(true);
+
+	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
+	preDetector2Physics->setDynamic(false);
+
+	//Sets The Physics Body Onto The preDetector1Sprite Itself
+	preDetector2Sprite->setPhysicsBody(preDetector2Physics);
+
+	//Sets The preDetector2Sprite Sprite To The Scene On Layer 0
+	this->addChild(preDetector2Sprite, 0);
+};
 
 //THE TRACK WAY POINTS USED FOR A LIST OF REASONS INCLUDING BACKWARDS DETECTION - DANIEL
 void FirstWorld::trackWayPoints()
@@ -1164,6 +1719,106 @@ void FirstWorld::vehicleObjects()
 	this->runAction(cocos2d::Follow::create(playerVehicleObject->getSprite()));
 }
 
+//THRUSTER PICKUP FUNCTION - SAMANTHA MARAH
+void FirstWorld::thrusterPickup()
+{
+	//ALL THE THRUSTER PICKUP OBJECTS IN THIS TRACK
+	PickUps* t1 = new ThrusterPickup(); //CREATES THRUSTERPICKUP OBJECT AND ASSIGNS IT TO t1
+	t1->getSprite()->setPosition(3800 / TIscale, -500 / TIscale); //SETS THE POSITION OF t1
+	t1->rotate(); //CALLS THE ROTATE FUNCTION FOR t1
+	this->addChild(t1->getSprite(), 2); //ADDS T1 TO THE SCENE LAYER 2
+
+	PickUps* t2 = new ThrusterPickup(); //CREATES THRUSTERPICKUP OBJECT AND ASSIGNS IT TO t2
+	t2->getSprite()->setPosition(4300 / TIscale, -500 / TIscale); //SETS THE POSITION OF t2
+	t2->rotate(); //CALLS THE ROTATE FUNCTION FOR t2
+	this->addChild(t2->getSprite(), 2); //ADDS T2 TO THE SCENE LAYER 2
+
+	PickUps* t3 = new ThrusterPickup(); //CREATES THRUSTERPICKUP OBJECT AND ASSIGNS IT TO t3
+	t3->getSprite()->setPosition(-800 / TIscale, 400 / TIscale); //SETS THE POSITION OF t3
+	t3->rotate(); //CALLS THE ROTATE FUNCTION FOR t3
+	this->addChild(t3->getSprite(), 2); //ADDS T3 TO THE SCENE LAYER 2
+};
+
+//HEALTH PICKUP FUNCTION - SAMANTHA MARAH
+void FirstWorld::healthPickup()
+{
+	//ALL HEALTH PICKUP OBJECTS IN THIS TRACK
+	PickUps* h1 = new HealthPickup(); //CREATES HEALTHPICKUP OBJECT AND ASSIGNS IT TO h1
+	h1->getSprite()->setPosition(4050 / TIscale, -500 / TIscale); //SETS THE POSITION OF h1
+	h1->rotate(); //CALLS THE ROTATE FUNCTION FOR h1
+	this->addChild(h1->getSprite(), 2); //ADDS h1 TO THE SCENE LAYER 2
+
+	PickUps* h2 = new HealthPickup(); //CREATES HEALTHPICKUP OBJECT AND ASSIGNS IT TO h2
+	h2->getSprite()->setPosition(-800 / TIscale, 200 / TIscale); //SETS THE POSITION OF h2
+	h2->rotate(); //CALLS THE ROTATE FUNCTION FOR h2
+	this->addChild(h2->getSprite(), 2); //ADDS h2 TO THE SCENE LAYER 2
+
+	PickUps* h3 = new HealthPickup(); //CREATES HEALTHPICKUP OBJECT AND ASSIGNS IT TO h3
+	h3->getSprite()->setPosition(-800 / TIscale, 600 / TIscale); //SETS THE POSITION OF h3
+	h3->rotate(); //CALLS THE ROTATE FUNCTION FOR h3
+	this->addChild(h3->getSprite(), 2); //ADDS h3 TO THE SCENE LAYER 2
+};
+
+//WEAPON-SHIELD PICKUP FUNCTION - SAMANTHA MARAH
+void FirstWorld::weaponShieldPickup()
+{
+	//ALL THE WEAPON-SHIELD PICKUP OBJECTS IN THIS TRACK
+	PickUps* ws1 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws1
+	ws1->getSprite()->setPosition(2000 / TIscale, -200 / TIscale); //SETS THE POSITION OF ws1
+	ws1->rotate(); //CALLS THE ROTATE FUNCTION FOR ws1
+	this->addChild(ws1->getSprite(), 2); //ADDS ws1 TO THE SCENE LAYER 2
+
+	PickUps* ws2 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws2
+	ws2->getSprite()->setPosition(2000 / TIscale, 0 / TIscale); //SETS THE POSITION OF ws2
+	ws2->rotate(); //CALLS THE ROTATE FUNCTION FOR ws2
+	this->addChild(ws2->getSprite(), 2); //ADDS ws2 TO THE SCENE LAYER 2
+
+	PickUps* ws3 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws3
+	ws3->getSprite()->setPosition(2000 / TIscale, 200 / TIscale); //SETS THE POSITION OF ws3
+	ws3->rotate(); //CALLS THE ROTATE FUNCTION FOR ws3
+	this->addChild(ws3->getSprite(), 2); //ADDS ws3 TO THE SCENE LAYER 2
+
+	PickUps* ws4 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws4
+	ws4->getSprite()->setPosition(1000 / TIscale, -1100 / TIscale); //SETS THE POSITION OF ws4
+	ws4->rotate(); //CALLS THE ROTATE FUNCTION FOR ws4
+	this->addChild(ws4->getSprite(), 2); //ADDS ws4 TO THE SCENE LAYER 2
+
+	PickUps* ws5 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws5
+	ws5->getSprite()->setPosition(800 / TIscale, -1300 / TIscale); //SETS THE POSITION OF ws5
+	ws5->rotate(); //CALLS THE ROTATE FUNCTION FOR ws5
+	this->addChild(ws5->getSprite(), 2); //ADDS ws5 TO THE SCENE LAYER 2
+
+	PickUps* ws6 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws6
+	ws6->getSprite()->setPosition(600 / TIscale, -1500 / TIscale); //SETS THE POSITION OF ws6
+	ws6->rotate(); //CALLS THE ROTATE FUNCTION FOR ws6
+	this->addChild(ws6->getSprite(), 2); //ADDS ws6 TO THE SCENE LAYER 2
+
+										 //PUSHING EACH INSTANCE OF THE WEAPONSHIELDPICKUP
+										 //OBJECT INTO A VECTOR
+	weaponPickups.push_back(ws1);
+	weaponPickups.push_back(ws2);
+	weaponPickups.push_back(ws3);
+	weaponPickups.push_back(ws4);
+	weaponPickups.push_back(ws5);
+	weaponPickups.push_back(ws6);
+
+	//CYCLES THROUGH THE VECTOR AND GIVES EACH WEAPONSHIELDPICKUP OBJECT
+	//A RANDOM ID BETWEEN 1-4;
+	for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+	{
+		pickupID = cocos2d::RandomHelper::random_int(1, 4);
+
+		(*it)->setID(pickupID);
+	}
+
+	//SHOWS THE ID FOR EACH WEAPONSHIELDPICKUP IN THE DEBUG LOG
+	//USED FOR DEBUGGING
+	for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+	{
+		(*it)->seeID();
+	}
+};
+
 //ALL OBSTACLES OBJECTS FOR OUR FIRST SCENE - SAMUEL
 void FirstWorld::obstacles()
 {
@@ -1425,10 +2080,110 @@ void FirstWorld::eventListeners()
 //GAME HUD DISPLAY - SAMANTHA
 void FirstWorld::hud()
 {
-	//HUD LAYER SITS ON TOP OF GAME LAYER - WE CAN REST INFORMATION HERE AND UPDATE THAT INFORMATION IN THE UPDATE FUCNTION
+	//HUD LAYER - SAMUEL & SAMANTHA
 	HUD = LayerGradient::create(Color4B(0, 0, 0, 0), Color4B(0, 0, 0, 0));
 	HUD->setContentSize(visibleSize);
-	this->addChild(HUD, 10);//Z-INDEX 2
+
+	this->addChild(HUD, 4);
+
+	//HUD LAYER TEMPLATE - SAMUEL & SAMANTHA
+	hudTemplatesprite = Sprite::create("HUD/hudtemplate.png");
+	hudTemplatesprite->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+	hudTemplatesprite->setScale(1.27);
+
+	HUD->addChild(hudTemplatesprite, 5);
+
+	//LAP NUMBER SAMUEL & SAMANTHA
+	lapNumber = Label::createWithTTF("LAP NUMBER: ", "fonts/Marker Felt.ttf", 20);
+	lapNumber->setPosition(Vec2(-300, visibleSize.height + 350));
+	lapNumber->setAnchorPoint(Vec2(0, 0));
+	lapNumber->setString("LAP NUMBER: " + std::to_string(lapCounter) + "/10");
+
+	HUD->addChild(lapNumber, 6);
+
+	//TIMER - SAMUEL
+	timer = Label::createWithTTF("0", "fonts/Marker Felt.ttf", 30);
+	timer->setPosition(Vec2(-50, visibleSize.height + 350));
+	timer->setAnchorPoint(Vec2(0, 0));
+
+	HUD->addChild(timer, 6);
+
+	//HEALTH BAR - SAMANTHA
+	backgroundBarSprite1 = Sprite::create("Bars/backgroundbar.png");
+	backgroundBarSprite1->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 305));
+
+	HUD->addChild(backgroundBarSprite1, 6);
+
+	this->damageTimer1 = cocos2d::ProgressTimer::create(damageBarSprite1 = Sprite::create("Bars/damagebar.png"));
+	this->damageTimer1->setGlobalZOrder(1);
+	this->damageTimer1->setType(ProgressTimerType::BAR);
+	this->damageTimer1->setBarChangeRate(Vec2(1, 0));
+	this->damageTimer1->setAnchorPoint(Vec2(0, 0));
+	this->damageTimer1->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 315));
+	this->damageTimer1->setVisible(true);
+	this->damageTimer1->setPercentage(100);
+	this->damageTimer1->setMidpoint(Vec2(0, 0));
+	HUD->addChild(this->damageTimer1, 7);
+
+	this->healthTimer = cocos2d::ProgressTimer::create(healthBarSprite = Sprite::create("Bars/healthbar.png"));
+	this->healthTimer->setGlobalZOrder(2);
+	this->healthTimer->setType(ProgressTimerType::BAR);
+	this->healthTimer->setBarChangeRate(Vec2(1, 0));
+	this->healthTimer->setAnchorPoint(Vec2(0, 0));
+	this->healthTimer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 315));
+	this->healthTimer->setVisible(true);
+	this->healthTimer->setPercentage(100);
+	this->healthTimer->setMidpoint(Vec2(0, 0));
+	HUD->addChild(this->healthTimer, 8);
+
+	//THRUSTER BAR - SAMANTHA
+	backgroundBarSprite2 = Sprite::create("Bars/backgroundbar.png");
+	backgroundBarSprite2->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 365));
+
+	HUD->addChild(backgroundBarSprite2, 6);
+
+	this->damageTimer2 = cocos2d::ProgressTimer::create(damageBarSprite2 = Sprite::create("Bars/damagebar.png"));
+	this->damageTimer2->setGlobalZOrder(1);
+	this->damageTimer2->setType(ProgressTimerType::BAR);
+	this->damageTimer2->setBarChangeRate(Vec2(1, 0));
+	this->damageTimer2->setAnchorPoint(Vec2(0, 0));
+	this->damageTimer2->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 375));
+	this->damageTimer2->setVisible(true);
+	this->damageTimer2->setPercentage(100);
+	this->damageTimer2->setMidpoint(Vec2(0, 0));
+	HUD->addChild(this->damageTimer2, 7);
+
+	this->thrusterTimer = cocos2d::ProgressTimer::create(thrusterBarSprite = Sprite::create("Bars/thrusterbar.png"));
+	this->thrusterTimer->setGlobalZOrder(2);
+	this->thrusterTimer->setType(ProgressTimerType::BAR);
+	this->thrusterTimer->setBarChangeRate(Vec2(1, 0));
+	this->thrusterTimer->setAnchorPoint(Vec2(0, 0));
+	this->thrusterTimer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 375));
+	this->thrusterTimer->setVisible(true);
+	this->thrusterTimer->setPercentage(100);
+	this->thrusterTimer->setMidpoint(Vec2(0, 0));
+	HUD->addChild(this->thrusterTimer, 8);
+
+	this->speedTimer = cocos2d::ProgressTimer::create(speedIndicator = Sprite::create("SpeedIndicator/speedindicator.png"));
+	this->speedTimer->setGlobalZOrder(1);
+	this->speedTimer->setType(ProgressTimerType::BAR);
+	this->speedTimer->setBarChangeRate(Vec2(1, 0));
+	this->speedTimer->setAnchorPoint(Vec2(0, 0));
+	this->speedTimer->setPosition(Vec2(visibleSize.width / 2 + 300, visibleSize.height - 375));
+	this->speedTimer->setVisible(true);
+	this->speedTimer->setPercentage(100);
+	this->speedTimer->setMidpoint(Vec2(0, 0));
+
+	HUD->addChild(speedTimer, 6);
+}
+
+//END RACE FUNCTION - SAMANTHA
+void FirstWorld::endRace()
+{
+	if (lapCounter >= 11)
+	{
+		Director::getInstance()->end();
+	}
 }
 
 //DIRECTOR & SCREEN ORIGIN CENTER POINT

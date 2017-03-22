@@ -14,7 +14,9 @@
 #include <string>
 #include <iostream>
 #include <stdio.h>
+#include <cstdlib>
 #include <time.h>
+#include <vector>
 
 //ALL PICKUP OBJECT HEADER FILES INCLUDED - SAMANTHA MARAH
 #include "PickUps.h"
@@ -25,203 +27,212 @@
 #include "Vehicle.h"
 #include "DirectionWayPoint.h"
 #include "GameObjectPhysics.h"
+#include "GameObject.h"
 
 class SecondWorld : public cocos2d::Layer
 {
-	public:
-		SecondWorld();
-		~SecondWorld();
+public:
+	SecondWorld();
+	~SecondWorld();
 
-		static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
-		CREATE_FUNC(SecondWorld);
+	CREATE_FUNC(SecondWorld);
 
-		virtual bool init();
+	virtual bool init();
 
-		//LISTENERS FUNCTION
-		void listeners();
+	//LISTENERS FUNCTION
+	void listeners();
 
-		//SELECTOR CALL BACK
-		void menuCloseCallback(cocos2d::Ref* pSender);
+	//SELECTOR CALL BACK
+	void menuCloseCallback(cocos2d::Ref* pSender);
 
-		//TOUCH FUCNTIONS
-		virtual bool onTouchBegan(cocos2d::Touch*, cocos2d::Event*);
-		virtual void onTouchEnded(cocos2d::Touch*, cocos2d::Event*);
-		virtual void onTouchMoved(cocos2d::Touch*, cocos2d::Event*);
-		virtual void onTouchCancelled(cocos2d::Touch*, cocos2d::Event*);
+	//TOUCH FUCNTIONS
+	virtual bool onTouchBegan(cocos2d::Touch*, cocos2d::Event*);
+	virtual void onTouchEnded(cocos2d::Touch*, cocos2d::Event*);
+	virtual void onTouchMoved(cocos2d::Touch*, cocos2d::Event*);
+	virtual void onTouchCancelled(cocos2d::Touch*, cocos2d::Event*);
 
-		//OBJECT COLLISIONS
-		bool onContactBegin(cocos2d::PhysicsContact& contact);
+	//OBJECT COLLISIONS
+	bool onContactBegin(cocos2d::PhysicsContact& contact);
 
-		//KEYBOARD FUCNTIONS
-		bool isKeyPressed(cocos2d::EventKeyboard::KeyCode);
-		double keyPressedDuration(cocos2d::EventKeyboard::KeyCode);
-		static std::map<cocos2d::EventKeyboard::KeyCode, std::chrono::high_resolution_clock::time_point> keys;
+	//KEYBOARD FUCNTIONS
+	bool isKeyPressed(cocos2d::EventKeyboard::KeyCode);
+	double keyPressedDuration(cocos2d::EventKeyboard::KeyCode);
+	static std::map<cocos2d::EventKeyboard::KeyCode, std::chrono::high_resolution_clock::time_point> keys;
 
-		//UPDATE FUCNTION
-		void update(float) override;
+	//UPDATE FUCNTION
+	void update(float) override;
 
-		//TRACK FUNCTION
-		void track();
+	//TRACK FUNCTION
+	void track();
 
-		//AI WAYPOINTS
-		void AIWayPoints();
+	//AI WAYPOINTS
+	void AIWayPoints();
 
-		//FINISH LINE FUNCTION
-		void finish_line();
+	//FINISH LINE FUNCTION
+	void finishLine();
 
-		//PLAYER SHIP FUNCTION
-		void vehicleObjects();
+	//PLAYER SHIP FUNCTION
+	void vehicleObjects();
 
-		//THRUSTER PICKUP FUNCTION
-		void thruster_pickup();
+	//THRUSTER PICKUP FUNCTION
+	void thrusterPickup();
 
-		//HEALTH PICKUP FUNCTION
-		void health_pickup();
+	//HEALTH PICKUP FUNCTION
+	void healthPickup();
 
-		//WEAPON/SHIELD PICKUP FUNCTION
-		void weapon_shield_pickup();
+	//WEAPON/SHIELD PICKUP FUNCTION
+	void weaponShieldPickup();
 
-		//CIRCLE CIRCUIT FUNCTION
-		void circle_circuit();
+	//CIRCLE CIRCUIT FUNCTION
+	void circleCircuit();
 
-		//SQUARE CIRCUIT FUNCTION 
-		void square_circuit();
+	//SQUARE CIRCUIT FUNCTION 
+	void squareCircuit();
 
-		//TURRET BODY FUNCTION
-		void turret_body();
+	//TRIANGLE CIRCUIT FUNCTION
+	void triangleCircuit();
 
-		//TURRET HEAD FUNCTION
-		void turret_head();
+	//TURRET BODY FUNCTION
+	void turretBody();
 
-		//TURRET FIRE FUNCTION
-		void turret_fire();
+	//TURRET HEAD FUNCTION
+	void turretHead();
 
-		//HUD LAYER FUNCTION
-		void hud_layer();
+	//TURRET FIRE FUNCTION
+	void turretFire();
 
-		//END RACE FUNCTION
-		void end_race();
+	//TURRET SHOOT FUNCTION
+	void turretShoot(float delta);
 
-		//DIRECTOR AND WINDOW ORIGIN
-		void director();
+	//HUD LAYER FUNCTION
+	void hudLayer();
 
-		//PHYSICSWORLD
-		cocos2d::PhysicsWorld *sceneWorld;
+	//END RACE FUNCTION
+	void endRace();
 
-		void SetPhysicsWorld(cocos2d::PhysicsWorld *world)
-		{
-			sceneWorld = world;
-		};
+	//DIRECTOR AND WINDOW ORIGIN
+	void director();
 
-		//SPRITES
-		cocos2d::Sprite* track_background;
-		cocos2d::Sprite* track_in_sprite;
-		cocos2d::Sprite* track_island_sprite;
-		cocos2d::Sprite* track_out_sprite;
-		cocos2d::Sprite* player_ship_sprite;
-		cocos2d::Sprite* finish_line_detector_sprite;
-		cocos2d::Sprite* hud_layer_template_sprite;
-		cocos2d::Sprite* background_bar_sprite1;
-		cocos2d::Sprite* background_bar_sprite2;
-		cocos2d::Sprite* health_bar_sprite;
-		cocos2d::Sprite* thruster_bar_sprite;
-		cocos2d::Sprite* damage_bar_sprite1;
-		cocos2d::Sprite* damage_bar_sprite2;
-		cocos2d::Sprite* speed_indicator;
-		Vehicle* playerVehicleObject;
-		Vehicle* enemyOneVehicleObject;
+	//PHYSICSWORLD
+	cocos2d::PhysicsWorld *sceneWorld;
 
-		//PHYSICS BODIES
-		cocos2d::PhysicsBody* track_in_physics;
-		cocos2d::PhysicsBody* track_island_physics;
-		cocos2d::PhysicsBody* track_out_physics;
-		cocos2d::PhysicsBody* player_ship_physics;
-		cocos2d::PhysicsBody* contact_a;
-		cocos2d::PhysicsBody* contact_b;
-		cocos2d::PhysicsBody* finish_line_detector_physics;
+	void SetPhysicsWorld(cocos2d::PhysicsWorld *world)
+	{
+		sceneWorld = world;
+	};
 
-		//ARRAYS
-		cocos2d::Vec2 track_in_array[28];
-		cocos2d::Vec2 track_island_array[4];
-		cocos2d::Vec2 track_out_array[38];
+	//SPRITES
+	cocos2d::Sprite* trackBackground;
+	cocos2d::Sprite* trackInsprite;
+	cocos2d::Sprite* trackIslandsprite;
+	cocos2d::Sprite* trackOutsprite;
+	cocos2d::Sprite* hudTemplatesprite;
+	cocos2d::Sprite* backgroundBarSprite1;
+	cocos2d::Sprite* backgroundBarSprite2;
+	cocos2d::Sprite* healthBarSprite;
+	cocos2d::Sprite* thrusterBarSprite;
+	cocos2d::Sprite* damageBarSprite1;
+	cocos2d::Sprite* damageBarSprite2;
+	cocos2d::Sprite* speedIndicator;
+	cocos2d::Sprite* detectorSprite;
+	cocos2d::Sprite* preDetector1Sprite;
+	cocos2d::Sprite* preDetector2Sprite;
 
-		std::vector<cocos2d::Vec2> wayPointVectors;
-		std::vector<cocos2d::Vec2*>::const_iterator iterator;
-		cocos2d::Vector<Node*> pausedNodes;
-		std::vector<std::tuple< std::vector<cocos2d::Vec2*>, std::vector<cocos2d::Vec2*>, std::vector<cocos2d::Vec2*>>> wayPointVectorsTuple;
-		std::vector<std::tuple< std::vector<cocos2d::Vec2*>, std::vector<cocos2d::Vec2*>, std::vector<cocos2d::Vec2*> > >::iterator iteratorTuple;
+	Vehicle* playerVehicleObject;
+	Vehicle* enemyOneVehicleObject;
 
-		//AI POINTS
-		cocos2d::Vec2 WayPoints[62][3];//VECTOR TO CAPTURE ALL OUR WAY POOINTS FOR AI
-		bool WayPoint[61];//BOOLEAN FOR TRACKING WHICH WAY POINT WE ARE ON
-		int wayPointCounter;//DECIDES WHICH WAY POINT IS CURRENTLY ON
-		int enemyOneWayPointSkill;//DECIDES HOW TIGHT THE AI CUTS AROUND CORNER. 0=HARD - 1=MEDIUM, 2=EASY
-		cocos2d::Sprite* wayPointSprite;//SPRITE FOR VISUAL BEBUGGING
-		cocos2d::Rect wayPointRect_I;//RECTANGLE I INTERSECTION CHECKING
-		cocos2d::Rect wayPointRect_II;//RECTANGLE II INTERSECTION CHECKING
+	//PHYSICS BODIES
+	cocos2d::PhysicsBody* trackInphysics;
+	cocos2d::PhysicsBody* trackIslandphysics;
+	cocos2d::PhysicsBody* trackOutphysics;
+	cocos2d::PhysicsBody* contactA;
+	cocos2d::PhysicsBody* contactB;
+	cocos2d::PhysicsBody* detectorPhysics;
+	cocos2d::PhysicsBody* preDetector1Physics;
+	cocos2d::PhysicsBody* preDetector2Physics;
 
-		//DIRECTIONAL VECTORS, INT & WAY POINT OBJECTS
-		std::vector<DirectionWayPoint*> directionalWayPoints;
-		int directionalTriggerPoint[44];
-		std::vector<int> directionalTriggers;
+	//ARRAYS
+	cocos2d::Vec2 trackInarray[28];
+	cocos2d::Vec2 trackIslandarray[4];
+	cocos2d::Vec2 trackOutarray[38];
 
-		//LISTENERS
-		cocos2d::EventListenerKeyboard* keyboardEvent;
-		cocos2d::EventListenerKeyboard* eventListener;
+	std::vector<cocos2d::Vec2> wayPointVectors;
+	std::vector<cocos2d::Vec2*>::const_iterator iterator;
+	cocos2d::Vector<Node*> pausedNodes;
+	std::vector<std::tuple< std::vector<cocos2d::Vec2*>, std::vector<cocos2d::Vec2*>, std::vector<cocos2d::Vec2*>>> wayPointVectorsTuple;
+	std::vector<std::tuple< std::vector<cocos2d::Vec2*>, std::vector<cocos2d::Vec2*>, std::vector<cocos2d::Vec2*> > >::iterator iteratorTuple;
+	std::vector<GameObject*> projectiles;
 
-		//VARIABLES
-		float playerRotationAngle;
-		float enemyOneRotationAngle;
-		float time = 0;
-		float velocity = 0;
-		float TIscale = 1.705;
-		float player_transformed_angle;
-		bool player_drive = true;
-		bool player_fire;
-		bool slow_down = false;
-		bool lap_detector = false;
-		int collisions = 0;
-		int lap_counter = 0;
-		int player_ship_health = 100;
-		int player_ship_thruster_fuel = 100;
-		int player_ship_speed = 100;
-		int pickupID;
+	//AI POINTS
+	cocos2d::Vec2 WayPoints[37][3];//VECTOR TO CAPTURE ALL OUR WAY POOINTS FOR AI
+	bool WayPoint[31];//BOOLEAN FOR TRACKING WHICH WAY POINT WE ARE ON
+	int wayPointCounter;//DECIDES WHICH WAY POINT IS CURRENTLY ON
+	int enemyOneWayPointSkill;//DECIDES HOW TIGHT THE AI CUTS AROUND CORNER. 0=HARD - 1=MEDIUM, 2=EASY
+	cocos2d::Sprite* wayPointSprite;//SPRITE FOR VISUAL BEBUGGING
+	cocos2d::Rect wayPointRect_I;//RECTANGLE I INTERSECTION CHECKING
+	cocos2d::Rect wayPointRect_II;//RECTANGLE II INTERSECTION CHECKING
 
-		//ACTIONS
-		cocos2d::RepeatForever* repeat;
-		cocos2d::RotateBy* rotate;
-		cocos2d::RotateTo* setRotationAction;
+								  //DIRECTIONAL VECTORS, INT & WAY POINT OBJECTS
+	std::vector<DirectionWayPoint*> directionalWayPoints;
+	int directionalTriggerPoint[44];
+	std::vector<int> directionalTriggers;
 
-		//POINTS
-		cocos2d::Vec2 origin;
-		cocos2d::Vec2 player_velocity_point;
-		cocos2d::Vec2 player_bullet_spawn_point;
-		cocos2d::Vec2 player_bullet_fire_point;
-		cocos2d::Vec2 enemyOneCurrentWayPoint;
+	//LISTENERS
+	cocos2d::EventListenerKeyboard* keyboardEvent;
+	cocos2d::EventListenerKeyboard* eventListener;
+	cocos2d::EventListenerTouchOneByOne* touchListener;
+	cocos2d::EventListenerPhysicsContact* contactListenerBegin;
 
-		//SIZE
-		cocos2d::Size visibleSize;
+	//VARIABLES
+	float playerRotationAngle;
+	float enemyOneRotationAngle;
+	float time = 0;
+	float velocity = 0;
+	float TIscale = 1.705;
+	bool lapDetector1 = false;
+	bool lapDetector2 = false;
+	int lapCounter = 0;
+	int playerHealth = 100;
+	int playerThrusterfuel = 100;
+	int pickupID;
+	float fireRate = 5;
+	float weaponTimer;
+	bool activeWeaponTimer;
 
-		//HUD
-		cocos2d::LayerGradient* HUD;
 
-		//LABEL
-		cocos2d::Label* lap_number;
-		cocos2d::Label* timer;
+	//ACTIONS
+	cocos2d::RepeatForever* repeat;
+	cocos2d::RotateBy* rotate;
+	cocos2d::RotateTo* setRotationAction;
 
-		//PROGRESS TIMERS
-		cocos2d::ProgressTimer* health_bar_timer;
-		cocos2d::ProgressTimer* damage_bar_timer1;
-		cocos2d::ProgressTimer* thruster_bar_timer;
-		cocos2d::ProgressTimer* damage_bar_timer2;
-		cocos2d::ProgressTimer* speed_indicator_timer;
+	//POINTS
+	cocos2d::Vec2 origin;
+	cocos2d::Vec2 enemyOneCurrentWayPoint;
 
-		//DELAY TIME
-		cocos2d::DelayTime* delay;
+	//SIZE
+	cocos2d::Size visibleSize;
 
-		std::vector<PickUps*> weaponPickups;
-		std::vector<PickUps*>::iterator it;
-		std::vector<Vehicle*> vehicles;
+	//HUD
+	cocos2d::LayerGradient* HUD;
+
+	//LABEL
+	cocos2d::Label* lapNumber;
+	cocos2d::Label* timer;
+
+	//PROGRESS TIMERS
+	cocos2d::ProgressTimer* healthTimer;
+	cocos2d::ProgressTimer* damageTimer1;
+	cocos2d::ProgressTimer* thrusterTimer;
+	cocos2d::ProgressTimer* damageTimer2;
+	cocos2d::ProgressTimer* speedTimer;
+
+	//DELAY TIME
+	cocos2d::DelayTime* delay;
+
+	std::vector<PickUps*> weaponPickups;
+	std::vector<PickUps*>::iterator it;
+	std::vector<Vehicle*> vehicles;
 };
 #endif

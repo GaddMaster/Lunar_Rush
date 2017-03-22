@@ -58,5 +58,7 @@ void HealthPickup::rotate()
 {
 	//Creates The Rotate Function That Rotates 350 Degrees In Two Seconds
 	auto rotate = RotateBy::create(2.0f, 350.f);
+
+	//Repeats The rotate Action Forever
 	sprite->runAction(RepeatForever::create(rotate));
 };

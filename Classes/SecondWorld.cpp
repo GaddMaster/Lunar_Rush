@@ -8,12 +8,12 @@
 
 #include "FinishLine.h"
 
-#include "CircleCircuit.h"
-#include "SquareCircuit.h"
+#include "Triangle.h"
+#include "Circle.h"
+#include "Square.h"
 
 #include "TurretBody.h"
 #include "TurretHead.h"
-#include "TurretBullet.h"
 
 #include "Bullet.h"
 #include "Rocket.h"
@@ -28,7 +28,7 @@ cocos2d::Scene* SecondWorld::createScene()
 	auto layer = SecondWorld::create();
 	layer->SetPhysicsWorld(SecondWorldScene->getPhysicsWorld());
 
-	//SecondWorldScene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	SecondWorldScene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	SecondWorldScene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	SecondWorldScene->addChild(layer);
@@ -42,54 +42,36 @@ SecondWorld::SecondWorld()
 SecondWorld::~SecondWorld()
 {};
 
-//Z Ordering Global
-//LAYER - Game	: 0
-//Track ZIndex	: 1
-//Finish Line	: 2
-//Vehicles		: 3
-//Weapons		: 4
-//Particles		: 5
-//WayPoints		: 2
-//Turret Head	: 4
-//Turret Body	: 3
-//PickUps		: 3
-//Obstacles		: 3
-//
-//
-//
-//LAYER - HUD	: 1
-//
-//
-//
-//
-//
-//
-//
+//LAYERS
+//Track Background = Layer 0 Done - SAMANTHA
+//Finish Line = Layer 0 Done - SAMANTHA
+//Track Walls = Layer 1 Done - SAMANTHA
+//Player Vehicle = Layer 2 Done - DANIEL
+//Health Pickup = Layer 2 Done - SAMANTHA
+//Thruster Pickup = Layer 2 Done - SAMANTHA
+//Weapon/Shield Pickup = Layer 2 Done - SAMANTHA
+//Circle = Layer2 Done - SAMUEL
+//Square = Layer 2 Done SAMUEL
+//Triangle = Layer 2 Done - SAMUEL
+//Turret Body = Layer 2 Done - SAMUEL
+//Turret Head = Layer 3 Done - SAMUEL
 
-//Track Background = Layer 0 Done
-//Finish Line = Layer 0 Done
 
-//Track Walls = Layer 1 Done
-//Finish Line Detector = Layer 1 Done
-//Finish Line Pre-Detector = Layer 1 Done
+//BITMASKS
+//Track Walls = Bitmask 1 Done - SAMANTHA
+//Finish Line Detector = Bitmask 2 Done - SAMANTHA
+//Finish Line Pre-Detector One = Bitmask 3 Done - SAMANTHA
+//Finish Line Pre-Detector Two = Bitmask 4 Done - SAMANTHA
+//Player Vehicle = Bitmask 5 Done - DANIEL
+//Thruster Pickup = Bitmask 6 Done - SAMANTHA
+//Health Pickup = Bitmask 7 Done - SAMANTHA
+//Weapon/Shield Pickup = Bitmask 8 Done - SAMANTHA
+//Circle = Bitmask 9 Done - SAMUEL
+//Square = Bitmask 9 Done - SAMUEL 
+//Triangle = Bitmask 9 Done - SAMUEL
+//Turret Body = Bitmask 10 Done - SAMUEL
+//Turret Bullet = Bitmask 11 - SAMUEL
 
-//Player Ship = Layer 2 Done
-//Circle Circuit = Layer 2 Done
-//Square Circuit = Layer 2 Done
-//Thruster Pickup = Layer 2 Done
-//Health Pickup = Layer 2 Done
-//Weapon/Shield Pickup = Layer 2 Done
-
-//BITMASK
-//Track Walls = Bitmask 1 Done
-//Finish Line Detector = Bitmask 2 Done
-//Finish Line Pre-Detector = Bitmask 3 Done
-//Player Ship = Bitmask 4 Done
-//Circle Circuit = Bitmask 5 Done
-//Square Circuit = Bitmask 5 Done
-//Thruster Pickup = Bitmask 6 Done
-//Health Pickup = Bitmask 7 Done
-//Weapon/Shield Pickup = Bitmask 8 Done
 
 bool SecondWorld::init()
 {
@@ -101,45 +83,45 @@ bool SecondWorld::init()
 	//LISTENERS FUNCTION
 	listeners();
 
-	//TRACK FUNCTION
+	//TRACK FUNCTION - SAMANTHA
 	track();
 
-	//AI WAYPOINTS FOR AI TO FOLLOW
+	//AI WAYPOINTS FOR AI TO FOLLOW - SAMUEL
 	AIWayPoints();
 
-	//FINISH LINE FUNCTION
-	finish_line();
+	//FINISH LINE FUNCTION - SAMANTHA
+	finishLine();
 
-	//PLAYER SHIP FUNCTION
+	//PLAYER SHIP FUNCTION - DANIEL
 	//this->player_ship();
 	vehicleObjects();
 
-	//THRUSTER PICKUP FUNCTION
-	thruster_pickup();
+	//THRUSTER PICKUP FUNCTION - SAMANTHA
+	thrusterPickup();
 
-	//HEALTH PICKUP FUNCTION
-	health_pickup();
+	//HEALTH PICKUP FUNCTION - SAMANTHA
+	healthPickup();
 
-	//WEAPON/SHIELD PICKUP FUNCTION
-	weapon_shield_pickup();
+	//WEAPON/SHIELD PICKUP FUNCTION - SAMANTHA
+	weaponShieldPickup();
 
-	//CIRCLE CIRCUIT FUNCTION
-	circle_circuit();
+	//CIRCLE CIRCUIT FUNCTION - SAMUEL
+	circleCircuit();
 
-	//SQUARE CIRCUIT FUNCTION
-	square_circuit();
+	//SQUARE CIRCUIT FUNCTION - SAMUEL
+	squareCircuit();
 
-	//TURRET BODY FUNCTION
-	turret_body();
+	//TURRET BODY FUNCTION - SAMUEL
+	turretBody();
 
-	//TURRET HEAD FUNCTION
-	turret_head();
+	//TURRET HEAD FUNCTION - SAMUEL
+	turretHead();
 
-	//TURRET FIRE FUNCTION
-	turret_fire();
+	//TURRET FIRE FUNCTION - SAMUEL
+	turretFire();
 
-	//HUD LAYER FUNCTION
-	hud_layer();
+	//HUD LAYER FUNCTION - SAMANTHA & SAMUEL
+	hudLayer();
 
 	//SCHEDULE UPDATE FUNCTION
 	scheduleUpdate();
@@ -147,18 +129,19 @@ bool SecondWorld::init()
 	return true;
 };
 
-//EVENT LISTENERS SAMANTHA & SAMUEL
+//LISTENERS - DANIEL GADD
 void SecondWorld::listeners()
 {
 	//ACTION LISTENERS FOR TOUCH SCREEN
-	auto touchListener = EventListenerTouchOneByOne::create();
+	touchListener = EventListenerTouchOneByOne::create();
 	touchListener->onTouchBegan = CC_CALLBACK_2(SecondWorld::onTouchBegan, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 
+
 	//OBJECTS COLLISION DETECTION AND ACTION
-	auto contactListener = EventListenerPhysicsContact::create();
-	contactListener->onContactBegin = CC_CALLBACK_1(SecondWorld::onContactBegin, this);
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
+	contactListenerBegin = EventListenerPhysicsContact::create();
+	contactListenerBegin->onContactBegin = CC_CALLBACK_1(SecondWorld::onContactBegin, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListenerBegin, this);
 
 	//EVENT LISTENER FOR DRIVING VEHICLE
 	eventListener = EventListenerKeyboard::create();
@@ -170,23 +153,51 @@ void SecondWorld::listeners()
 			keys[keyCode] = std::chrono::high_resolution_clock::now();
 		}
 
-		switch (keyCode) 
+		switch (keyCode)
 		{
-			case EventKeyboard::KeyCode::KEY_SPACE:
+		case EventKeyboard::KeyCode::KEY_SPACE://FIRES WEAPON IF AVAILABLE
+		{
+			//CHECK IF ANY WEAPONS ARE AVAILABLE
+			if (playerVehicleObject->availableWeapon())
 			{
-
-				CCLOG("Weapon Fired");
-				//cocos2d::Sprite* sprite = playerVehicleObject->fireWeapon();
-				//if (sprite != NULL)
-				//{
-					//this->addChild(sprite);
-				//}
-				//else
-				//{
-					//CCLOG("Weapon NULL");
-					//break;
-				//}
+				//CHECK WHICH WEAPON IS AVAILABLE AND USE
+				if (playerVehicleObject->getRocketStatus())
+				{
+					GameObject* rocket = playerVehicleObject->fireRocket(enemyOneVehicleObject->getSprite(), false);
+					this->addChild(rocket->getSprite());//ROCKET CAN BE LOCK ON OR NOT
+					projectiles.push_back(rocket);
+				}
+				else if (playerVehicleObject->getMineStatus())
+				{
+					GameObject* mine = playerVehicleObject->layMine();
+					this->addChild(mine->getSprite());//ROCKET CAN BE LOCK ON OR NOT
+					projectiles.push_back(mine);
+				}
+				else if (playerVehicleObject->getMachineGunStatus())
+				{
+					GameObject* bullet = playerVehicleObject->fireMachineGun();
+					if (bullet != NULL)
+					{
+						this->addChild(bullet->getSprite());//ROCKET CAN BE LOCK ON OR NOT
+						projectiles.push_back(bullet);
+					}
+				}
+				else if (playerVehicleObject->getShieldStatus())
+				{
+					CCLOG("SHIELD ACTIVATED - WORKING ON THIS");
+					weaponTimer = 0;
+					activeWeaponTimer = true;
+					playerVehicleObject->deployShield();
+				}
+				else if (playerVehicleObject->getTrusterStatus())
+				{
+					CCLOG("TRUSTER ACTIVATED");
+					weaponTimer = 7;
+					playerVehicleObject->truster();
+				}
 			}
+		}
+		break;
 		}
 	};
 	eventListener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event* event)
@@ -198,6 +209,7 @@ void SecondWorld::listeners()
 	this->_eventDispatcher->addEventListenerWithSceneGraphPriority(eventListener, this);
 };
 
+//MENU CLOSE FUNCTION - SAMUEL MACSWEENEY
 void SecondWorld::menuCloseCallback(Ref* pSender)
 {
 	//MENU - SAMUEL
@@ -213,9 +225,10 @@ void SecondWorld::menuCloseCallback(Ref* pSender)
 #endif
 };
 
+//ON TOUCH BEGIN FUNCTION - DANIEL GADD
 bool SecondWorld::onTouchBegan(Touch* touch, Event* event)
 {
-	//TRIGONOMETRY CALCULATIONS - ROTATION - VELOCITY
+	//TRIGONOMETRY CALCULATIONS - ROTATION - VELOCITY - DANILE
 	playerRotationAngle = atan2(touch->getLocation().y - visibleSize.height / 2, touch->getLocation().x - visibleSize.width / 2)  * (180.0 / 3.14);
 	setRotationAction = cocos2d::RotateTo::create(0.7, -(playerRotationAngle));
 	playerVehicleObject->getSprite()->runAction(setRotationAction);
@@ -247,250 +260,349 @@ bool SecondWorld::onTouchBegan(Touch* touch, Event* event)
 	return true;
 };
 
+//ON TOUCH ENDED FUNCTION - DANIEL GADD
 void SecondWorld::onTouchEnded(Touch* touch, Event* event)
 {
 	CCLOG("Touch Ended");
 };
 
+//ON TOUCH MOVED FUNCTION - DANIEL GADD
 void SecondWorld::onTouchMoved(Touch* touch, Event* event)
 {};
 
+//ON TOUCH CANCELLED FUNCTION - DANIEL GADD
 void SecondWorld::onTouchCancelled(Touch* touch, Event* event)
 {};
 
+//ON CONTACT BEGIN - SAMANTHA MARAH & SAMUEL MACSWEENEY
 bool SecondWorld::onContactBegin(cocos2d::PhysicsContact& contact)
 {
-	contact_a = contact.getShapeA()->getBody();
-	contact_b = contact.getShapeB()->getBody();
+	contactA = contact.getShapeA()->getBody();
+	contactB = contact.getShapeB()->getBody();
 
 	//PLAYER SHIP COMES IN CONTACT WITH WALL - SAMANTHA
-	if ((contact_a->getCollisionBitmask() == 1) && (contact_b->getCollisionBitmask() == 4) || (contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 1))
+	if ((contactA->getCollisionBitmask() == 1) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 1))
 	{
 		CCLOG("There Is Contact Between The Wall And Player Ship");
 
 		return true;
 	}
 
-	//PLAYER SHIP COMES IN CONTACT WITH FINISH LINE PRE-DETECTOR - SAMANTHA
-	if ((contact_a->getCollisionBitmask() == 3) && (contact_b->getCollisionBitmask() == 4) || (contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 3))
+	//PLAYER SHIP COMES IN CONTACT WITH FINISH LINE PRE-DETECTOR2 - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 4) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 4))
 	{
-		lap_detector = true;
+		//SETS BOOL TO TRUE
+		lapDetector2 = true;
+
+		return true;
+	}
+
+	//PLAYER SHIP COMES IN CONTACT WITH FINISH LINE PRE-DETECTOR1 - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 3) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 3))
+	{
+		//SETS BOOL TO TRU
+		lapDetector1 = true;
 
 		return true;
 	}
 
 	//PLAYER SHIP COMES IN CONTACT WITH FINISH LINE - SAMANTHA
-	if ((contact_a->getCollisionBitmask() == 2) && (contact_b->getCollisionBitmask() == 4) && (lap_detector == true) || (contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 2) && (lap_detector == true))
+	if ((contactA->getCollisionBitmask() == 2) && (contactB->getCollisionBitmask() == 5) && (lapDetector2 == true) && (lapDetector1 == true) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 2) && (lapDetector2 == true) && (lapDetector1 == true))
 	{
 		CCLOG("There Is Contact Between The Finish Line And Player Ship");
 
-		lap_counter++;
+		//INCREMENTS THE LAP COUNTER
+		lapCounter++;
 
-		lap_detector = false;
+		//SETS BOOL TO FALSE
+		lapDetector2 = false;
+		lapDetector1 = false;
 
 		return true;
 	}
 
-	//PLAYER SHIP COMES IN CONTACT WITH OBSTACLES - SAMANTHA
-	if ((contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 5) || (contact_a->getCollisionBitmask() == 5) && (contact_b->getCollisionBitmask() == 4))
+	//PLAYER SHIP COMES IN CONTACT WITH THRUSTER PICKUP - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 6))
+	{
+		CCLOG("There Is Contact Between The Thruster Pickup And The Player Ship");
+
+		//INCREMENT THRUSTERFUEL BY 20
+		playerThrusterfuel = playerThrusterfuel + 20;
+
+		//REMOVE THE SPRITE FROM SCENE
+		contactB->getNode()->removeFromParent();
+
+		return true;
+	}
+
+	if ((contactA->getCollisionBitmask() == 6) && (contactB->getCollisionBitmask() == 5))
+	{
+		CCLOG("There Is Contact Between The Thruster Pickup And The Player Ship");
+
+		//INCREMENT THRUSTERFUEL BY 20
+		playerThrusterfuel = playerThrusterfuel + 20;
+
+		//REMOVE THE SPRITE FROM SCENE
+		contactA->getNode()->removeFromParent();
+
+		return true;
+	}
+
+	//PLAYER SHIP COMES IN CONTACT WITH HEALTH PICKUP - SAMANTHA
+	if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 7))
+	{
+		CCLOG("There Is Contact Between The Health Pickup And The Player Ship");
+
+		//INCREMENT PLAYERHEALTH BY 20
+		playerHealth = playerHealth + 20;
+
+		//REMOVE THE SPRITE FROM SCENE
+		contactB->getNode()->removeFromParent();
+
+		return true;
+	}
+
+	if ((contactA->getCollisionBitmask() == 7) && (contactB->getCollisionBitmask() == 5))
+	{
+		CCLOG("There Is Contact Between The Health Pickup And The Player Ship");
+
+		//INCREMENT PLAYERHEALTH BY 20
+		playerHealth = playerHealth + 20;
+
+		//REMOVE THE SPRITE FROM SCENE
+		contactA->getNode()->removeFromParent();
+
+		return true;
+	}
+
+	//PLAYER SHIP COMES IN CONTACT WITH WEAPON-SHIELD PICKUP - SAMANTHA
+	//ITERATES THROUGH LIST
+	for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+	{
+		if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 8) && (*it)->getID() == 1)
+		{
+			//RE-ITERATES THROUGH THE LIST
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS BULLETS BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(true);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("Gun Is Activated");
+
+				//REMOVES SPRITE
+				contactB->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 8) && (*it)->getID() == 2)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS ROCKET BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(true);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("Rocket Is Activated");
+
+				//REMOVES SPRITE
+				contactB->getNode()->removeFromParent();
+
+				return true;
+
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 8) && (*it)->getID() == 3)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS MINE BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(true);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("LandMine Is Activated");
+
+				//REMOVE SPRITE FROM SCENE
+				contactB->getNode()->removeFromParent();
+
+				return true;
+
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 8) && (*it)->getID() == 4)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS SHIELD BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(true);
+
+				CCLOG("Shield Is Activated");
+
+				//REMOVES SRITE FROM SCENE
+				contactB->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+	}
+
+	for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+	{
+		if ((contactA->getCollisionBitmask() == 8) && (contactB->getCollisionBitmask() == 5) && (*it)->getID() == 1)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS BULLETS BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(true);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("Gun Is Activated");
+
+				//REMOVE THE SPRITE FROM SCENE
+				contactA->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 8) && (contactB->getCollisionBitmask() == 5) && (*it)->getID() == 2)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS ROCKET BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(true);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("Rocket Is Activated");
+
+				//REMOVE THE SPRITE FROM SCENE
+				contactA->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 8) && (contactB->getCollisionBitmask() == 5) && (*it)->getID() == 3)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS MINE BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(true);
+				playerVehicleObject->setShieldStatus(false);
+
+				CCLOG("LandMine Is Activated");
+
+				//REMOVE THE SPRITE FROM SCENE
+				contactA->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+
+		else if ((contactA->getCollisionBitmask() == 8) && (contactB->getCollisionBitmask() == 5) && (*it)->getID() == 4)
+		{
+			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+			{
+				//SETS SHIELD BOOL TO TRUE WHILE
+				//OTHER WEAPONS ARE SET TO FALS
+				playerVehicleObject->setMachineGunStatus(false);
+				playerVehicleObject->setRocketStatus(false);
+				playerVehicleObject->setMineStatus(false);
+				playerVehicleObject->setShieldStatus(true);
+
+				CCLOG("Shield Is Activated");
+
+				//REMOVE THE SPRITE FROM SCENE
+				contactA->getNode()->removeFromParent();
+
+				return true;
+			}
+		}
+	}
+
+	//PLAYER SHIP COMES IN CONTACT WITH OBSTACLES - SAMUEL
+	if ((contactA->getCollisionBitmask() == 9) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 9))
 	{
 		CCLOG("There Is Contact Between The Obstacle And Player Ship");
 
 		return true;
 	};
 
-	//PLAYER SHIP COMES IN CONTACT WITH THRUSTER PICKUP - SAMANTHA
-	if ((contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 6))
+	//PLAYER SHIP COMES IN CONTACT WITH TURRET BODY - SAMUEL
+	if ((contactA->getCollisionBitmask() == 10) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 10))
 	{
-		CCLOG("There Is Contact Between The Thruster Pickup And The Player Ship");
-
-		player_ship_thruster_fuel = player_ship_thruster_fuel + 20;
-
-		contact_b->getNode()->removeFromParent();
+		CCLOG("There Is Contact Between The Turret Body And Player Ship");
 
 		return true;
-	}
+	};
 
-	if ((contact_a->getCollisionBitmask() == 6) && (contact_b->getCollisionBitmask() == 4))
+	//PLAYER SHIP COMES IN CONTACT WITH TURRET BULLET - SAMUEL
+	if ((contactA->getCollisionBitmask() == 11) && (contactB->getCollisionBitmask() == 5) || (contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 11))
 	{
-		CCLOG("There Is Contact Between The Thruster Pickup And The Player Ship");
+		CCLOG("There Is Contact Between The Turret Bullet And Player Ship");
+		playerHealth = playerHealth - 20;
 
-		player_ship_thruster_fuel = player_ship_thruster_fuel + 20;
-
-		contact_a->getNode()->removeFromParent();
-
+		contactA->getNode()->removeFromParent();
 		return true;
-	}
+	};
 
-	//PLAYER SHIP COMES IN CONTACT WITH HEALTH PICKUP - SAMANTHA
-	if ((contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 7))
+	if ((contactA->getCollisionBitmask() == 5) && (contactB->getCollisionBitmask() == 11) || (contactA->getCollisionBitmask() == 11) && (contactB->getCollisionBitmask() == 5))
 	{
-		CCLOG("There Is Contact Between The Health Pickup And The Player Ship");
+		CCLOG("There Is Contact Between The Turret Bullet And Player Ship");
+		playerHealth = playerHealth - 20;
 
-		player_ship_health = player_ship_health + 20;
-
-		contact_b->getNode()->removeFromParent();
-
+		contactB->getNode()->removeFromParent();
 		return true;
-	}
+	};
 
-	if ((contact_a->getCollisionBitmask() == 7) && (contact_b->getCollisionBitmask() == 4))
+	//TURRET BULLET COMES IN CONTACT WALL - SAMUEL
+	if ((contactA->getCollisionBitmask() == 11) && (contactB->getCollisionBitmask() == 1) || (contactA->getCollisionBitmask() == 1) && (contactB->getCollisionBitmask() == 11))
 	{
-		CCLOG("There Is Contact Between The Health Pickup And The Player Ship");
+		CCLOG("There Is Contact Between The Turret Bullet And Wall");
 
-		player_ship_health = player_ship_health + 20;
-
-		contact_a->getNode()->removeFromParent();
-
+		contactA->getNode()->removeFromParent();
 		return true;
-	}
+	};
 
-	//PLAYER SHIP COMES IN CONTACT WITH WEAPON-SHIELD PICKUP - SAMANTHA
-	for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
+	if ((contactA->getCollisionBitmask() == 1) && (contactB->getCollisionBitmask() == 11) || (contactA->getCollisionBitmask() == 11) && (contactB->getCollisionBitmask() == 1))
 	{
-		if ((contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 8) && (*it)->getID() == 1)
-		{
-			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
-			{
-				playerVehicleObject->setMachineGunStatus(true);
-				playerVehicleObject->setRocketStatus(false);
-				playerVehicleObject->setMineStatus(false);
-				playerVehicleObject->setShieldStatus(false);
+		CCLOG("There Is Contact Between The Wall And Turret Bullet");
 
-				CCLOG("Gun Is Activated");
+		contactB->getNode()->removeFromParent();
+		return true;
+	};
 
-				contact_b->getNode()->removeFromParent();
 
-				return true;
-			}
-		}
-
-		else if ((contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 8) && (*it)->getID() == 2)
-		{
-			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
-			{
-				playerVehicleObject->setMachineGunStatus(false);
-				playerVehicleObject->setRocketStatus(true);
-				playerVehicleObject->setMineStatus(false);
-				playerVehicleObject->setShieldStatus(false);
-
-				CCLOG("Rocket Is Activated");
-
-				contact_b->getNode()->removeFromParent();
-
-				return true;
-
-			}
-		}
-
-		else if ((contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 8) && (*it)->getID() == 3)
-		{
-			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
-			{
-				playerVehicleObject->setMachineGunStatus(false);
-				playerVehicleObject->setRocketStatus(false);
-				playerVehicleObject->setMineStatus(true);
-				playerVehicleObject->setShieldStatus(false);
-
-				CCLOG("LandMine Is Activated");
-
-				contact_b->getNode()->removeFromParent();
-
-				return true;
-
-			}
-		}
-
-		else if ((contact_a->getCollisionBitmask() == 4) && (contact_b->getCollisionBitmask() == 8) && (*it)->getID() == 4)
-		{
-			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
-			{
-				playerVehicleObject->setMachineGunStatus(false);
-				playerVehicleObject->setRocketStatus(false);
-				playerVehicleObject->setMineStatus(false);
-				playerVehicleObject->setShieldStatus(true);
-
-				CCLOG("Shield Is Activated");
-
-				contact_b->getNode()->removeFromParent();
-
-				return true;
-			}
-		}
-	}
-
-	for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
-	{
-		if ((contact_a->getCollisionBitmask() == 8) && (contact_b->getCollisionBitmask() == 4) && (*it)->getID() == 1)
-		{
-			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
-			{
-				playerVehicleObject->setMachineGunStatus(true);
-				playerVehicleObject->setRocketStatus(false);
-				playerVehicleObject->setMineStatus(false);
-				playerVehicleObject->setShieldStatus(false);
-
-				CCLOG("Gun Is Activated");
-
-				contact_a->getNode()->removeFromParent();
-
-				return true;
-			}
-		}
-
-		else if ((contact_a->getCollisionBitmask() == 8) && (contact_b->getCollisionBitmask() == 4) && (*it)->getID() == 2)
-		{
-			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
-			{
-				playerVehicleObject->setMachineGunStatus(false);
-				playerVehicleObject->setRocketStatus(true);
-				playerVehicleObject->setMineStatus(false);
-				playerVehicleObject->setShieldStatus(false);
-
-				CCLOG("Rocket Is Activated");
-
-				contact_a->getNode()->removeFromParent();
-
-				return true;
-			}
-		}
-
-		else if ((contact_a->getCollisionBitmask() == 8) && (contact_b->getCollisionBitmask() == 4) && (*it)->getID() == 3)
-		{
-			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
-			{
-				playerVehicleObject->setMachineGunStatus(false);
-				playerVehicleObject->setRocketStatus(false);
-				playerVehicleObject->setMineStatus(true);
-				playerVehicleObject->setShieldStatus(false);
-
-				CCLOG("LandMine Is Activated");
-
-				contact_a->getNode()->removeFromParent();
-
-				return true;
-			}
-		}
-
-		else if ((contact_a->getCollisionBitmask() == 8) && (contact_b->getCollisionBitmask() == 4) && (*it)->getID() == 4)
-		{
-			for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
-			{
-				playerVehicleObject->setMachineGunStatus(false);
-				playerVehicleObject->setRocketStatus(false);
-				playerVehicleObject->setMineStatus(false);
-				playerVehicleObject->setShieldStatus(true);
-
-				CCLOG("Shield Is Activated");
-
-				contact_a->getNode()->removeFromParent();
-
-				return true;
-			}
-		}
-	}
+	return true;
 };
 
+//IS KEY PRESSED FUNCTION - DANIEL GADD
 bool SecondWorld::isKeyPressed(EventKeyboard::KeyCode code)
 {
 	if (keys.find(code) != keys.end())
@@ -501,6 +613,7 @@ bool SecondWorld::isKeyPressed(EventKeyboard::KeyCode code)
 	return false;
 };
 
+//KEY PRESSED DURATION FUNCTION - DANIEL GADD
 double SecondWorld::keyPressedDuration(EventKeyboard::KeyCode code)
 {
 	if (!isKeyPressed(EventKeyboard::KeyCode::KEY_CTRL))
@@ -511,19 +624,19 @@ double SecondWorld::keyPressedDuration(EventKeyboard::KeyCode code)
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - keys[code]).count();
 };
 
+//UPDATE FUNCTION - SAMANTHA, SAMUEL & DANIEL
 void SecondWorld::update(float delta)
 {
 	//UPDATES THE HUD LAYER POSITION - SAMANTHA
 	HUD->setPosition(playerVehicleObject->getSprite()->getPosition().x - visibleSize.width / 2, playerVehicleObject->getSprite()->getPosition().y - visibleSize.height / 2);
 
 	//UPDATES THE LAP NUMBER - SAMANTHA
-	lap_number->setString("LAP NUMBER: " + std::to_string(lap_counter) + "/10");
+	lapNumber->setString("LAP NUMBER: " + std::to_string(lapCounter) + "/10");
 
-	//TIMER - SAMUEL
+	//UPDATES TIMER - SAMUEL
 	time += delta;
 	__String *timeToDisplay = __String::createWithFormat("%.2f", time);
 	timer->setString(timeToDisplay->getCString());
-
 
 	//----------------------------------------------------------------
 	//PLAYER VEHICLE CALCULATION - DANIEL
@@ -558,147 +671,145 @@ void SecondWorld::update(float delta)
 	//PLAYER VEHICLE CALCULATION - DANIEL
 	//----------------------------------------------------------------
 
-
 	//THRUSTER FUEL PERCENTAGE - SAMANTHA
-	if (player_ship_thruster_fuel == 100)
+	if (playerThrusterfuel == 100)
 	{
-		this->thruster_bar_timer->setPercentage(100);
+		this->thrusterTimer->setPercentage(100);
 	}
-	if (player_ship_thruster_fuel == 90)
+	if (playerThrusterfuel == 90)
 	{
-		this->thruster_bar_timer->setPercentage(90);
+		this->thrusterTimer->setPercentage(90);
 	}
-	if (player_ship_thruster_fuel == 80)
+	if (playerThrusterfuel == 80)
 	{
-		this->thruster_bar_timer->setPercentage(80);
+		this->thrusterTimer->setPercentage(80);
 	}
-	if (player_ship_thruster_fuel == 70)
+	if (playerThrusterfuel == 70)
 	{
-		this->thruster_bar_timer->setPercentage(70);
+		this->thrusterTimer->setPercentage(70);
 	}
-	if (player_ship_thruster_fuel == 60)
+	if (playerThrusterfuel == 60)
 	{
-		this->thruster_bar_timer->setPercentage(60);
+		this->thrusterTimer->setPercentage(60);
 	}
-	if (player_ship_thruster_fuel == 50)
+	if (playerThrusterfuel == 50)
 	{
-		this->thruster_bar_timer->setPercentage(50);
+		this->thrusterTimer->setPercentage(50);
 	}
-	if (player_ship_thruster_fuel == 40)
+	if (playerThrusterfuel == 40)
 	{
-		this->thruster_bar_timer->setPercentage(40);
+		this->thrusterTimer->setPercentage(40);
 	}
-	if (player_ship_thruster_fuel == 30)
+	if (playerThrusterfuel == 30)
 	{
-		this->thruster_bar_timer->setPercentage(30);
+		this->thrusterTimer->setPercentage(30);
 	}
-	if (player_ship_thruster_fuel == 20)
+	if (playerThrusterfuel == 20)
 	{
-		this->thruster_bar_timer->setPercentage(20);
+		this->thrusterTimer->setPercentage(20);
 	}
-	if (player_ship_thruster_fuel == 10)
+	if (playerThrusterfuel == 10)
 	{
-		this->thruster_bar_timer->setPercentage(10);
+		this->thrusterTimer->setPercentage(10);
 	}
-	if (player_ship_thruster_fuel == 0)
+	if (playerThrusterfuel == 0)
 	{
-		this->thruster_bar_timer->setPercentage(0);
+		this->thrusterTimer->setPercentage(0);
 	}
-	if (player_ship_thruster_fuel > 100)
+	if (playerThrusterfuel > 100)
 	{
-		player_ship_thruster_fuel = 100;
-		this->thruster_bar_timer->setPercentage(100);
+		playerThrusterfuel = 100;
+		this->thrusterTimer->setPercentage(100);
 	}
 
 	//HEALTH PERCENTAGE - SAMANTHA
-	if (player_ship_health == 100)
+	if (playerHealth == 100)
 	{
-		this->health_bar_timer->setPercentage(100);
+		this->healthTimer->setPercentage(100);
 	}
-	if (player_ship_health == 90)
+	if (playerHealth == 90)
 	{
-		this->health_bar_timer->setPercentage(90);
+		this->healthTimer->setPercentage(90);
 	}
-	if (player_ship_health == 80)
+	if (playerHealth == 80)
 	{
-		this->health_bar_timer->setPercentage(80);
+		this->healthTimer->setPercentage(80);
 	}
-	if (player_ship_health == 70)
+	if (playerHealth == 70)
 	{
-		this->health_bar_timer->setPercentage(70);
+		this->healthTimer->setPercentage(70);
 	}
-	if (player_ship_health == 60)
+	if (playerHealth == 60)
 	{
-		this->health_bar_timer->setPercentage(60);
+		this->healthTimer->setPercentage(60);
 	}
-	if (player_ship_health == 50)
+	if (playerHealth == 50)
 	{
-		this->health_bar_timer->setPercentage(50);
+		this->healthTimer->setPercentage(50);
 	}
-	if (player_ship_health == 40)
+	if (playerHealth == 40)
 	{
-		this->health_bar_timer->setPercentage(40);
+		this->healthTimer->setPercentage(40);
 	}
-	if (player_ship_health == 30)
+	if (playerHealth == 30)
 	{
-		this->health_bar_timer->setPercentage(30);
+		this->healthTimer->setPercentage(30);
 	}
-	if (player_ship_health == 20)
+	if (playerHealth == 20)
 	{
-		this->health_bar_timer->setPercentage(20);
+		this->healthTimer->setPercentage(20);
 	}
-	if (player_ship_health == 10)
+	if (playerHealth == 10)
 	{
-		this->health_bar_timer->setPercentage(10);
+		this->healthTimer->setPercentage(10);
 	}
-	if (player_ship_health == 0)
+	if (playerHealth == 0)
 	{
-		this->health_bar_timer->setPercentage(0);
+		this->healthTimer->setPercentage(0);
 	}
-	if (player_ship_health > 100)
+	if (playerHealth > 100)
 	{
-		player_ship_health = 100;
-		this->health_bar_timer->setPercentage(100);
+		playerHealth = 100;
+		this->healthTimer->setPercentage(100);
 	}
 
 	//SPEED INDICATOR - SAMANTHA
-	if (player_ship_speed == 100)
+	if (playerVehicleObject->getSpeed() == 100)
 	{
-		this->speed_indicator_timer->setPercentage(100);
+		this->speedTimer->setPercentage(100);
 	}
 
-	if (player_ship_speed == 50)
+	if (playerVehicleObject->getSpeed() >= 50 && playerVehicleObject->getSpeed() <= 100)
 	{
-		this->speed_indicator_timer->setPercentage(82);
+		this->speedTimer->setPercentage(82);
 	}
-	if (player_ship_speed == 40)
+	if (playerVehicleObject->getSpeed() >= 40 && playerVehicleObject->getSpeed() <= 50)
 	{
-		this->speed_indicator_timer->setPercentage(66);
+		this->speedTimer->setPercentage(66);
 	}
-	if (player_ship_speed == 30)
+	if (playerVehicleObject->getSpeed() >= 30 && playerVehicleObject->getSpeed() <= 40)
 	{
-		this->speed_indicator_timer->setPercentage(49);
+		this->speedTimer->setPercentage(49);
 	}
-	if (player_ship_speed == 20)
+	if (playerVehicleObject->getSpeed() >= 20 && playerVehicleObject->getSpeed() <= 20)
 	{
-		this->speed_indicator_timer->setPercentage(33);
+		this->speedTimer->setPercentage(33);
 	}
-	if (player_ship_speed == 10)
+	if (playerVehicleObject->getSpeed() >= 10 && playerVehicleObject->getSpeed() <= 20)
 	{
-		this->speed_indicator_timer->setPercentage(17);
+		this->speedTimer->setPercentage(17);
 	}
-	if (player_ship_speed == 0)
+	if (playerVehicleObject->getSpeed() == 0)
 	{
-		this->speed_indicator_timer->setPercentage(0);
+		this->speedTimer->setPercentage(0);
 	}
-	if (player_ship_speed > 100)
+	if (playerVehicleObject->getSpeed() > 100)
 	{
-		player_ship_speed = 100;
-		this->speed_indicator_timer->setPercentage(100);
+		this->speedTimer->setPercentage(100);
 	}
 
 	//END RACE - SAMANTHA
-	this->end_race();
+	this->endRace();
 
 	//ENEMY ONE VEHICLE CALCULATION - SAMUEL
 	enemyOneVehicleObject->autoControlAI(enemyOneCurrentWayPoint);
@@ -734,134 +845,171 @@ void SecondWorld::update(float delta)
 
 std::map<cocos2d::EventKeyboard::KeyCode, std::chrono::high_resolution_clock::time_point> SecondWorld::keys;
 
+//TRACK FUNCTION - SAMANTHA
 void SecondWorld::track()
 {
 	//TRACK BACKGROUD - SAMANTHA
-	track_background = Sprite::create("TrackTwo/tracktwobackground.png");
-	this->addChild(track_background, 0);
+	//Sets The Image For The trackBackground Sprite
+	trackBackground = Sprite::create("TrackTwo/tracktwobackground.png");
+
+	//Sets The trackBackground Sprite To The Scene On Layer 0
+	this->addChild(trackBackground, 0);
 
 	//TRACK INNER RIM - SAMANTHA
-	track_in_sprite = Sprite::create("TrackTwo/tracktwoinnerrim.png");
+	//Sets The Image For The trackInsprite
+	trackInsprite = Sprite::create("TrackTwo/tracktwoinnerrim.png");
 
-	track_in_array[0] = Point(-3500 / TIscale, 800 / TIscale);
-	track_in_array[1] = Point(-2900 / TIscale, 800 / TIscale);
-	track_in_array[2] = Point(-2800 / TIscale, 700 / TIscale);
-	track_in_array[3] = Point(-2800 / TIscale, -400 / TIscale);
-	track_in_array[4] = Point(-2700 / TIscale, -500 / TIscale);
-	track_in_array[5] = Point(-1100 / TIscale, -500 / TIscale);
-	track_in_array[6] = Point(-1000 / TIscale, -400 / TIscale);
-	track_in_array[7] = Point(-1000 / TIscale, 0 / TIscale);
-	track_in_array[8] = Point(-900 / TIscale, 100 / TIscale);
-	track_in_array[9] = Point(-700 / TIscale, 100 / TIscale);
-	track_in_array[10] = Point(-300 / TIscale, -300 / TIscale);
-	track_in_array[11] = Point(3100 / TIscale, -300 / TIscale);
-	track_in_array[12] = Point(3500 / TIscale, 100 / TIscale);
-	track_in_array[13] = Point(3500 / TIscale, 900 / TIscale);
-	track_in_array[14] = Point(3600 / TIscale, 1000 / TIscale);
-	track_in_array[15] = Point(3700 / TIscale, 900 / TIscale);
-	track_in_array[16] = Point(3700 / TIscale, -1000 / TIscale);
-	track_in_array[17] = Point(3600 / TIscale, -1100 / TIscale);
-	track_in_array[18] = Point(1200 / TIscale, -1100 / TIscale);
-	track_in_array[19] = Point(1000 / TIscale, -900 / TIscale);
-	track_in_array[20] = Point(-100 / TIscale, -900 / TIscale);
-	track_in_array[21] = Point(-300 / TIscale, -700 / TIscale);
-	track_in_array[22] = Point(-3000 / TIscale, -700 / TIscale);
-	track_in_array[23] = Point(-3300 / TIscale, -1000 / TIscale);
-	track_in_array[24] = Point(-3500 / TIscale, -1000 / TIscale);
-	track_in_array[25] = Point(-3500 / TIscale, -600 / TIscale);
-	track_in_array[26] = Point(-3200 / TIscale, -300 / TIscale);
-	track_in_array[27] = Point(-3200 / TIscale, 500 / TIscale);
-	track_in_array[28] = Point(-3500 / TIscale, 800 / TIscale);
+	//An Array For All The Points Along The Inner Track
+	trackInarray[0] = Point(-3500 / TIscale, 800 / TIscale);
+	trackInarray[1] = Point(-2900 / TIscale, 800 / TIscale);
+	trackInarray[2] = Point(-2800 / TIscale, 700 / TIscale);
+	trackInarray[3] = Point(-2800 / TIscale, -400 / TIscale);
+	trackInarray[4] = Point(-2700 / TIscale, -500 / TIscale);
+	trackInarray[5] = Point(-1100 / TIscale, -500 / TIscale);
+	trackInarray[6] = Point(-1000 / TIscale, -400 / TIscale);
+	trackInarray[7] = Point(-1000 / TIscale, 0 / TIscale);
+	trackInarray[8] = Point(-900 / TIscale, 100 / TIscale);
+	trackInarray[9] = Point(-700 / TIscale, 100 / TIscale);
+	trackInarray[10] = Point(-300 / TIscale, -300 / TIscale);
+	trackInarray[11] = Point(3100 / TIscale, -300 / TIscale);
+	trackInarray[12] = Point(3500 / TIscale, 100 / TIscale);
+	trackInarray[13] = Point(3500 / TIscale, 900 / TIscale);
+	trackInarray[14] = Point(3600 / TIscale, 1000 / TIscale);
+	trackInarray[15] = Point(3700 / TIscale, 900 / TIscale);
+	trackInarray[16] = Point(3700 / TIscale, -1000 / TIscale);
+	trackInarray[17] = Point(3600 / TIscale, -1100 / TIscale);
+	trackInarray[18] = Point(1200 / TIscale, -1100 / TIscale);
+	trackInarray[19] = Point(1000 / TIscale, -900 / TIscale);
+	trackInarray[20] = Point(-100 / TIscale, -900 / TIscale);
+	trackInarray[21] = Point(-300 / TIscale, -700 / TIscale);
+	trackInarray[22] = Point(-3000 / TIscale, -700 / TIscale);
+	trackInarray[23] = Point(-3300 / TIscale, -1000 / TIscale);
+	trackInarray[24] = Point(-3500 / TIscale, -1000 / TIscale);
+	trackInarray[25] = Point(-3500 / TIscale, -600 / TIscale);
+	trackInarray[26] = Point(-3200 / TIscale, -300 / TIscale);
+	trackInarray[27] = Point(-3200 / TIscale, 500 / TIscale);
+	trackInarray[28] = Point(-3500 / TIscale, 800 / TIscale);
 
-	track_in_physics = PhysicsBody::createEdgePolygon(track_in_array, 28, PhysicsMaterial(0, 0, 0), 30);
+	//Creates The Type Of Physics Body -> Edge Polygon Physics Body Is Being Created Here
+	trackInphysics = PhysicsBody::createEdgePolygon(trackInarray, 28, PhysicsMaterial(0, 0, 0), 30);
 
-	track_in_physics->setCollisionBitmask(1);
-	track_in_physics->setContactTestBitmask(true);
+	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
+	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
+	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
+	//Know What Sprite Has Collided With Another.
+	trackInphysics->setCollisionBitmask(1);
 
-	track_in_sprite->setPhysicsBody(track_in_physics);
+	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
+	trackInphysics->setContactTestBitmask(true);
 
-	this->addChild(track_in_sprite, 1);
+	//Sets The Physics Body Onto The Sprite Itself
+	trackInsprite->setPhysicsBody(trackInphysics);
+
+	//Sets The trackInsprite Sprite To The Scene On Layer 1
+	this->addChild(trackInsprite, 1);
 
 	//TRACK ISLAND - SAMANTHA
-	track_island_sprite = Sprite::create("TrackTwo/tracktwoisland.png");
+	//Sets The Image For The trackIslandsprite
+	trackIslandsprite = Sprite::create("TrackTwo/tracktwoisland.png");
 
-	track_island_array[0] = Point(-3500 / TIscale, 500 / TIscale);
-	track_island_array[1] = Point(-3500 / TIscale, -300 / TIscale);
-	track_island_array[2] = Point(-3600 / TIscale, -300 / TIscale);
-	track_island_array[3] = Point(-3600 / TIscale, 400 / TIscale);
-	track_island_array[4] = Point(-3500 / TIscale, 500 / TIscale);
+	//An Array For All The Points Along The Track Island
+	trackIslandarray[0] = Point(-3500 / TIscale, 500 / TIscale);
+	trackIslandarray[1] = Point(-3500 / TIscale, -300 / TIscale);
+	trackIslandarray[2] = Point(-3600 / TIscale, -300 / TIscale);
+	trackIslandarray[3] = Point(-3600 / TIscale, 400 / TIscale);
+	trackIslandarray[4] = Point(-3500 / TIscale, 500 / TIscale);
 
-	track_island_physics = PhysicsBody::createEdgePolygon(track_island_array, 4, PhysicsMaterial(0, 0, 0), 30);
+	//Creates The Type Of Physics Body -> Edge Polygon Physics Body Is Being Created Here
+	trackIslandphysics = PhysicsBody::createEdgePolygon(trackIslandarray, 4, PhysicsMaterial(0, 0, 0), 30);
 
-	track_island_physics->setCollisionBitmask(1);
-	track_island_physics->setContactTestBitmask(true);
+	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
+	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
+	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
+	//Know What Sprite Has Collided With Another.
+	trackIslandphysics->setCollisionBitmask(1);
 
-	track_island_sprite->setPhysicsBody(track_island_physics);
+	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
+	trackIslandphysics->setContactTestBitmask(true);
 
-	this->addChild(track_island_sprite, 1);
+	//Sets The Physics Body Onto The Sprite Itself
+	trackIslandsprite->setPhysicsBody(trackIslandphysics);
+
+	//Sets The trackIslandsprite Sprite To The Scene On Layer 1
+	this->addChild(trackIslandsprite, 1);
 
 	//TRACK OUTER RIM - SAMANTHA
-	track_out_sprite = Sprite::create("TrackTwo/tracktwoouterrim.png");
+	//Sets The Image For The trackOutsprite
+	trackOutsprite = Sprite::create("TrackTwo/tracktwoouterrim.png");
 
-	track_out_array[0] = Point(-4000 / TIscale, 1400 / TIscale);
-	track_out_array[1] = Point(-3500 / TIscale, 1400 / TIscale);
-	track_out_array[2] = Point(-3400 / TIscale, 1500 / TIscale);
-	track_out_array[3] = Point(-2900 / TIscale, 1500 / TIscale);
-	track_out_array[4] = Point(-2800 / TIscale, 1400 / TIscale);
-	track_out_array[5] = Point(-2500 / TIscale, 1400 / TIscale);
-	track_out_array[6] = Point(-2300 / TIscale, 1200 / TIscale);
-	track_out_array[7] = Point(-2300 / TIscale, 200 / TIscale);
-	track_out_array[8] = Point(-2100 / TIscale, 0 / TIscale);
-	track_out_array[9] = Point(-1600 / TIscale, 0 / TIscale);
-	track_out_array[10] = Point(-1400 / TIscale, 200 / TIscale);
-	track_out_array[11] = Point(-1400 / TIscale, 700 / TIscale);
-	track_out_array[12] = Point(-1300 / TIscale, 800 / TIscale);
-	track_out_array[13] = Point(-600 / TIscale, 800 / TIscale);
-	track_out_array[14] = Point(-100 / TIscale, 300 / TIscale);
-	track_out_array[15] = Point(1200 / TIscale, 300 / TIscale);
-	track_out_array[16] = Point(1300 / TIscale, 400 / TIscale);
-	track_out_array[17] = Point(2000 / TIscale, 400 / TIscale);
-	track_out_array[18] = Point(2100 / TIscale, 300 / TIscale);
-	track_out_array[19] = Point(2700 / TIscale, 300 / TIscale);
-	track_out_array[20] = Point(2900 / TIscale, 500 / TIscale);
-	track_out_array[21] = Point(2900 / TIscale, 1500 / TIscale);
-	track_out_array[22] = Point(3100 / TIscale, 1700 / TIscale);
-	track_out_array[23] = Point(4200 / TIscale, 1700 / TIscale);
-	track_out_array[24] = Point(4400 / TIscale, 1500 / TIscale);
-	track_out_array[25] = Point(4400 / TIscale, -1800 / TIscale);
-	track_out_array[26] = Point(2700 / TIscale, -1800 / TIscale);
-	track_out_array[27] = Point(2600 / TIscale, -1900 / TIscale);
-	track_out_array[28] = Point(1900 / TIscale, -1900 / TIscale);
-	track_out_array[29] = Point(1800 / TIscale, -1800 / TIscale);
-	track_out_array[30] = Point(800 / TIscale, -1800 / TIscale);
-	track_out_array[31] = Point(500 / TIscale, -1600 / TIscale);
-	track_out_array[32] = Point(-600 / TIscale, -1600 / TIscale);
-	track_out_array[33] = Point(-1000 / TIscale, -1200 / TIscale);
-	track_out_array[34] = Point(-2500 / TIscale, -1200 / TIscale);
-	track_out_array[35] = Point(-3100 / TIscale, -1800 / TIscale);
-	track_out_array[36] = Point(-4100 / TIscale, -1800 / TIscale);
-	track_out_array[37] = Point(-4100 / TIscale, 1300 / TIscale);
-	track_out_array[38] = Point(-4000 / TIscale, 1400 / TIscale);
+	//An Array For All The Points Along The Outer Track
+	trackOutarray[0] = Point(-4000 / TIscale, 1400 / TIscale);
+	trackOutarray[1] = Point(-3500 / TIscale, 1400 / TIscale);
+	trackOutarray[2] = Point(-3400 / TIscale, 1500 / TIscale);
+	trackOutarray[3] = Point(-2900 / TIscale, 1500 / TIscale);
+	trackOutarray[4] = Point(-2800 / TIscale, 1400 / TIscale);
+	trackOutarray[5] = Point(-2500 / TIscale, 1400 / TIscale);
+	trackOutarray[6] = Point(-2300 / TIscale, 1200 / TIscale);
+	trackOutarray[7] = Point(-2300 / TIscale, 200 / TIscale);
+	trackOutarray[8] = Point(-2100 / TIscale, 0 / TIscale);
+	trackOutarray[9] = Point(-1600 / TIscale, 0 / TIscale);
+	trackOutarray[10] = Point(-1400 / TIscale, 200 / TIscale);
+	trackOutarray[11] = Point(-1400 / TIscale, 700 / TIscale);
+	trackOutarray[12] = Point(-1300 / TIscale, 800 / TIscale);
+	trackOutarray[13] = Point(-600 / TIscale, 800 / TIscale);
+	trackOutarray[14] = Point(-100 / TIscale, 300 / TIscale);
+	trackOutarray[15] = Point(1200 / TIscale, 300 / TIscale);
+	trackOutarray[16] = Point(1300 / TIscale, 400 / TIscale);
+	trackOutarray[17] = Point(2000 / TIscale, 400 / TIscale);
+	trackOutarray[18] = Point(2100 / TIscale, 300 / TIscale);
+	trackOutarray[19] = Point(2700 / TIscale, 300 / TIscale);
+	trackOutarray[20] = Point(2900 / TIscale, 500 / TIscale);
+	trackOutarray[21] = Point(2900 / TIscale, 1500 / TIscale);
+	trackOutarray[22] = Point(3100 / TIscale, 1700 / TIscale);
+	trackOutarray[23] = Point(4200 / TIscale, 1700 / TIscale);
+	trackOutarray[24] = Point(4400 / TIscale, 1500 / TIscale);
+	trackOutarray[25] = Point(4400 / TIscale, -1800 / TIscale);
+	trackOutarray[26] = Point(2700 / TIscale, -1800 / TIscale);
+	trackOutarray[27] = Point(2600 / TIscale, -1900 / TIscale);
+	trackOutarray[28] = Point(1900 / TIscale, -1900 / TIscale);
+	trackOutarray[29] = Point(1800 / TIscale, -1800 / TIscale);
+	trackOutarray[30] = Point(800 / TIscale, -1800 / TIscale);
+	trackOutarray[31] = Point(500 / TIscale, -1600 / TIscale);
+	trackOutarray[32] = Point(-600 / TIscale, -1600 / TIscale);
+	trackOutarray[33] = Point(-1000 / TIscale, -1200 / TIscale);
+	trackOutarray[34] = Point(-2500 / TIscale, -1200 / TIscale);
+	trackOutarray[35] = Point(-3100 / TIscale, -1800 / TIscale);
+	trackOutarray[36] = Point(-4100 / TIscale, -1800 / TIscale);
+	trackOutarray[37] = Point(-4100 / TIscale, 1300 / TIscale);
+	trackOutarray[38] = Point(-4000 / TIscale, 1400 / TIscale);
 
-	track_out_physics = PhysicsBody::createEdgePolygon(track_out_array, 38, PhysicsMaterial(0, 0, 0), 30);
+	//Creates The Type Of Physics Body -> Edge Polygon Physics Body Is Being Created Here
+	trackOutphysics = PhysicsBody::createEdgePolygon(trackOutarray, 38, PhysicsMaterial(0, 0, 0), 30);
 
-	track_out_physics->setCollisionBitmask(1);
-	track_out_physics->setContactTestBitmask(true);
+	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
+	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
+	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
+	//Know What Sprite Has Collided With Another.
+	trackOutphysics->setCollisionBitmask(1);
 
-	track_out_sprite->setPhysicsBody(track_out_physics);
+	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
+	trackOutphysics->setContactTestBitmask(true);
 
-	this->addChild(track_out_sprite, 1);
+	//Sets The Physics Body Onto The Sprite Itself
+	trackOutsprite->setPhysicsBody(trackOutphysics);
+
+	//Sets The trackOutsprite Sprite To The Scene On Layer 1
+	this->addChild(trackOutsprite, 1);
 };
 
-//SAMUEL
+//AI WAYPOINTS FUNCTION - SAMUEL MACSWEENEY
 void SecondWorld::AIWayPoints()
 {
 	//WE HAVE THIS EXTRA ARRAY HANDY FOR DIFFERENT USES - WE INITIALIZE THEM ALL FALSE
-	for (int i = 0; i < 62; i++)
-	{ 
+	for (int i = 0; i < 37; i++)
+	{
 		WayPoint[i] = false;
 	}
-	
+
 	WayPoint[0] = true;//WE START AT FIRST WAY POINT - WHICH WILL HAVE 3 LANES 
 
 	WayPoints[0][0] = cocos2d::Vec2(-3700 / TIscale, -300 / TIscale);
@@ -1012,32 +1160,102 @@ void SecondWorld::AIWayPoints()
 	WayPoints[36][1] = cocos2d::Vec2(-3800 / TIscale, -700 / TIscale);//WAY POINT 37 /*USE HERE AS START FOR TURN IN FOR REFULE*/
 	WayPoints[36][2] = cocos2d::Vec2(-3900 / TIscale, -800 / TIscale);
 
-	for (int i = 0; i < 37; i++)
-	{
-		for (int j = 0; j<3; j++)
-		{
-			auto sprite = Sprite::create("TrackOne/WayPoint.png");
-			sprite->setPosition(WayPoints[i][j]);
-			this->addChild(sprite);
-		}
-	}
-
 	wayPointCounter = 0;
-	enemyOneCurrentWayPoint = WayPoints[wayPointCounter][enemyOneWayPointSkill];
+	//enemyOneCurrentWayPoint = WayPoints[wayPointCounter][enemyOneWayPointSkill];
 	wayPointSprite = Sprite::create("TrackOne/WayPoint.png");
-	wayPointSprite->setPosition(enemyOneCurrentWayPoint);
+	//wayPointSprite->setPosition(enemyOneCurrentWayPoint);
 	this->addChild(wayPointSprite, 2);
-
 };
 
-void SecondWorld::finish_line()
+//FINISH LINE FUNCTION - SAMANTHA MARAH
+void SecondWorld::finishLine()
 {
-	//FINISH LINE - SAMANTHA & SAMUEL
+	//FINISH LINE - SAMANTHA
 	FinishLine* f1 = new FinishLine();
-	f1->set_finish_line_position(-4115 / TIscale, -900 / TIscale);
-	f1->set_finish_line_detector_position(-4100 / TIscale, -700 / TIscale, -3500 / TIscale, -700 / TIscale);
-	f1->set_finish_line_pre_detector_position(-4100 / TIscale, -900 / TIscale, -3500 / TIscale, -900 / TIscale);
-	f1->init_finish_line(this);
+
+	//Sets finishLineSprite Position
+	f1->getFinishLineSprite()->setPosition(-4115 / TIscale, -900 / TIscale);
+
+	//Sets The finishLineSprite Sprite To The Scene On Layer 0
+	this->addChild(f1->getFinishLineSprite(), 0);
+
+	//Creates Sprite For detectorSprite
+	//Is An Empty Sprite With No Image
+	detectorSprite = Sprite::create();
+
+	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
+	//Positions Are Being Parsed In To Create The Length Of The Physics Body
+	detectorPhysics = PhysicsBody::createEdgeSegment((Vec2(-4100 / TIscale, -700 / TIscale)), (Vec2(-3500 / TIscale, -700 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
+
+	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
+	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
+	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
+	//Know What Sprite Has Collided With Another.
+	detectorPhysics->setCollisionBitmask(2);
+
+	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
+	detectorPhysics->setContactTestBitmask(true);
+
+	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
+	detectorPhysics->setDynamic(false);
+
+	//Sets The Physics Body Onto The detectorSprite Itself
+	detectorSprite->setPhysicsBody(detectorPhysics);
+
+	//Sets The detectorSprite Sprite To The Scene On Layer 0
+	this->addChild(detectorSprite, 0);
+
+	//Creates Sprite For preDetector1Sprite
+	//Is An Empty Sprite With No Image
+	preDetector1Sprite = Sprite::create();
+
+	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
+	//Positions Are Being Parsed In To Create The Length Of The Physics Body
+	preDetector1Physics = PhysicsBody::createEdgeSegment((Vec2(-4100 / TIscale, -900 / TIscale)), (Vec2(-3500 / TIscale, -900 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
+
+	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
+	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
+	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
+	//Know What Sprite Has Collided With Another.
+	preDetector1Physics->setCollisionBitmask(3);
+
+	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
+	preDetector1Physics->setContactTestBitmask(true);
+
+	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
+	preDetector1Physics->setDynamic(false);
+
+	//Sets The Physics Body Onto The preDetector1Sprite Itself
+	preDetector1Sprite->setPhysicsBody(preDetector1Physics);
+
+	//Sets The preDetector1Sprite Sprite To The Scene On Layer 0
+	this->addChild(preDetector1Sprite, 0);
+
+	//Creates Sprite For preDetector2Sprite
+	//Is An Empty Sprite With No Image
+	preDetector2Sprite = Sprite::create();
+
+	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
+	//Positions Are Being Parsed In To Create The Length Of The Physics Body
+	preDetector2Physics = PhysicsBody::createEdgeSegment((Vec2(3700 / TIscale, 0 / TIscale)), (Vec2(4400 / TIscale, 0 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
+
+	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
+	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
+	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
+	//Know What Sprite Has Collided With Another.
+	preDetector2Physics->setCollisionBitmask(4);
+
+	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
+	preDetector2Physics->setContactTestBitmask(true);
+
+	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
+	preDetector2Physics->setDynamic(false);
+
+	//Sets The Physics Body Onto The preDetector1Sprite Itself
+	preDetector2Sprite->setPhysicsBody(preDetector2Physics);
+
+	//Sets The preDetector2Sprite Sprite To The Scene On Layer 0
+	this->addChild(preDetector2Sprite, 0);
 };
 
 void SecondWorld::vehicleObjects()//VEHICLES OBJECTS FOR OUR FIRST SCENE - DANIEL
@@ -1062,81 +1280,81 @@ void SecondWorld::vehicleObjects()//VEHICLES OBJECTS FOR OUR FIRST SCENE - DANIE
 }
 
 //THRUSTER PICKUP FUNCTION - SAMANTHA MARAH
-void SecondWorld::thruster_pickup()
+void SecondWorld::thrusterPickup()
 {
 	//ALL THE THRUSTER PICKUP OBJECTS IN THIS TRACK
 	PickUps* t1 = new ThrusterPickup(); //CREATES THRUSTERPICKUP OBJECT AND ASSIGNS IT TO t1
 	t1->getSprite()->setPosition(3800 / TIscale, -500 / TIscale); //SETS THE POSITION OF t1
 	t1->rotate(); //CALLS THE ROTATE FUNCTION FOR t1
-	this->addChild(t1->getSprite(), 2); //ADDS T1 TO THE SCENE
+	this->addChild(t1->getSprite(), 2); //ADDS T1 TO THE SCENE LAYER 2
 
 	PickUps* t2 = new ThrusterPickup(); //CREATES THRUSTERPICKUP OBJECT AND ASSIGNS IT TO t2
 	t2->getSprite()->setPosition(4300 / TIscale, -500 / TIscale); //SETS THE POSITION OF t2
 	t2->rotate(); //CALLS THE ROTATE FUNCTION FOR t2
-	this->addChild(t2->getSprite(), 2); //ADDS T2 TO THE SCENE
+	this->addChild(t2->getSprite(), 2); //ADDS T2 TO THE SCENE LAYER 2
 
 	PickUps* t3 = new ThrusterPickup(); //CREATES THRUSTERPICKUP OBJECT AND ASSIGNS IT TO t3
 	t3->getSprite()->setPosition(-800 / TIscale, 400 / TIscale); //SETS THE POSITION OF t3
 	t3->rotate(); //CALLS THE ROTATE FUNCTION FOR t3
-	this->addChild(t3->getSprite(), 2); //ADDS T3 TO THE SCENE
+	this->addChild(t3->getSprite(), 2); //ADDS T3 TO THE SCENE LAYER 2
 };
 
 //HEALTH PICKUP FUNCTION - SAMANTHA MARAH
-void SecondWorld::health_pickup()
+void SecondWorld::healthPickup()
 {
 	//ALL HEALTH PICKUP OBJECTS IN THIS TRACK
 	PickUps* h1 = new HealthPickup(); //CREATES HEALTHPICKUP OBJECT AND ASSIGNS IT TO h1
 	h1->getSprite()->setPosition(4050 / TIscale, -500 / TIscale); //SETS THE POSITION OF h1
 	h1->rotate(); //CALLS THE ROTATE FUNCTION FOR h1
-	this->addChild(h1->getSprite(), 2); //ADDS h1 TO THE SCENE
+	this->addChild(h1->getSprite(), 2); //ADDS h1 TO THE SCENE LAYER 2
 
 	PickUps* h2 = new HealthPickup(); //CREATES HEALTHPICKUP OBJECT AND ASSIGNS IT TO h2
 	h2->getSprite()->setPosition(-800 / TIscale, 200 / TIscale); //SETS THE POSITION OF h2
 	h2->rotate(); //CALLS THE ROTATE FUNCTION FOR h2
-	this->addChild(h2->getSprite(), 2); //ADDS h2 TO THE SCENE
+	this->addChild(h2->getSprite(), 2); //ADDS h2 TO THE SCENE LAYER 2
 
 	PickUps* h3 = new HealthPickup(); //CREATES HEALTHPICKUP OBJECT AND ASSIGNS IT TO h3
 	h3->getSprite()->setPosition(-800 / TIscale, 600 / TIscale); //SETS THE POSITION OF h3
 	h3->rotate(); //CALLS THE ROTATE FUNCTION FOR h3
-	this->addChild(h3->getSprite(), 2); //ADDS h3 TO THE SCENE
+	this->addChild(h3->getSprite(), 2); //ADDS h3 TO THE SCENE LAYER 2
 };
 
 //WEAPON-SHIELD PICKUP FUNCTION - SAMANTHA MARAH
-void SecondWorld::weapon_shield_pickup()
+void SecondWorld::weaponShieldPickup()
 {
 	//ALL THE WEAPON-SHIELD PICKUP OBJECTS IN THIS TRACK
 	PickUps* ws1 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws1
 	ws1->getSprite()->setPosition(2000 / TIscale, -200 / TIscale); //SETS THE POSITION OF ws1
 	ws1->rotate(); //CALLS THE ROTATE FUNCTION FOR ws1
-	this->addChild(ws1->getSprite(), 2); //ADDS ws1 TO THE SCENE
+	this->addChild(ws1->getSprite(), 2); //ADDS ws1 TO THE SCENE LAYER 2
 
 	PickUps* ws2 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws2
 	ws2->getSprite()->setPosition(2000 / TIscale, 0 / TIscale); //SETS THE POSITION OF ws2
 	ws2->rotate(); //CALLS THE ROTATE FUNCTION FOR ws2
-	this->addChild(ws2->getSprite(), 2); //ADDS ws2 TO THE SCENE
+	this->addChild(ws2->getSprite(), 2); //ADDS ws2 TO THE SCENE LAYER 2
 
 	PickUps* ws3 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws3
 	ws3->getSprite()->setPosition(2000 / TIscale, 200 / TIscale); //SETS THE POSITION OF ws3
 	ws3->rotate(); //CALLS THE ROTATE FUNCTION FOR ws3
-	this->addChild(ws3->getSprite(), 2); //ADDS ws3 TO THE SCENE
+	this->addChild(ws3->getSprite(), 2); //ADDS ws3 TO THE SCENE LAYER 2
 
 	PickUps* ws4 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws4
 	ws4->getSprite()->setPosition(1000 / TIscale, -1100 / TIscale); //SETS THE POSITION OF ws4
 	ws4->rotate(); //CALLS THE ROTATE FUNCTION FOR ws4
-	this->addChild(ws4->getSprite(), 2); //ADDS ws4 TO THE SCENE
+	this->addChild(ws4->getSprite(), 2); //ADDS ws4 TO THE SCENE LAYER 2
 
 	PickUps* ws5 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws5
 	ws5->getSprite()->setPosition(800 / TIscale, -1300 / TIscale); //SETS THE POSITION OF ws5
 	ws5->rotate(); //CALLS THE ROTATE FUNCTION FOR ws5
-	this->addChild(ws5->getSprite(), 2); //ADDS ws5 TO THE SCENE
+	this->addChild(ws5->getSprite(), 2); //ADDS ws5 TO THE SCENE LAYER 2
 
 	PickUps* ws6 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws6
 	ws6->getSprite()->setPosition(600 / TIscale, -1500 / TIscale); //SETS THE POSITION OF ws6
 	ws6->rotate(); //CALLS THE ROTATE FUNCTION FOR ws6
-	this->addChild(ws6->getSprite(), 2); //ADDS ws6 TO THE SCENE
+	this->addChild(ws6->getSprite(), 2); //ADDS ws6 TO THE SCENE LAYER 2
 
-	//PUSHING EACH INSTANCE OF THE WEAPONSHIELDPICKUP
-	//OBJECT INTO A VECTOR
+										 //PUSHING EACH INSTANCE OF THE WEAPONSHIELDPICKUP
+										 //OBJECT INTO A VECTOR
 	weaponPickups.push_back(ws1);
 	weaponPickups.push_back(ws2);
 	weaponPickups.push_back(ws3);
@@ -1153,116 +1371,192 @@ void SecondWorld::weapon_shield_pickup()
 		(*it)->setID(pickupID);
 	}
 
+	//SHOWS THE ID FOR EACH WEAPONSHIELDPICKUP IN THE DEBUG LOG
+	//USED FOR DEBUGGING
 	for (it = weaponPickups.begin(); it != weaponPickups.end(); it++)
 	{
 		(*it)->seeID();
 	}
 };
 
-void SecondWorld::circle_circuit()
+//CIRCLE FUNCTION - SAMUEL MACSWEENEY
+void SecondWorld::circleCircuit()
 {
 	//CIRCLE CIRCUIT OBSTACLE - SAMUEL
-	CircleCircuit* circle = new CircleCircuit();
-	circle->set_CircleCircuit_position(3800 / TIscale, -300 / TIscale);
-	circle->init_CircleCircuit(this);
+	GameObjectPhysics* circle1 = new Circle();
+	circle1->getSprite()->setPosition(3800 / TIscale, -300 / TIscale);
+	this->addChild(circle1->getSprite(), 4);
 
-	CircleCircuit* circle1 = new CircleCircuit();
-	circle1->set_CircleCircuit_position(-3700 / TIscale, -300 / TIscale);
-	circle1->init_CircleCircuit(this);
+	GameObjectPhysics* circle2 = new Circle();
+	circle2->getSprite()->setPosition(-3700 / TIscale, -300 / TIscale);
+	this->addChild(circle2->getSprite(), 4);
 
-	CircleCircuit* circle2 = new CircleCircuit();
-	circle2->set_CircleCircuit_position(-3900 / TIscale, 1200 / TIscale);
-	circle2->init_CircleCircuit(this);
+	GameObjectPhysics* circle3 = new Circle();
+	circle3->getSprite()->setPosition(-3900 / TIscale, 1200 / TIscale);
+	this->addChild(circle3->getSprite(), 4);
 
-	CircleCircuit* circle3 = new CircleCircuit();
-	circle3->set_CircleCircuit_position(-900 / TIscale, 200 / TIscale);
-	circle3->init_CircleCircuit(this);
+	GameObjectPhysics* circle4 = new Circle();
+	circle4->getSprite()->setPosition(-900 / TIscale, 200 / TIscale);
+	this->addChild(circle4->getSprite(), 4);
 };
 
-void  SecondWorld::square_circuit()
+//SQUARE FUNCTION - SAMUEL MACSWEENEY
+void  SecondWorld::squareCircuit()
 {
 	//SQUARE CIRCUIT OBSTACLE - SAMUEL
-	SquareCircuit* square = new SquareCircuit();
-	square->set_SquareCircuit_position(3800 / TIscale, -400 / TIscale);
-	square->init_SquareCircuit(this);
+	GameObjectPhysics* square1 = new Square();
+	square1->getSprite()->setPosition(3800 / TIscale, -400 / TIscale);
+	this->addChild(square1->getSprite(), 4);
 
-	SquareCircuit* square1 = new SquareCircuit();
-	square1->set_SquareCircuit_position(-3800 / TIscale, -350 / TIscale);
-	square1->init_SquareCircuit(this);
+	GameObjectPhysics* square2 = new Square();
+	square2->getSprite()->setPosition(-3800 / TIscale, -350 / TIscale);
+	this->addChild(square2->getSprite(), 4);
 
-	SquareCircuit* square2 = new SquareCircuit();
-	square2->set_SquareCircuit_position(-3900 / TIscale, 1250 / TIscale);
-	square2->init_SquareCircuit(this);
+	GameObjectPhysics* square3 = new Square();
+	square3->getSprite()->setPosition(-3900 / TIscale, 1250 / TIscale);
+	this->addChild(square3->getSprite(), 4);
 
-	SquareCircuit* square3 = new SquareCircuit();
-	square3->set_SquareCircuit_position(-900 / TIscale, 250 / TIscale);
-	square3->init_SquareCircuit(this);
+	GameObjectPhysics* square4 = new Square();
+	square4->getSprite()->setPosition(-900 / TIscale, 250 / TIscale);
+	this->addChild(square4->getSprite(), 4);
 };
 
-void SecondWorld::turret_body()
+//TRIANGLE FUNCTION - SAMUEL MACSWEENEY
+void SecondWorld::triangleCircuit()
 {
-	//TURRET BODY - SAMANTHA
+	//TRIANGLE CIRCUIT OBSTACLE - SAMUEL
+	GameObjectPhysics* triangle1 = new Triangle();
+	triangle1->getSprite()->setPosition(3805 / TIscale, -300 / TIscale);
+	this->addChild(triangle1->getSprite(), 4);
+
+	GameObjectPhysics* triangle2 = new Triangle();
+	triangle2->getSprite()->setPosition(-3705 / TIscale, -300 / TIscale);
+	this->addChild(triangle2->getSprite(), 4);
+
+	GameObjectPhysics* triangle3 = new Triangle();
+	triangle3->getSprite()->setPosition(-3905 / TIscale, 1200 / TIscale);
+	this->addChild(triangle3->getSprite(), 4);
+
+	GameObjectPhysics* triangle4 = new Triangle();
+	triangle4->getSprite()->setPosition(-905 / TIscale, 200 / TIscale);
+	this->addChild(triangle4->getSprite(), 4);
+};
+
+//TURRET BODY FUNCTION - SAMUEL MACSWEENEY
+void SecondWorld::turretBody()
+{
+	//TURRET BODY - SAMUEL
 	TurretBody* tb1 = new TurretBody();
-	tb1->set_turret_body_position(-3200 / TIscale, 1400 / TIscale);
-	tb1->init_turret_body(this);
+	tb1->getSprite()->setPosition(-3200 / TIscale, 1400 / TIscale);
+	this->addChild(tb1->getSprite(), 2);
 
 	TurretBody* tb2 = new TurretBody();
-	tb2->set_turret_body_position(1600 / TIscale, 300 / TIscale);
-	tb2->init_turret_body(this);
+	tb2->getSprite()->setPosition(1600 / TIscale, 300 / TIscale);
+	this->addChild(tb2->getSprite(), 2);
 
 	TurretBody* tb3 = new TurretBody();
-	tb3->set_turret_body_position(2200 / TIscale, -1800 / TIscale);
-	tb3->init_turret_body(this);
+	tb3->getSprite()->setPosition(2200 / TIscale, -1800 / TIscale);
+	this->addChild(tb3->getSprite(), 2);
 };
 
-void SecondWorld::turret_head()
+//TURRET HEAD FUNCTION - SAMUEL MACSWEENEY
+void SecondWorld::turretHead()
 {
 	//TURRET HEAD - SAMUEL
+
+	//TURRET HEAD OBJECTS
 	TurretHead* th1 = new TurretHead();
 	th1->getSprite()->setPosition(-3150 / TIscale, 1400 / TIscale);
-	th1->setRotateHead1(0.5f, 110.0f);
-	th1->setRotateHead2(0.5f, 40.0f);
-	this->addChild(th1->getSprite(), 50);
 	th1->turretmove();
+	this->addChild(th1->getSprite(), 3);
 
 	TurretHead* th2 = new TurretHead();
 	th2->getSprite()->setPosition(1650 / TIscale, 300 / TIscale);
-	th2->setRotateHead1(0.5f, 110.0f);
-	th2->setRotateHead2(0.5f, 40.0f);
-	this->addChild(th2->getSprite(), 50);
 	th2->turretmove();
+	this->addChild(th2->getSprite(), 3);
+
 
 	TurretHead* th3 = new TurretHead();
 	th3->getSprite()->setPosition(2250 / TIscale, -1800 / TIscale);
-	th3->setRotateHead1(0.5f, -110.0f);
-	th3->setRotateHead2(0.5f, -40.0f);
-	this->addChild(th3->getSprite(), 50);
 	th3->turretmove();
-
-	/*TurretBullet* tb1 = new TurretBullet();
-	if (th1->getRotation1() == true)
-	{
-		tb1->set_turret_bullet_position(-3225 / TIscale, 1200 / TIscale);
-	}
-	tb1->setmove(0 / TIscale, 0 / TIscale);
-
-	tb1->init_turret_bullet(this);*/
+	this->addChild(th3->getSprite(), 3);
 
 };
 
-void SecondWorld::turret_fire()
+//TURRET FIRE FUNCTION - SAMUEL MACSWEENEY
+void SecondWorld::turretFire()
 {
-	/*TurretBullet* tb1 = new TurretBullet();
-	if (th1->getRotation1() == true)
-	{
-		tb1->set_turret_bullet_position(-3225 / TIscale, 1200 / TIscale);
-	}
-	tb1->setmove(0 / TIscale, 0 / TIscale);
-
-	tb1->init_turret_bullet(this);*/
+	//CREATING A SCHEDULE THAT WILL CALL THE SHOOT FUNCTION AND MAKE THE TURRETS FIRE
+	//FIRERATE IS HOW MANY BULLETS PER SECOND
+	this->schedule(schedule_selector(SecondWorld::turretShoot), fireRate);
 };
 
-void SecondWorld::hud_layer()
+//TURRET SHOOT FUNCTION - SAMUEL MACSWEENEY
+void SecondWorld::turretShoot(float delta)
+{
+
+	//CREATING BULLET OBJECTS ADDING PHYSICS BODIES AND ACTIONS
+
+	//ADDING SPRITE
+	Sprite* turret_bullet = Sprite::create("Turret/turretammo.png");
+	turret_bullet->setPosition(-3150 / TIscale, 1400 / TIscale);
+	turret_bullet->setScale(0.1);
+	this->addChild(turret_bullet);
+
+	//ADDING PHYSICS
+	PhysicsBody* turret_bullet_physics = PhysicsBody::createCircle(turret_bullet->getContentSize().width / 2, PhysicsMaterial(0, 0, 0));
+	turret_bullet_physics->setContactTestBitmask(true);
+	turret_bullet_physics->setDynamic(false);
+	turret_bullet_physics->setCollisionBitmask(11);
+	turret_bullet->setPhysicsBody(turret_bullet_physics);
+
+	//ADDING ACTIONS
+	auto moveTo = MoveTo::create(10, Vec2(-3250 / TIscale, 800 / TIscale));
+	auto seq1 = cocos2d::Sequence::create(moveTo, NULL);
+
+	//CREATES AN ACTION THAT WILL RUN FOREVER
+	turret_bullet->runAction(RepeatForever::create(cocos2d::Sequence::create(seq1, NULL)));
+
+	//DUPLICATE BULLET OBJECTS TO ADD BULLETS TO OTHER CANNONS
+
+	/*
+	DUPLICATES MUST BE USED IN ORDER TO PREVENT ERRORS AND BROKEN CODE AND SEQUECEING PROBLEMS AND
+	CODE NOT RUNNING FOR UNKNOWN REASONS
+	*/
+
+	Sprite* turret_bullet2 = Sprite::create("Turret/turretammo.png");
+	turret_bullet2->setPosition(1650 / TIscale, 300 / TIscale);
+	turret_bullet2->setScale(0.1);
+	this->addChild(turret_bullet2);
+
+	PhysicsBody* turret_bullet_physics2 = PhysicsBody::createCircle(turret_bullet2->getContentSize().width / 2, PhysicsMaterial(0, 0, 0));
+	turret_bullet_physics2->setContactTestBitmask(true);
+	turret_bullet_physics2->setDynamic(false);
+	turret_bullet_physics2->setCollisionBitmask(11);
+	turret_bullet2->setPhysicsBody(turret_bullet_physics2);
+
+	auto moveTo2 = MoveTo::create(10, Vec2(1500 / TIscale, -300 / TIscale));
+	auto seq3 = cocos2d::Sequence::create(moveTo2, NULL);
+	turret_bullet2->runAction(RepeatForever::create(cocos2d::Sequence::create(seq3, NULL)));
+
+	Sprite* turret_bullet3 = Sprite::create("Turret/turretammo.png");
+	turret_bullet3->setPosition(2250 / TIscale, -1800 / TIscale);
+	turret_bullet3->setScale(0.1);
+	this->addChild(turret_bullet3);
+
+	PhysicsBody* turret_bullet_physics3 = PhysicsBody::createCircle(turret_bullet3->getContentSize().width / 2, PhysicsMaterial(0, 0, 0));
+	turret_bullet_physics3->setContactTestBitmask(true);
+	turret_bullet_physics3->setDynamic(false);
+	turret_bullet_physics3->setCollisionBitmask(11);
+	turret_bullet3->setPhysicsBody(turret_bullet_physics3);
+
+	auto moveTo3 = MoveTo::create(10, Vec2(2200 / TIscale, -1100 / TIscale));
+	auto seq4 = cocos2d::Sequence::create(moveTo3, NULL);
+	turret_bullet3->runAction(RepeatForever::create(cocos2d::Sequence::create(seq4, NULL)));
+};
+
+//HUD LAYER FUNCTION - SAMUEL & SAMANTHA
+void SecondWorld::hudLayer()
 {
 	//HUD LAYER - SAMUEL & SAMANTHA
 	HUD = LayerGradient::create(Color4B(0, 0, 0, 0), Color4B(0, 0, 0, 0));
@@ -1271,19 +1565,19 @@ void SecondWorld::hud_layer()
 	this->addChild(HUD, 4);
 
 	//HUD LAYER TEMPLATE - SAMUEL & SAMANTHA
-	hud_layer_template_sprite = Sprite::create("HUD/hudtemplate.png");
-	hud_layer_template_sprite->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-	hud_layer_template_sprite->setScale(1.27);
+	hudTemplatesprite = Sprite::create("HUD/hudtemplate.png");
+	hudTemplatesprite->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+	hudTemplatesprite->setScale(1.27);
 
-	HUD->addChild(hud_layer_template_sprite, 5);
+	HUD->addChild(hudTemplatesprite, 5);
 
 	//LAP NUMBER SAMUEL & SAMANTHA
-	lap_number = Label::createWithTTF("LAP NUMBER: ", "fonts/Marker Felt.ttf", 20);
-	lap_number->setPosition(Vec2(-300, visibleSize.height + 350));
-	lap_number->setAnchorPoint(Vec2(0, 0));
-	lap_number->setString("LAP NUMBER: " + std::to_string(lap_counter) + "/10");
+	lapNumber = Label::createWithTTF("LAP NUMBER: ", "fonts/Marker Felt.ttf", 20);
+	lapNumber->setPosition(Vec2(-300, visibleSize.height + 350));
+	lapNumber->setAnchorPoint(Vec2(0, 0));
+	lapNumber->setString("LAP NUMBER: " + std::to_string(lapCounter) + "/10");
 
-	HUD->addChild(lap_number, 6);
+	HUD->addChild(lapNumber, 6);
 
 	//TIMER - SAMUEL
 	timer = Label::createWithTTF("0", "fonts/Marker Felt.ttf", 30);
@@ -1293,77 +1587,78 @@ void SecondWorld::hud_layer()
 	HUD->addChild(timer, 6);
 
 	//HEALTH BAR - SAMANTHA
-	background_bar_sprite1 = Sprite::create("Bars/backgroundbar.png");
-	background_bar_sprite1->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 305));
+	backgroundBarSprite1 = Sprite::create("Bars/backgroundbar.png");
+	backgroundBarSprite1->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 305));
 
-	HUD->addChild(background_bar_sprite1, 6);
+	HUD->addChild(backgroundBarSprite1, 6);
 
-	this->damage_bar_timer1 = cocos2d::ProgressTimer::create(damage_bar_sprite1 = Sprite::create("Bars/damagebar.png"));
-	this->damage_bar_timer1->setGlobalZOrder(1);
-	this->damage_bar_timer1->setType(ProgressTimerType::BAR);
-	this->damage_bar_timer1->setBarChangeRate(Vec2(1, 0));
-	this->damage_bar_timer1->setAnchorPoint(Vec2(0, 0));
-	this->damage_bar_timer1->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 315));
-	this->damage_bar_timer1->setVisible(true);
-	this->damage_bar_timer1->setPercentage(100);
-	this->damage_bar_timer1->setMidpoint(Vec2(0, 0));
-	HUD->addChild(this->damage_bar_timer1, 7);
+	this->damageTimer1 = cocos2d::ProgressTimer::create(damageBarSprite1 = Sprite::create("Bars/damagebar.png"));
+	this->damageTimer1->setGlobalZOrder(1);
+	this->damageTimer1->setType(ProgressTimerType::BAR);
+	this->damageTimer1->setBarChangeRate(Vec2(1, 0));
+	this->damageTimer1->setAnchorPoint(Vec2(0, 0));
+	this->damageTimer1->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 315));
+	this->damageTimer1->setVisible(true);
+	this->damageTimer1->setPercentage(100);
+	this->damageTimer1->setMidpoint(Vec2(0, 0));
+	HUD->addChild(this->damageTimer1, 7);
 
-	this->health_bar_timer = cocos2d::ProgressTimer::create(health_bar_sprite = Sprite::create("Bars/healthbar.png"));
-	this->health_bar_timer->setGlobalZOrder(2);
-	this->health_bar_timer->setType(ProgressTimerType::BAR);
-	this->health_bar_timer->setBarChangeRate(Vec2(1, 0));
-	this->health_bar_timer->setAnchorPoint(Vec2(0, 0));
-	this->health_bar_timer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 315));
-	this->health_bar_timer->setVisible(true);
-	this->health_bar_timer->setPercentage(100);
-	this->health_bar_timer->setMidpoint(Vec2(0, 0));
-	HUD->addChild(this->health_bar_timer, 8);
+	this->healthTimer = cocos2d::ProgressTimer::create(healthBarSprite = Sprite::create("Bars/healthbar.png"));
+	this->healthTimer->setGlobalZOrder(2);
+	this->healthTimer->setType(ProgressTimerType::BAR);
+	this->healthTimer->setBarChangeRate(Vec2(1, 0));
+	this->healthTimer->setAnchorPoint(Vec2(0, 0));
+	this->healthTimer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 315));
+	this->healthTimer->setVisible(true);
+	this->healthTimer->setPercentage(100);
+	this->healthTimer->setMidpoint(Vec2(0, 0));
+	HUD->addChild(this->healthTimer, 8);
 
 	//THRUSTER BAR - SAMANTHA
-	background_bar_sprite2 = Sprite::create("Bars/backgroundbar.png");
-	background_bar_sprite2->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 365));
+	backgroundBarSprite2 = Sprite::create("Bars/backgroundbar.png");
+	backgroundBarSprite2->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 365));
 
-	HUD->addChild(background_bar_sprite2, 6);
+	HUD->addChild(backgroundBarSprite2, 6);
 
-	this->damage_bar_timer2 = cocos2d::ProgressTimer::create(damage_bar_sprite2 = Sprite::create("Bars/damagebar.png"));
-	this->damage_bar_timer2->setGlobalZOrder(1);
-	this->damage_bar_timer2->setType(ProgressTimerType::BAR);
-	this->damage_bar_timer2->setBarChangeRate(Vec2(1, 0));
-	this->damage_bar_timer2->setAnchorPoint(Vec2(0, 0));
-	this->damage_bar_timer2->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 375));
-	this->damage_bar_timer2->setVisible(true);
-	this->damage_bar_timer2->setPercentage(100);
-	this->damage_bar_timer2->setMidpoint(Vec2(0, 0));
-	HUD->addChild(this->damage_bar_timer2, 7);
+	this->damageTimer2 = cocos2d::ProgressTimer::create(damageBarSprite2 = Sprite::create("Bars/damagebar.png"));
+	this->damageTimer2->setGlobalZOrder(1);
+	this->damageTimer2->setType(ProgressTimerType::BAR);
+	this->damageTimer2->setBarChangeRate(Vec2(1, 0));
+	this->damageTimer2->setAnchorPoint(Vec2(0, 0));
+	this->damageTimer2->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 375));
+	this->damageTimer2->setVisible(true);
+	this->damageTimer2->setPercentage(100);
+	this->damageTimer2->setMidpoint(Vec2(0, 0));
+	HUD->addChild(this->damageTimer2, 7);
 
-	this->thruster_bar_timer = cocos2d::ProgressTimer::create(thruster_bar_sprite = Sprite::create("Bars/thrusterbar.png"));
-	this->thruster_bar_timer->setGlobalZOrder(2);
-	this->thruster_bar_timer->setType(ProgressTimerType::BAR);
-	this->thruster_bar_timer->setBarChangeRate(Vec2(1, 0));
-	this->thruster_bar_timer->setAnchorPoint(Vec2(0, 0));
-	this->thruster_bar_timer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 375));
-	this->thruster_bar_timer->setVisible(true);
-	this->thruster_bar_timer->setPercentage(100);
-	this->thruster_bar_timer->setMidpoint(Vec2(0, 0));
-	HUD->addChild(this->thruster_bar_timer, 8);
+	this->thrusterTimer = cocos2d::ProgressTimer::create(thrusterBarSprite = Sprite::create("Bars/thrusterbar.png"));
+	this->thrusterTimer->setGlobalZOrder(2);
+	this->thrusterTimer->setType(ProgressTimerType::BAR);
+	this->thrusterTimer->setBarChangeRate(Vec2(1, 0));
+	this->thrusterTimer->setAnchorPoint(Vec2(0, 0));
+	this->thrusterTimer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 375));
+	this->thrusterTimer->setVisible(true);
+	this->thrusterTimer->setPercentage(100);
+	this->thrusterTimer->setMidpoint(Vec2(0, 0));
+	HUD->addChild(this->thrusterTimer, 8);
 
-	this->speed_indicator_timer = cocos2d::ProgressTimer::create(speed_indicator = Sprite::create("SpeedIndicator/speedindicator.png"));
-	this->speed_indicator_timer->setGlobalZOrder(1);
-	this->speed_indicator_timer->setType(ProgressTimerType::BAR);
-	this->speed_indicator_timer->setBarChangeRate(Vec2(1, 0));
-	this->speed_indicator_timer->setAnchorPoint(Vec2(0, 0));
-	this->speed_indicator_timer->setPosition(Vec2(visibleSize.width / 2 + 300, visibleSize.height - 375));
-	this->speed_indicator_timer->setVisible(true);
-	this->speed_indicator_timer->setPercentage(100);
-	this->speed_indicator_timer->setMidpoint(Vec2(0, 0));
+	this->speedTimer = cocos2d::ProgressTimer::create(speedIndicator = Sprite::create("SpeedIndicator/speedindicator.png"));
+	this->speedTimer->setGlobalZOrder(1);
+	this->speedTimer->setType(ProgressTimerType::BAR);
+	this->speedTimer->setBarChangeRate(Vec2(1, 0));
+	this->speedTimer->setAnchorPoint(Vec2(0, 0));
+	this->speedTimer->setPosition(Vec2(visibleSize.width / 2 + 300, visibleSize.height - 375));
+	this->speedTimer->setVisible(true);
+	this->speedTimer->setPercentage(100);
+	this->speedTimer->setMidpoint(Vec2(0, 0));
 
-	HUD->addChild(speed_indicator_timer, 6);
+	HUD->addChild(speedTimer, 6);
 };
 
-void SecondWorld::end_race()
+//END RACE FUNCTION - SAMANTHA
+void SecondWorld::endRace()
 {
-	if (lap_counter >= 11)
+	if (lapCounter >= 11)
 	{
 		Director::getInstance()->end();
 	}

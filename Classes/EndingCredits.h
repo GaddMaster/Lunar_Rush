@@ -4,25 +4,28 @@
 #ifndef ENDINGCREDITS_H
 #define ENDINGCREDITS_H
 
-//Adds In The Cocos2d-x Libraries
+//Includes The COCOS2D-X Libraries Into This Header File
 #include "cocos2d.h"
 
-//EndingCredits Class Inherits The Cocos2d-x Layer Class
+//EndingCredits Class That Inherits The COCOS2-X Layer Class
 class EndingCredits : public cocos2d::Layer
 {
-	//Public Functions
-	public:
-		static cocos2d::Scene* createScene();
-		virtual bool init() override;
+public:
+	//Creates The Scene For The EndingCredits
+	static cocos2d::Scene* createScene();
 
-		//The CREATE_FUNC Is A Macro That Defines The
-		//create(), init() And autorelease() Functions
-		//You Can Create Your Own But It's A Shortcut Helper Macro
-		CREATE_FUNC(EndingCredits);
+	//Main Function For EndingCredits
+	//Functions Are Called Into This Function
+	//To Add Them To The Scene
+	virtual bool init() override;
 
-		void update(float) override;
+	//This Function Updates The Position
+	//Of The endingCredits Sprite
+	//So That The Sprite Image Will Scroll Vertically
+	//Up The Screen
+	void update(float) override;
 
-		cocos2d::Sprite* ending_credits;
+	//Variables
+	cocos2d::Sprite* endingCreditsSprite;
 };
-
 #endif

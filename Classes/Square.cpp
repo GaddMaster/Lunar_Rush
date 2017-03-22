@@ -7,7 +7,8 @@ USING_NS_CC;
 Square::Square()
 {
 	m_type = "square";
-	sprite = Sprite::create("Obstacles/square.png");
+	sprite = Sprite::create("Obstacles/squarecircuit.png");
+	sprite->setScale(0.1);
 	mArray[0] = cocos2d::Vec2(-8 / TIscale, -11 / TIscale);
 	mArray[1] = cocos2d::Vec2(-11 / TIscale, -8 / TIscale);
 	mArray[2] = cocos2d::Vec2(-11 / TIscale, 8 / TIscale);
@@ -19,7 +20,7 @@ Square::Square()
 	mArray[8] = cocos2d::Vec2(-8 / TIscale, -11 / TIscale);
 	physicsBody = cocos2d::PhysicsBody::createPolygon(mArray, 9, PhysicsMaterial(1, 1, 1));
 	sprite->setPhysicsBody(physicsBody);
-	physicsBody->setCollisionBitmask(4);
+	physicsBody->setCollisionBitmask(9);
 	physicsBody->setContactTestBitmask(true);
 	physicsBody->setVelocityLimit(15);
 	physicsBody->setAngularDamping(10);

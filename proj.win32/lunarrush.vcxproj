@@ -146,11 +146,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
   <ItemGroup>
     <ClCompile Include="..\Classes\Ammo.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\BackgroundBar.cpp" />
     <ClCompile Include="..\Classes\Bullet.cpp" />
     <ClCompile Include="..\Classes\Circle.cpp" />
-    <ClCompile Include="..\Classes\CircleCircuit.cpp" />
-    <ClCompile Include="..\Classes\DamageBar.cpp" />
     <ClCompile Include="..\Classes\DirectionWayPoint.cpp" />
     <ClCompile Include="..\Classes\EndingCredits.cpp" />
     <ClCompile Include="..\Classes\Enemy.cpp" />
@@ -158,9 +155,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\ExplosionLarge.cpp" />
     <ClCompile Include="..\Classes\FinishLine.cpp" />
     <ClCompile Include="..\Classes\FirstWorld.cpp" />
-    <ClCompile Include="..\Classes\HealthBar.cpp" />
     <ClCompile Include="..\Classes\HealthPickup.cpp" />
-    <ClCompile Include="..\Classes\HUDLayer.cpp" />
     <ClCompile Include="..\Classes\LandMine.cpp" />
     <ClCompile Include="..\Classes\MainMenu.cpp" />
     <ClCompile Include="..\Classes\PauseMenu.cpp" />
@@ -170,12 +165,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\SecondWorld.cpp" />
     <ClCompile Include="..\Classes\SinglePlayerMenu.cpp" />
     <ClCompile Include="..\Classes\Square.cpp" />
-    <ClCompile Include="..\Classes\SquareCircuit.cpp" />
-    <ClCompile Include="..\Classes\ThrusterBar.cpp" />
     <ClCompile Include="..\Classes\ThrusterPickup.cpp" />
     <ClCompile Include="..\Classes\Triangle.cpp" />
     <ClCompile Include="..\Classes\TurretBody.cpp" />
-    <ClCompile Include="..\Classes\TurretBullet.cpp" />
     <ClCompile Include="..\Classes\TurretHead.cpp" />
     <ClCompile Include="..\Classes\Vehicle.cpp" />
     <ClCompile Include="..\Classes\WeaponShieldPickUp.cpp" />
@@ -184,23 +176,17 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
   <ItemGroup>
     <ClInclude Include="..\Classes\Ammo.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\BackgroundBar.h" />
     <ClInclude Include="..\Classes\Bullet.h" />
     <ClInclude Include="..\Classes\Circle.h" />
-    <ClInclude Include="..\Classes\CircleCircuit.h" />
-    <ClInclude Include="..\Classes\DamageBar.h" />
     <ClInclude Include="..\Classes\DirectionWayPoint.h" />
     <ClInclude Include="..\Classes\EndingCredits.h" />
     <ClInclude Include="..\Classes\Enemy.h" />
     <ClInclude Include="..\Classes\Explosion.h" />
-    <ClInclude Include="..\Classes\ExplosionLarge.h" />
     <ClInclude Include="..\Classes\FinishLine.h" />
     <ClInclude Include="..\Classes\FirstWorld.h" />
     <ClInclude Include="..\Classes\GameObject.h" />
     <ClInclude Include="..\Classes\GameObjectPhysics.h" />
-    <ClInclude Include="..\Classes\HealthBar.h" />
     <ClInclude Include="..\Classes\HealthPickup.h" />
-    <ClInclude Include="..\Classes\HUDLayer.h" />
     <ClInclude Include="..\Classes\LandMine.h" />
     <ClInclude Include="..\Classes\MainMenu.h" />
     <ClInclude Include="..\Classes\PauseMenu.h" />
@@ -210,12 +196,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\SecondWorld.h" />
     <ClInclude Include="..\Classes\SinglePlayerMenu.h" />
     <ClInclude Include="..\Classes\Square.h" />
-    <ClInclude Include="..\Classes\SquareCircuit.h" />
-    <ClInclude Include="..\Classes\ThrusterBar.h" />
     <ClInclude Include="..\Classes\ThrusterPickup.h" />
     <ClInclude Include="..\Classes\Triangle.h" />
     <ClInclude Include="..\Classes\TurretBody.h" />
-    <ClInclude Include="..\Classes\TurretBullet.h" />
     <ClInclude Include="..\Classes\TurretHead.h" />
     <ClInclude Include="..\Classes\Vehicle.h" />
     <ClInclude Include="..\Classes\WeaponShieldPickup.h" />
@@ -235,6 +218,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Classes\ExplosionLarge.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

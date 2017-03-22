@@ -13,20 +13,20 @@
 //ThrusterPickup Class That Inherits The PickUps Class
 class ThrusterPickup : public PickUps
 {
-	public:
-		//ThrusterPickup Constructor
-		ThrusterPickup();
+public:
+	//ThrusterPickup Constructor
+	ThrusterPickup();
 
-		//ThrusterPickup Destructor
-		~ThrusterPickup();
+	//ThrusterPickup Destructor
+	~ThrusterPickup();
 
-		//Returns The ThrusterPickup Sprite
-		cocos2d::Sprite* getSprite();
+	//Returns The ThrusterPickup Sprite
+	cocos2d::Sprite* getSprite();
 
-		//Returns The ThrusterPickup Physics Body
-		cocos2d::PhysicsBody* getPhysicsBody();
+	//Returns The ThrusterPickup Physics Body
+	cocos2d::PhysicsBody* getPhysicsBody();
 
-		//Rotates The ThrusterPickup
-		void rotate();
+	//Rotates The ThrusterPickup
+	void rotate();
 };
 #endif

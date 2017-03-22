@@ -16,9 +16,6 @@
     <Filter Include="src\Tracks">
       <UniqueIdentifier>{b7e012a8-8350-434a-8806-662f50c02da7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Bars">
-      <UniqueIdentifier>{ff6dcfd1-f6f1-42ed-92cb-867ffed9c284}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Obstacles">
       <UniqueIdentifier>{d0ff6059-cdf5-4794-a6b0-db810d04ea44}</UniqueIdentifier>
     </Filter>
@@ -49,9 +46,6 @@
     <Filter Include="src\Pick Ups">
       <UniqueIdentifier>{46e17a17-489a-45ca-98d7-94d3b3eefee9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\HUD">
-      <UniqueIdentifier>{feef52d9-73f6-4c6a-a4a7-6f1384a86e87}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Menus">
       <UniqueIdentifier>{31acf653-ed1d-42a9-b18e-d95f16debfd6}</UniqueIdentifier>
     </Filter>
@@ -72,20 +66,11 @@
     <ClCompile Include="..\Classes\LandMine.cpp">
       <Filter>src\Projectiles</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\BackgroundBar.cpp">
-      <Filter>src\Bars</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src\App Delegate</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Circle.cpp">
       <Filter>src\Obstacles</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\CircleCircuit.cpp">
-      <Filter>src\Obstacles</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\DamageBar.cpp">
-      <Filter>src\Bars</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\DirectionWayPoint.cpp">
       <Filter>src\Way Points</Filter>
@@ -105,14 +90,8 @@
     <ClCompile Include="..\Classes\FirstWorld.cpp">
       <Filter>src\Tracks</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HealthBar.cpp">
-      <Filter>src\Bars</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\HealthPickup.cpp">
       <Filter>src\Pick Ups</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\HUDLayer.cpp">
-      <Filter>src\HUD</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\MainMenu.cpp">
       <Filter>src\Menus</Filter>
@@ -135,12 +114,6 @@
     <ClCompile Include="..\Classes\Square.cpp">
       <Filter>src\Obstacles</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\SquareCircuit.cpp">
-      <Filter>src\Obstacles</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\ThrusterBar.cpp">
-      <Filter>src\Bars</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\ThrusterPickup.cpp">
       <Filter>src\Pick Ups</Filter>
     </ClCompile>
@@ -148,9 +121,6 @@
       <Filter>src\Obstacles</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\TurretBody.cpp">
-      <Filter>src\Turret</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\TurretBullet.cpp">
       <Filter>src\Turret</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\TurretHead.cpp">
@@ -182,20 +152,11 @@
     <ClInclude Include="..\Classes\LandMine.h">
       <Filter>src\Projectiles</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\BackgroundBar.h">
-      <Filter>src\Bars</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>src\App Delegate</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Circle.h">
       <Filter>src\Obstacles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\CircleCircuit.h">
-      <Filter>src\Obstacles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\DamageBar.h">
-      <Filter>src\Bars</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\DirectionWayPoint.h">
       <Filter>src\Way Points</Filter>
@@ -221,14 +182,8 @@
     <ClInclude Include="..\Classes\GameObjectPhysics.h">
       <Filter>src\Base Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HealthBar.h">
-      <Filter>src\Bars</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\HealthPickup.h">
       <Filter>src\Pick Ups</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HUDLayer.h">
-      <Filter>src\HUD</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\MainMenu.h">
       <Filter>src\Menus</Filter>
@@ -251,12 +206,6 @@
     <ClInclude Include="..\Classes\Square.h">
       <Filter>src\Obstacles</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\SquareCircuit.h">
-      <Filter>src\Obstacles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\ThrusterBar.h">
-      <Filter>src\Bars</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\ThrusterPickup.h">
       <Filter>src\Pick Ups</Filter>
     </ClInclude>
@@ -264,9 +213,6 @@
       <Filter>src\Obstacles</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\TurretBody.h">
-      <Filter>src\Turret</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TurretBullet.h">
       <Filter>src\Turret</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\TurretHead.h">
@@ -278,13 +224,15 @@
     <ClInclude Include="..\Classes\WeaponShieldPickup.h">
       <Filter>src\Pick Ups</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\ExplosionLarge.h">
-      <Filter>src\Particles</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Classes\ExplosionLarge.h">
+      <Filter>src\Particles</Filter>
+    </Text>
   </ItemGroup>
 </Project>

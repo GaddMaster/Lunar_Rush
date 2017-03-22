@@ -48,7 +48,7 @@ Vehicle::Vehicle() ://WE INITIALIZE ALL VARIABLES TO DEFAULT VALUES
 	mArray[7] = cocos2d::Vec2(-26 / TIscale, 3 / TIscale);
 	mArray[8] = cocos2d::Vec2(-26 / TIscale, -3 / TIscale);
 	physicsBody = PhysicsBody::createPolygon(mArray, 9, PhysicsMaterial(1, 0, 0));
-	physicsBody->setCollisionBitmask(4);
+	physicsBody->setCollisionBitmask(5);
 	physicsBody->setContactTestBitmask(true);
 	physicsBody->setAngularDamping(10);
 	physicsBody->setDynamic(true);
