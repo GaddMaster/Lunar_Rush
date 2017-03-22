@@ -329,6 +329,10 @@ void FirstWorld::update(float delta)
 					directionalWayPoint->setActive(true);
 					directionalTriggers.push_back(directionalWayPoint->getID());
 					CCLOG("Intersection IN");
+					if (directionalWayPoint->getID() == 44)
+					{
+						lapN++;
+					}
 				}
 			}
 			else
@@ -351,7 +355,6 @@ void FirstWorld::update(float delta)
 			{
 					low = directionalTrigger;
 					backwardsLabel->setString("");
-					lapN++;
 			}
 			else
 			{
@@ -878,265 +881,265 @@ void FirstWorld::AIWayPoints()
 void FirstWorld::trackWayPoints()
 {
 	DirectionWayPoint* finishLine = new DirectionWayPoint();
-	finishLine->setID(false, 0, "5by2");
+	finishLine->setID(false, 1 + 0, "5by2");
 	finishLine->getSprite()->setPosition(Vec2(-2650 / TIscale, 0 / TIscale));
 	this->addChild(finishLine->getSprite(), 2);
 	this->directionalWayPoints.push_back(finishLine);
 
 	DirectionWayPoint* dir1 = new DirectionWayPoint();
-	dir1->setID(false, 1, "5by2");
+	dir1->setID(false, 1 + 1, "5by2");
 	dir1->getSprite()->setPosition(Vec2(-2650 / TIscale, 760 / TIscale));
 	this->addChild(dir1->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir1);
 
 	DirectionWayPoint* dir2 = new DirectionWayPoint();
-	dir2->setID(false, 2, "1by3");
+	dir2->setID(false, 1 + 2, "1by3");
 	dir2->getSprite()->setPosition(Vec2(-2250 / TIscale, 1250 / TIscale));
 	this->addChild(dir2->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir2);
 
 	DirectionWayPoint* dir3 = new DirectionWayPoint();
-	dir3->setID(false, 3, "1by3");
+	dir3->setID(false, 1 + 3, "1by3");
 	dir3->getSprite()->setPosition(Vec2(-1250 / TIscale, 1250 / TIscale));
 	this->addChild(dir3->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir3);
 
 	DirectionWayPoint* dir4 = new DirectionWayPoint();
-	dir4->setID(false, 4, "6by2");
+	dir4->setID(false, 1 + 4, "6by2");
 	dir4->getSprite()->setPosition(Vec2(-800 / TIscale, 900 / TIscale));
 	this->addChild(dir4->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir4);
 
 	DirectionWayPoint* dir5 = new DirectionWayPoint();
-	dir5->setID(false, 5, "1by3");
+	dir5->setID(false, 1 + 5, "1by3");
 	dir5->getSprite()->setPosition(Vec2(-1250 / TIscale, 550 / TIscale));
 	this->addChild(dir5->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir5);
 
 	DirectionWayPoint* dir6 = new DirectionWayPoint();
-	dir6->setID(false, 6, "1by3");
+	dir6->setID(false, 1 + 6, "1by3");
 	dir6->getSprite()->setPosition(Vec2(-1650 / TIscale, 750 / TIscale));
 	this->addChild(dir6->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir6);
 
 	DirectionWayPoint* dir7 = new DirectionWayPoint();
-	dir7->setID(false, 7, "2by1");
+	dir7->setID(false, 1 + 7, "2by1");
 	dir7->getSprite()->setPosition(Vec2(-1900 / TIscale, 450 / TIscale));
 	this->addChild(dir7->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir7);
 
 	DirectionWayPoint* dir8 = new DirectionWayPoint();
-	dir8->setID(false, 8, "2by1");
+	dir8->setID(false, 1 + 8, "2by1");
 	dir8->getSprite()->setPosition(Vec2(-1900 / TIscale, -350 / TIscale));
 	this->addChild(dir8->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir8);
 
 	DirectionWayPoint* dir9 = new DirectionWayPoint();
-	dir9->setID(false, 9, "3by1");
+	dir9->setID(false, 1 + 9, "3by1");
 	dir9->getSprite()->setPosition(Vec2(-2150 / TIscale, -750 / TIscale));
 	this->addChild(dir9->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir9);
 
 	DirectionWayPoint* dir10 = new DirectionWayPoint();
-	dir10->setID(false, 10, "3by1");
+	dir10->setID(false, 1 + 10, "3by1");
 	dir10->getSprite()->setPosition(Vec2(-2150 / TIscale, -750 / TIscale));
 	this->addChild(dir10->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir10);
 
 	DirectionWayPoint* dir11 = new DirectionWayPoint();
-	dir11->setID(false, 11, "1by2");
+	dir11->setID(false, 1 + 11, "1by2");
 	dir11->getSprite()->setPosition(Vec2(-1850 / TIscale, -1000 / TIscale));
 	this->addChild(dir11->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir11);
 
 	DirectionWayPoint* dir12 = new DirectionWayPoint();
-	dir12->setID(false, 12, "1by2");
+	dir12->setID(false, 1 + 12, "1by2");
 	dir12->getSprite()->setPosition(Vec2(-550 / TIscale, -1000 / TIscale));
 	this->addChild(dir12->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir12);
 
 	DirectionWayPoint* dir13 = new DirectionWayPoint();
-	dir13->setID(false, 13, "5by2");
+	dir13->setID(false, 1 + 13, "5by2");
 	dir13->getSprite()->setPosition(Vec2(-150 / TIscale, -700 / TIscale));
 	this->addChild(dir13->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir13);
 
 	DirectionWayPoint* dir14 = new DirectionWayPoint();
-	dir14->setID(false, 14, "3by3");
+	dir14->setID(false, 1 + 14, "3by3");
 	dir14->getSprite()->setPosition(Vec2(-650 / TIscale, -350 / TIscale));
 	this->addChild(dir14->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir14);
 
 	DirectionWayPoint* dir15 = new DirectionWayPoint();
-	dir15->setID(false, 15, "1by2");
+	dir15->setID(false, 1 + 15, "1by2");
 	dir15->getSprite()->setPosition(Vec2(-1250 / TIscale, -700 / TIscale));
 	this->addChild(dir15->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir15);
 
 	DirectionWayPoint* dir16 = new DirectionWayPoint();
-	dir16->setID(false, 16, "2by1");
+	dir16->setID(false, 1 + 16, "2by1");
 	dir16->getSprite()->setPosition(Vec2(-1600 / TIscale, -350 / TIscale));
 	this->addChild(dir16->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir16);
 
 	DirectionWayPoint* dir17 = new DirectionWayPoint();
-	dir17->setID(false, 17, "2by1");
+	dir17->setID(false, 1 + 17, "2by1");
 	dir17->getSprite()->setPosition(Vec2(-1600 / TIscale, -150 / TIscale));
 	this->addChild(dir17->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir17);
 
 	DirectionWayPoint* dir18 = new DirectionWayPoint();
-	dir18->setID(false, 18, "1by3");
+	dir18->setID(false, 1 + 18, "1by3");
 	dir18->getSprite()->setPosition(Vec2(-1350 / TIscale, 150 / TIscale));
 	this->addChild(dir18->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir18);
 
 	DirectionWayPoint* dir19 = new DirectionWayPoint();
-	dir19->setID(false, 19, "1by3");
+	dir19->setID(false, 1 + 19, "1by3");
 	dir19->getSprite()->setPosition(Vec2(-750 / TIscale, 150 / TIscale));
 	this->addChild(dir19->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir19);
 
 	DirectionWayPoint* dir20 = new DirectionWayPoint();
-	dir20->setID(false, 20, "3by1");
+	dir20->setID(false, 1 + 20, "3by1");
 	dir20->getSprite()->setPosition(Vec2(-150 / TIscale, 750 / TIscale));
 	this->addChild(dir20->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir20);
 
 	DirectionWayPoint* dir21 = new DirectionWayPoint();
-	dir21->setID(false, 21, "3by1");
+	dir21->setID(false, 1 + 21, "3by1");
 	dir21->getSprite()->setPosition(Vec2(-150 / TIscale, 1050 / TIscale));
 	this->addChild(dir21->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir21);
 
 	DirectionWayPoint* dir22 = new DirectionWayPoint();
-	dir22->setID(false, 22, "3by1");
+	dir22->setID(false, 1 + 22, "3by1");
 	dir22->getSprite()->setPosition(Vec2(-150 / TIscale, 1050 / TIscale));
 	this->addChild(dir22->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir22);
 
 	DirectionWayPoint* dir23 = new DirectionWayPoint();
-	dir23->setID(false, 23, "1by2");
+	dir23->setID(false, 1 + 23, "1by2");
 	dir23->getSprite()->setPosition(Vec2(150 / TIscale, 1300 / TIscale));
 	this->addChild(dir23->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir23);
 
 	DirectionWayPoint* dir24 = new DirectionWayPoint();
-	dir24->setID(false, 24, "1by2");
+	dir24->setID(false, 1 + 24, "1by2");
 	dir24->getSprite()->setPosition(Vec2(650 / TIscale, 1300 / TIscale));
 	this->addChild(dir24->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir24);
 
 	DirectionWayPoint* dir25 = new DirectionWayPoint();
-	dir25->setID(false, 25, "3by1");
+	dir25->setID(false, 1 + 25, "3by1");
 	dir25->getSprite()->setPosition(Vec2(950 / TIscale, 1050 / TIscale));
 	this->addChild(dir25->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir25);
 
 	DirectionWayPoint* dir26 = new DirectionWayPoint();
-	dir26->setID(false, 26, "2by3");
+	dir26->setID(false, 1 + 26, "2by3");
 	dir26->getSprite()->setPosition(Vec2(600 / TIscale, 750 / TIscale));
 	this->addChild(dir26->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir26);
 
 	DirectionWayPoint* dir27 = new DirectionWayPoint();
-	dir27->setID(false, 27, "3by1");
+	dir27->setID(false, 1 + 27, "3by1");
 	dir27->getSprite()->setPosition(Vec2(250 / TIscale, 450 / TIscale));
 	this->addChild(dir27->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir27);
 
 	DirectionWayPoint* dir28 = new DirectionWayPoint();
-	dir28->setID(false, 28, "3by1");
+	dir28->setID(false, 1 + 28, "3by1");
 	dir28->getSprite()->setPosition(Vec2(250 / TIscale, 250 / TIscale));
 	this->addChild(dir28->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir28);
 
 	DirectionWayPoint* dir29 = new DirectionWayPoint();
-	dir29->setID(false, 29, "4by1");
+	dir29->setID(false, 1 + 29, "4by1");
 	dir29->getSprite()->setPosition(Vec2(100 / TIscale, -50 / TIscale));
 	this->addChild(dir29->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir29);
 
 	DirectionWayPoint* dir30 = new DirectionWayPoint();
-	dir30->setID(false, 30, "3by2");
+	dir30->setID(false, 1 + 30, "3by2");
 	dir30->getSprite()->setPosition(Vec2(350 / TIscale, -500 / TIscale));
 	this->addChild(dir30->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir30);
 
 	DirectionWayPoint* dir31 = new DirectionWayPoint();
-	dir31->setID(false, 31, "2by3");
+	dir31->setID(false, 1 + 31, "2by3");
 	dir31->getSprite()->setPosition(Vec2(900 / TIscale, -1050 / TIscale));
 	this->addChild(dir31->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir31);
 
 	DirectionWayPoint* dir32 = new DirectionWayPoint();
-	dir32->setID(false, 32, "2by3");
+	dir32->setID(false, 1 + 32, "2by3");
 	dir32->getSprite()->setPosition(Vec2(900 / TIscale, -1050 / TIscale));
 	this->addChild(dir32->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir32);
 
 	DirectionWayPoint* dir33 = new DirectionWayPoint();
-	dir33->setID(false, 33, "3by1");
+	dir33->setID(false, 1 + 33, "3by1");
 	dir33->getSprite()->setPosition(Vec2(1750 / TIscale, -250 / TIscale));
 	this->addChild(dir33->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir33);
 
 	DirectionWayPoint* dir34 = new DirectionWayPoint();
-	dir34->setID(false, 34, "3by1");
+	dir34->setID(false, 1 + 34, "3by1");
 	dir34->getSprite()->setPosition(Vec2(1750 / TIscale, 650 / TIscale));
 	this->addChild(dir34->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir34);
 
 	DirectionWayPoint* dir35 = new DirectionWayPoint();
-	dir35->setID(false, 35, "2by4");
+	dir35->setID(false, 1 + 35, "2by4");
 	dir35->getSprite()->setPosition(Vec2(2200 / TIscale, 1100 / TIscale));
 	this->addChild(dir35->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir35);
 
 	DirectionWayPoint* dir36 = new DirectionWayPoint();
-	dir36->setID(false, 36, "3by1");
+	dir36->setID(false, 1 + 36, "3by1");
 	dir36->getSprite()->setPosition(Vec2(2650 / TIscale, 650 / TIscale));
 	this->addChild(dir36->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir36);
 
 	DirectionWayPoint* dir37 = new DirectionWayPoint();
-	dir37->setID(false, 37, "3by1");
+	dir37->setID(false, 1 + 37, "3by1");
 	dir37->getSprite()->setPosition(Vec2(2650 / TIscale, 350 / TIscale));
 	this->addChild(dir37->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir37);
 
 	DirectionWayPoint* dir38 = new DirectionWayPoint();
-	dir38->setID(false, 38, "4by1");
+	dir38->setID(false, 1 + 38, "4by1");
 	dir38->getSprite()->setPosition(Vec2(2200 / TIscale, -450 / TIscale));
 	this->addChild(dir38->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir38);
 
 	DirectionWayPoint* dir39 = new DirectionWayPoint();
-	dir39->setID(false, 39, "5by2");
+	dir39->setID(false, 1 + 39, "5by2");
 	dir39->getSprite()->setPosition(Vec2(2550 / TIscale, -1000 / TIscale));
 	this->addChild(dir39->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir39);
 
 	DirectionWayPoint* dir40 = new DirectionWayPoint();
-	dir40->setID(false, 40, "2by2");
+	dir40->setID(false, 1 + 40, "2by2");
 	dir40->getSprite()->setPosition(Vec2(2000 / TIscale, -1400 / TIscale));
 	this->addChild(dir40->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir40);
 
 	DirectionWayPoint* dir41 = new DirectionWayPoint();
-	dir41->setID(false, 41, "2by2");
+	dir41->setID(false, 1 + 41, "2by2");
 	dir41->getSprite()->setPosition(Vec2(100 / TIscale, -1400 / TIscale));
 	this->addChild(dir41->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir41);
 
 	DirectionWayPoint* dir42 = new DirectionWayPoint();
-	dir42->setID(false, 42, "2by2");
+	dir42->setID(false, 1 + 42, "2by2");
 	dir42->getSprite()->setPosition(Vec2(-2300 / TIscale, -1400 / TIscale));
 	this->addChild(dir42->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir42);
 
 	DirectionWayPoint* dir43 = new DirectionWayPoint();
-	dir43->setID(false, 43, "3by1");
+	dir43->setID(false, 1 + 43, "3by1");
 	dir43->getSprite()->setPosition(Vec2(-2650 / TIscale, -1150 / TIscale));
 	this->addChild(dir43->getSprite(), 2);
 	this->directionalWayPoints.push_back(dir43);
@@ -1148,7 +1151,7 @@ void FirstWorld::vehicleObjects()
 	//PLAYER VEHICLE OBJECT - DANIEL
 	playerVehicleObject = new Vehicle();
 	playerVehicleObject->setAngle(-90);
-	playerVehicleObject->setPosition(Vec2(-2500 / TIscale, 400 / TIscale));
+	playerVehicleObject->setPosition(Vec2(-2500 / TIscale, -400 / TIscale));
 	playerVehicleObject->setSteeringPower(2);
 	playerVehicleObject->setCornering(1);
 	playerVehicleObject->setType("player");
@@ -1158,7 +1161,7 @@ void FirstWorld::vehicleObjects()
 	//AI CAR I VEHICLE OBJECT - DANIEL
 	enemyOneVehicleObject = new Vehicle();
 	enemyOneVehicleObject->setAngle(-90);
-	enemyOneVehicleObject->setPosition(Vec2(-2700 / TIscale, 400 / TIscale));
+	enemyOneVehicleObject->setPosition(Vec2(-2700 / TIscale, -400 / TIscale));
 	enemyOneVehicleObject->setAutoControl(true);
 	enemyOneVehicleObject->setSpeed(95);
 	enemyOneVehicleObject->setCornering(1);
@@ -1170,7 +1173,7 @@ void FirstWorld::vehicleObjects()
 	//AI CAR II VEHICLE OBJECT - DANIEL
 	enemyTwoVehicleObject = new Vehicle();
 	enemyTwoVehicleObject->setAngle(-90);
-	enemyTwoVehicleObject->setPosition(Vec2(-2700 / TIscale, 200 / TIscale));
+	enemyTwoVehicleObject->setPosition(Vec2(-2700 / TIscale, -200 / TIscale));
 	enemyTwoVehicleObject->setAutoControl(true);
 	enemyTwoVehicleObject->setSpeed(105);
 	enemyTwoVehicleObject->setCornering(2);
@@ -1182,7 +1185,7 @@ void FirstWorld::vehicleObjects()
 	//AI CAR III VEHICLE OBJECT - DANIEL
 	enemyThreeVehicleObject = new Vehicle();
 	enemyThreeVehicleObject->setAngle(-90);
-	enemyThreeVehicleObject->setPosition(Vec2(-2500 / TIscale, 200 / TIscale));
+	enemyThreeVehicleObject->setPosition(Vec2(-2500 / TIscale, -200 / TIscale));
 	enemyThreeVehicleObject->setAutoControl(true);
 	enemyThreeVehicleObject->setSpeed(120);
 	enemyThreeVehicleObject->setCornering(3);

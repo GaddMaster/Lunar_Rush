@@ -119,7 +119,7 @@ class FirstWorld : public cocos2d::Layer
 		bool backwards = false;
 		float weaponTimer;
 		bool activeWeaponTimer;
-		int lapN = 0;
+		int lapN = -1;
 
 		//ARRAYS, VECTOR AND LISTS
 		cocos2d::Vec2 trackInArray[63];
