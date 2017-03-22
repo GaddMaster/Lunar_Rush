@@ -4,7 +4,7 @@
 #define EXPLOSION_H
 
 #include "cocos2d.h"
-#include "GameObjectPhysics.h"
+#include "GameObject.h"
 
 class Explosion : public GameObject
 {

@@ -226,11 +226,14 @@ void FirstWorld::update(float delta)
 	{
 		for (auto vehicle : this->vehicles)
 		{
+
+			//CHECKING PROJECTILES AGAINST VEHICLES - INTERSECTION
 			for (auto projectile : this->projectiles)
 			{
 				cocos2d::Rect rect1 = vehicle->getSprite()->getBoundingBox();
 				cocos2d::Rect rect2 = projectile->getSprite()->getBoundingBox();
 
+				//CHECK FOR INTERSECTIONS AND SPAWN EXPLOSIONS
 				if (rect1.intersectsRect(rect2))
 				{
 					vehicle->setDamage(projectile->returnType());
@@ -242,10 +245,29 @@ void FirstWorld::update(float delta)
 					Explosion* explosion = new Explosion();
 					explosion->getSprite()->setPosition(location);
 					this->addChild(explosion->getSprite());
+					explosion->explode();
+					break;
 				}
 			}
 		}
 
+	}
+	for (auto vehicle : this->vehicles)
+	{
+		//CHECK FOR VEHICLE HEALTH & EXPLODE IF DEAD
+		if (vehicle->isDead())
+		{
+			cocos2d::Vec2 position = vehicle->getSprite()->getPosition();
+			this->removeChild(vehicle->getSprite());
+			auto it = find(vehicles.begin(), vehicles.end(), vehicle);//FIND CURRENT PROJECTILE
+			if (it != vehicles.end())vehicles.erase(it);//ERASE CURRENT PROJECTILE
+			vehicle->destroyVehicle();
+			ExplosionLarge* explosionLarge = new ExplosionLarge();
+			explosionLarge->getSprite()->setPosition(position);
+			this->addChild(explosionLarge->getSprite());
+			explosionLarge->explode();
+			break;
+		}
 	}
 	//----------------------------------------------------------------
 
@@ -389,29 +411,36 @@ void FirstWorld::update(float delta)
 
 	//----------------------------------------------------------------
 	//ENEMY ONE VEHICLE CALCULATION - - VELOCITY - DRIVE - DANIEL
-	enemyOneVehicleObject->autoControlAI(enemyOneCurrentWayPoint);
-	if (enemyOneVehicleObject->getActiveStatus())
+	for (auto vehicle : this->vehicles)
 	{
-		enemyOneVehicleObject->setVelocityPoint();
-		enemyOneVehicleObject->setVelocity();
-	}
-	//CHECK IF ENEMY ONE IS COLLIDING WITH CURRENT WAY POINT
-	if (enemyOneVehicleObject->wayPointCollision(wayPointSprite))
-	{
-		WayPoint[wayPointCounter] = false;
+		if (vehicle->getType() == "enemy" )
+		{
+			enemyOneVehicleObject->autoControlAI(enemyOneCurrentWayPoint);
+			if (enemyOneVehicleObject->getActiveStatus())
+			{
+				enemyOneVehicleObject->setVelocityPoint();
+				enemyOneVehicleObject->setVelocity();
+				if (enemyOneVehicleObject->wayPointCollision(wayPointSprite))
+				{
+					WayPoint[wayPointCounter] = false;
 
-		if (wayPointCounter == 61)//CHECK IF AT END OF WAY POINTS AND RESET BACK TO ONE SO WE CAN DO MORE LAPS
-		{
-			wayPointCounter = 0;
-			WayPoint[wayPointCounter] = true;
+					if (wayPointCounter == 61)//CHECK IF AT END OF WAY POINTS AND RESET BACK TO ONE SO WE CAN DO MORE LAPS
+					{
+						wayPointCounter = 0;
+						WayPoint[wayPointCounter] = true;
+					}
+					else
+					{
+						wayPointCounter++;
+						WayPoint[wayPointCounter] = true;
+					}
+					enemyOneCurrentWayPoint = WayPoints[wayPointCounter][enemyOneWayPointSkill];
+					wayPointSprite->setPosition(enemyOneCurrentWayPoint);
+				}
+			}
+			//CHECK IF ENEMY ONE IS COLLIDING WITH CURRENT WAY POINT
 		}
-		else
-		{
-			wayPointCounter++;
-			WayPoint[wayPointCounter] = true;
-		}
-		enemyOneCurrentWayPoint = WayPoints[wayPointCounter][enemyOneWayPointSkill];
-		wayPointSprite->setPosition(enemyOneCurrentWayPoint);
+
 	}
 	//ENEMY ONE VEHICLE CALCULATION - DANIEL
 	//----------------------------------------------------------------
@@ -1117,6 +1146,7 @@ void FirstWorld::vehicleObjects()
 	playerVehicleObject->setAngle(-90);
 	playerVehicleObject->setPosition(Vec2(-2650 / TIscale, 0 / TIscale));
 	playerVehicleObject->setSteeringPower(2);
+	playerVehicleObject->setType("player");
 	this->addChild(playerVehicleObject->getSprite(), 9);
 	vehicles.push_back(playerVehicleObject);
 
@@ -1127,6 +1157,7 @@ void FirstWorld::vehicleObjects()
 	enemyOneVehicleObject->setAutoControl(true);
 	enemyOneVehicleObject->setSpeed(10);
 	enemyOneVehicleObject->setSteeringPower(3);
+	enemyOneVehicleObject->setType("enemy");
 	this->addChild(enemyOneVehicleObject->getSprite(), 9);
 	vehicles.push_back(enemyOneVehicleObject);
 	
@@ -1332,7 +1363,20 @@ void FirstWorld::eventListeners()
 					//CHECK WHICH WEAPON IS AVAILABLE AND USE
 					if (playerVehicleObject->getRocketStatus())
 					{
-						GameObject* rocket = playerVehicleObject->fireRocket(enemyOneVehicleObject->getSprite(), false);
+						cocos2d::Sprite* target;
+						for (auto vehicle : this->vehicles)
+						{
+							if (vehicle->getType() != "player")
+							{
+								float distance = std::sqrt(std::pow((vehicle->getSprite()->getPosition().x - playerVehicleObject->getSprite()->getPosition().x), 2) + std::pow((vehicle->getSprite()->getPosition().y - playerVehicleObject->getSprite()->getPosition().y), 2));
+								CCLOG("DISTANCE ROCKET : %f", distance);
+								if (distance < 300)
+								{
+									target = vehicle->getSprite();
+								}
+							}
+						}
+						GameObject* rocket = playerVehicleObject->fireRocket(target, false);
 						this->addChild(rocket->getSprite());//ROCKET CAN BE LOCK ON OR NOT
 						projectiles.push_back(rocket);
 					}

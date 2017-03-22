@@ -6,8 +6,8 @@ USING_NS_CC;
 Vehicle::Vehicle() ://WE INITIALIZE ALL VARIABLES TO DEFAULT VALUES
 	trusterStatus(false),
 	machineGunStatus(false),
-	rocketStatus(false),
-	shieldStatus(true),
+	rocketStatus(true),
+	shieldStatus(false),
 	mineStatus(false),
 	velocityPoint(cocos2d::Vec2(0, 0)),
 	angle_I(0.0), angle_II(0.0),
@@ -25,12 +25,14 @@ Vehicle::Vehicle() ://WE INITIALIZE ALL VARIABLES TO DEFAULT VALUES
 	driveOffTimer(5),
 	machineGunVelocity(500),
 	machineGunSpawnGap(50),
-	m_health(100),
+	m_health(24),
 	bullets(10),
 	accelerateLock(false),
 	de_accelerateLock(false),
 	rocketSpeed(200),
-	shieldLock(false)
+	shieldLock(false),
+	rocketSpawnGap(30),
+	dead(false)
 {
 	//CAR SPRITE
 	sprite = Sprite::create("Ship/VehicleOne/idleSingle.png");
@@ -50,27 +52,6 @@ Vehicle::Vehicle() ://WE INITIALIZE ALL VARIABLES TO DEFAULT VALUES
 	physicsBody->setContactTestBitmask(true);
 	physicsBody->setAngularDamping(10);
 	physicsBody->setDynamic(true);
-
-
-	shieldArray[0] = cocos2d::Vec2(-30 / TIscale, -13 / TIscale);
-	shieldArray[1] = cocos2d::Vec2(-36 / TIscale, -9 / TIscale);
-	shieldArray[2] = cocos2d::Vec2(-40 / TIscale, -2 / TIscale);
-	shieldArray[3] = cocos2d::Vec2(-40 / TIscale, 2 / TIscale);
-	shieldArray[4] = cocos2d::Vec2(-36 / TIscale, 9 / TIscale);
-	shieldArray[5] = cocos2d::Vec2(-30 / TIscale, 13 / TIscale);
-	shieldArray[6] = cocos2d::Vec2(40 / TIscale, 12 / TIscale);
-	shieldArray[7] = cocos2d::Vec2(47 / TIscale, 7 / TIscale);
-	shieldArray[8] = cocos2d::Vec2(50 / TIscale, 2 / TIscale);
-	shieldArray[9] = cocos2d::Vec2(50 / TIscale, -2 / TIscale);
-	shieldArray[10] = cocos2d::Vec2(47 / TIscale, -7 / TIscale);
-	shieldArray[11] = cocos2d::Vec2(40 / TIscale, -12 / TIscale);
-	shieldArray[12] = cocos2d::Vec2(-30 / TIscale, -13 / TIscale);
-	physicsBodyShield = PhysicsBody::createPolygon(mArray, 13, PhysicsMaterial(1, 0, 0));
-	physicsBodyShield->setCollisionBitmask(4);
-	physicsBodyShield->setContactTestBitmask(true);
-	physicsBodyShield->setAngularDamping(10);
-	physicsBodyShield->setDynamic(true);
-	physicsBodyShield->retain();
 
 	sprite->setPhysicsBody(physicsBody);
 }
@@ -176,8 +157,8 @@ void Vehicle::setMachineGunPoints()
 {
 	//SET BOTH SPAWN POINT AND VELOCITY POINT FOR A BULLET OBJECT
 	//RESET POINT VALUES
-	bulletSpawnPoint = Vec2(0, 0);;
-	bulletFirePoint = Vec2(0, 0);;
+	bulletSpawnPoint = Vec2(0, 0);
+	bulletFirePoint = Vec2(0, 0);
 	position = sprite->getPosition();
 
 	//GET SPRITE ANGLE _TRANSFORMED
@@ -300,8 +281,85 @@ cocos2d::Vec2 Vehicle::getBulletVelocityPoint()
 //GET - SET ROCKET VELOCITY POINT AND SPAWN POINT
 void Vehicle::setRocketPoints(cocos2d::Sprite* target)
 {
-	rocketSpawnPoint.x = 2*(sprite->getPosition().x);
-	rocketSpawnPoint.y = 2 * (sprite->getPosition().y);
+	rocketSpawnPoint = Vec2(0, 0);
+	position = sprite->getPosition();
+
+	//GET SPRITE ANGLE _TRANSFORMED
+	angle_II = getAngle();
+
+	//VELOCITY & SPAWN FUNCTIONALITY - QUADRANT CHECK AND ENTER
+	if (angle_II >= 0 && angle_II < 90)//QUADRANT 1
+	{
+		//THIS MEANS WE ONLY DEAL WITH X AXIS - Y AXIS MUST BE ZERO
+		if (angle_II == 0)
+		{
+			//ROCKET SPAWN POINT
+			rocketSpawnPoint.x = position.x + rocketSpawnGap;
+			rocketSpawnPoint.y = position.y;
+		}
+		else//WE FIND OUR POINTS IN THE 1ST QUADRANT
+		{
+			//ROCKET SPAWN POINT
+			rocketSpawnPoint.x = position.x + (rocketSpawnGap * (cos(angle_II * 3.14 / 180)));
+			rocketSpawnPoint.y = position.y - (rocketSpawnGap * (sin(angle_II * 3.14 / 180)));
+		}
+	}
+	else if (angle_II >= 90 && angle_II <= 180)//QUADRANT 2
+	{
+		if (angle_II == 90)
+		{
+			//ROCKET SPAWN POINT
+			rocketSpawnPoint.x = position.x;
+			rocketSpawnPoint.y = position.y - rocketSpawnGap;
+		}
+		else if (angle_II == 180)
+		{
+			//ROCKET SPAWN POINT
+			rocketSpawnPoint.x = position.x - rocketSpawnGap;
+			rocketSpawnPoint.y = position.y;
+		}
+		else
+		{
+			//ROCKET SPAWN POINT
+			rocketSpawnPoint.x = position.x - (rocketSpawnGap * (cos((180 - angle_II) * 3.14 / 180)));
+			rocketSpawnPoint.y = position.y - (rocketSpawnGap * (sin((180 - angle_II) * 3.14 / 180)));
+		}
+	}
+	else if (angle_II < -90 && angle_II >= -180)//QUADRANT 3
+	{
+		if (angle_II == -180)
+		{
+			//BULLET SPAWN POINT
+			rocketSpawnPoint.x = position.x - rocketSpawnGap;
+			rocketSpawnPoint.y = position.y;
+		}
+		else
+		{
+			//BULLET SPAWN POINT
+			rocketSpawnPoint.x = position.x - (rocketSpawnGap * (cos((180 + angle_II) * 3.14 / 180)));
+			rocketSpawnPoint.y = position.y + (rocketSpawnGap * (sin((180 + angle_II) * 3.14 / 180)));
+		}
+	}
+	else if (angle_II < 0 && angle_II >= -90)//QUADRANT 4
+	{
+		if (angle_II == -90)
+		{
+			//BULLET SPAWN POINT
+			rocketSpawnPoint.x = position.x;
+			rocketSpawnPoint.y = position.y + rocketSpawnGap;
+		}
+		else
+		{
+			//BULLET SPAWN POINT
+			rocketSpawnPoint.x = position.x + (rocketSpawnGap * (cos(fabs(angle_II) * 3.14 / 180)));
+			rocketSpawnPoint.y = position.y + (rocketSpawnGap * (sin(fabs(angle_II) * 3.14 / 180)));
+		}
+	}
+	else//ERROR JUST DEFAULT NOTHING
+	{
+		physicsBody->setVelocity(Vec2(0, 0));
+	}
+
 	rocketVelocityPoint.x = 3*(-(getPosition().x - target->getPosition().x));
 	rocketVelocityPoint.y = 3*(-(getPosition().y - target->getPosition().y));
 
@@ -470,7 +528,7 @@ Rocket* Vehicle::fireRocket(cocos2d::Sprite* target, bool lockOn)
 	float distance = std::sqrt(std::pow((target->getPosition().x - getPosition().x), 2) + std::pow((target->getPosition().y - getPosition().y), 2));
 	if (distance < 300)
 	{
-		CCLOG("Distance Less Than 200 - %f", distance);
+		CCLOG("Distance Less Than 300 - %f", distance);
 		rocket->getSprite()->setPosition(rocketSpawnPoint);
 		rocket->getSprite()->setRotation(angle_I);
 		rocket->getPhysicsBody()->setVelocity(rocketVelocityPoint);
@@ -517,11 +575,32 @@ void Vehicle::deployShield()
 	auto angle = sprite->getRotation();
 	auto velocity = physicsBody->getVelocity();
 	sprite->removeComponent(physicsBody);
-	physicsBody->retain();
+
+	mArray[0] = cocos2d::Vec2(-30 / TIscale, -13 / TIscale);
+	mArray[1] = cocos2d::Vec2(-36 / TIscale, -9 / TIscale);
+	mArray[2] = cocos2d::Vec2(-40 / TIscale, -2 / TIscale);
+	mArray[3] = cocos2d::Vec2(-40 / TIscale, 2 / TIscale);
+	mArray[4] = cocos2d::Vec2(-36 / TIscale, 9 / TIscale);
+	mArray[5] = cocos2d::Vec2(-30 / TIscale, 13 / TIscale);
+	mArray[6] = cocos2d::Vec2(40 / TIscale, 12 / TIscale);
+	mArray[7] = cocos2d::Vec2(47 / TIscale, 7 / TIscale);
+	mArray[8] = cocos2d::Vec2(50 / TIscale, 2 / TIscale);
+	mArray[9] = cocos2d::Vec2(50 / TIscale, -2 / TIscale);
+	mArray[10] = cocos2d::Vec2(47 / TIscale, -7 / TIscale);
+	mArray[11] = cocos2d::Vec2(40 / TIscale, -12 / TIscale);
+	mArray[12] = cocos2d::Vec2(-30 / TIscale, -13 / TIscale);
+	physicsBody = PhysicsBody::createPolygon(mArray, 13, PhysicsMaterial(0.5, 0.5, 0.5));
+	physicsBody->setCollisionBitmask(4);
+	physicsBody->setContactTestBitmask(true);
+	physicsBody->setAngularDamping(10);
+	physicsBody->setDynamic(true);
+
 	sprite->setRotation(0);
-	sprite->addComponent(physicsBodyShield);
+	sprite->addComponent(physicsBody);
 	sprite->setRotation(angle);
+
 	sprite->setTexture("Ship/VehicleOne/vehicleOneShield.png");
+
 	physicsBody->setVelocity(velocity);
 }
 void Vehicle::terminateShield()
@@ -529,13 +608,27 @@ void Vehicle::terminateShield()
 	//VEHICLE SPRITE WITH SHIELD
 	auto angle = sprite->getRotation();
 	auto velocity = physicsBody->getVelocity();
-
 	sprite->removeComponent(physicsBody);
+	mArray[0] = cocos2d::Vec2(-26 / TIscale, -3 / TIscale);
+	mArray[1] = cocos2d::Vec2(-22 / TIscale, -6 / TIscale);
+	mArray[2] = cocos2d::Vec2(35 / TIscale, -3 / TIscale);
+	mArray[3] = cocos2d::Vec2(37 / TIscale, -1 / TIscale);
+	mArray[4] = cocos2d::Vec2(37 / TIscale, 1 / TIscale);
+	mArray[5] = cocos2d::Vec2(35 / TIscale, 3 / TIscale);
+	mArray[6] = cocos2d::Vec2(-22 / TIscale, 6 / TIscale);
+	mArray[7] = cocos2d::Vec2(-26 / TIscale, 3 / TIscale);
+	mArray[8] = cocos2d::Vec2(-26 / TIscale, -3 / TIscale);
+	physicsBody = PhysicsBody::createPolygon(mArray, 9, PhysicsMaterial(1, 0, 0));
+	physicsBody->setCollisionBitmask(4);
+	physicsBody->setContactTestBitmask(true);
+	physicsBody->setAngularDamping(10);
+	physicsBody->setDynamic(true);
 
 	sprite->setRotation(0);
 	sprite->addComponent(physicsBody);
 	sprite->setRotation(angle);
-	sprite->setTexture("Ship/VehicleOne/vehicleOne.png");
+	if (m_speed > 0) {sprite->setTexture("Ship/VehicleOne/driveSingle.png");}
+	else {sprite->setTexture("Ship/VehicleOne/idleSingle.png");}
 	physicsBody->setVelocity(velocity);
 }
 void Vehicle::endWeapon()//TERMINATE ALL WEAPON ABILITIES
@@ -582,12 +675,16 @@ void Vehicle::setDamage(std::string projectile)
 
 	if (m_health <= 0)
 	{
-		destroyVehicle();
+		dead = true;
 	}
 }
 void Vehicle::destroyVehicle()
 {
-	//DESTROY VEHICLE
+	delete this;
+}
+bool Vehicle::isDead()
+{
+	return dead;
 }
 
 //GET - SET ANGLE AND POSITION
@@ -850,6 +947,14 @@ void Vehicle::anim_shield()//Deploy Shield
 	auto animate = Animate::create(animation);
 	sprite->runAction(cocos2d::Repeat::create(animate, 1));
 }
+void Vehicle::setType(std::string type)
+{
+	mType = type;
+}
+std::string Vehicle::getType()
+{
+	return mType;
+}
 void Vehicle::anim_idle()
 {
 	animationFramesII.clear();
@@ -882,11 +987,16 @@ bool Vehicle::getDe_AccelerateLock()
 {
 	return de_accelerateLock;
 }
-void Vehicle::replaceSprite(const std::string & resourceName, int zIndex)
+//OBJECT EXPODES ON CONTACT
+void Vehicle::explode()
 {
-	cocos2d::SpriteFrameCache* spriteFrameCache = cocos2d::SpriteFrameCache::sharedSpriteFrameCache();
-	cocos2d::SpriteFrame* spriteFrame = spriteFrameCache->getSpriteFrameByName(resourceName);
-
-	sprite->setSpriteFrame(spriteFrame);
-	sprite->setGlobalZOrder(zIndex);
+	animationFramesI.clear();
+	for (int i = 0; i < 10; i++)
+	{
+		auto frame = cocos2d::SpriteFrame::create("Particles/explosionLarge.png", cocos2d::Rect(80 * i, 0 , 80 , 80 ));
+		animationFramesI.pushBack(frame);
+	}
+	auto animation = cocos2d::Animation::createWithSpriteFrames(animationFramesI, 0.1f);
+	auto animate = cocos2d::Animate::create(animation);
+	sprite->runAction(cocos2d::CCSequence::create(cocos2d::Repeat::create(animate, 1), cocos2d::CallFunc::create([this]() { dead = true; }), NULL));
 }

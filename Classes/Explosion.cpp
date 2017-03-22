@@ -4,7 +4,7 @@
 Explosion::Explosion()
 {
 	m_type = "explosion";
-	sprite = cocos2d::Sprite::create("Particles/explosion.png");
+	sprite = cocos2d::Sprite::create("Particles/explosionTest.png");
 };
 Explosion::~Explosion() {};
 
@@ -24,10 +24,10 @@ void Explosion::explode()
 {
 	for (int i = 0; i < 12; i++)
 	{
-		auto frame = cocos2d::SpriteFrame::create("Particles/explosion_small.png", cocos2d::Rect(20 * i / TIscale, 0 / TIscale, 20 / TIscale, 20 / TIscale));
+		auto frame = cocos2d::SpriteFrame::create("Particles/explosionSprite.png", cocos2d::Rect(20 * i / TIscale, 0 / TIscale, 20 / TIscale, 20 / TIscale));
 		animationFrames.pushBack(frame);
 	}
-	auto animation = cocos2d::Animation::createWithSpriteFrames(animationFrames, 0.1f);
+	auto animation = cocos2d::Animation::createWithSpriteFrames(animationFrames, 0.05f);
 	auto animate = cocos2d::Animate::create(animation);
 	sprite->runAction(cocos2d::CCSequence::create(cocos2d::Repeat::create(animate, 1), cocos2d::CallFunc::create([this]() { isDestoryed(); }), NULL));
 }

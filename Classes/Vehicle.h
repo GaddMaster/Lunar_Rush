@@ -95,10 +95,11 @@ class Vehicle
 		void anim_de_accelerate();
 		bool getAccelerateLock();
 		bool getDe_AccelerateLock();
+		void explode();
 		void anim_shield();
-		void replaceSprite(const std::string& resourceName, int zIndex);
-
-		//void replaceSprite(const std::string & resourceName, int zIndex);
+		bool isDead();
+		void setType(std::string type);
+		std::string getType();
 
 	private://////////////////////////////////////////////////////////////
 
@@ -148,11 +149,13 @@ class Vehicle
 		bool de_accelerateLock;
 		bool wayPointCounter;
 		std::string weaponStatus;
+		float rocketSpawnGap;
+		std::string mType;
+		bool dead;
 
 		cocos2d::Vector<cocos2d::SpriteFrame*> animationFramesI;
 		cocos2d::Vector<cocos2d::SpriteFrame*> animationFramesII;
-		cocos2d::Vec2 mArray[9];//CHILD CLASSES COULD USE LESS - BUT ENOUGH GIVEN FOR ALL 
-		cocos2d::Vec2 shieldArray[13];
+		cocos2d::Vec2 mArray[13];//CHILD CLASSES COULD USE LESS - BUT ENOUGH GIVEN FOR ALL 
 };
 
 #endif

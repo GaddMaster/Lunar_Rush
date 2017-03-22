@@ -10,234 +10,276 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Projectiles">
+      <UniqueIdentifier>{70f89cb3-8ba6-443f-90ca-ffa3aa6c36e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Tracks">
+      <UniqueIdentifier>{b7e012a8-8350-434a-8806-662f50c02da7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Bars">
+      <UniqueIdentifier>{ff6dcfd1-f6f1-42ed-92cb-867ffed9c284}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Obstacles">
+      <UniqueIdentifier>{d0ff6059-cdf5-4794-a6b0-db810d04ea44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\App Delegate">
+      <UniqueIdentifier>{9093ce15-a6a2-4251-9c72-dce91b64014d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Way Points">
+      <UniqueIdentifier>{4ce6d87c-f9f9-4d2c-bdfc-d48e16ae0def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Particles">
+      <UniqueIdentifier>{c4821f23-f878-4241-894f-39288739c238}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Turret">
+      <UniqueIdentifier>{12afede7-e35a-4f89-ab2c-1e5c2c443a15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Ending Credits">
+      <UniqueIdentifier>{8f9b410f-0bb3-458c-80b6-35ba22ebff73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Vehicles">
+      <UniqueIdentifier>{deff47dc-038d-4dee-86ea-3770a8e502e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Finish Line">
+      <UniqueIdentifier>{24fb4713-be08-4ffa-ba55-7e5bab714daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Base Objects">
+      <UniqueIdentifier>{f78699f9-9607-486f-9715-9462cda4d4b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Pick Ups">
+      <UniqueIdentifier>{46e17a17-489a-45ca-98d7-94d3b3eefee9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\HUD">
+      <UniqueIdentifier>{feef52d9-73f6-4c6a-a4a7-6f1384a86e87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Menus">
+      <UniqueIdentifier>{31acf653-ed1d-42a9-b18e-d95f16debfd6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\AppDelegate.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\FirstWorld.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Vehicle.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GameObjectPhysics.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\SecondWorld.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\TurretBullet.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\TurretHead.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\Classes\Ammo.cpp">
+      <Filter>src\Projectiles</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Bullet.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Explosion.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Circle.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Square.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Triangle.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\LandMine.cpp">
-      <Filter>src</Filter>
+      <Filter>src\Projectiles</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Rocket.cpp">
-      <Filter>src</Filter>
+      <Filter>src\Projectiles</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HealthPickup.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PickUps.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\ThrusterPickup.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\WeaponShieldPickUp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Player.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Enemy.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Ammo.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\Classes\LandMine.cpp">
+      <Filter>src\Projectiles</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\BackgroundBar.cpp">
-      <Filter>src</Filter>
+      <Filter>src\Bars</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>src\App Delegate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Circle.cpp">
+      <Filter>src\Obstacles</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\CircleCircuit.cpp">
-      <Filter>src</Filter>
+      <Filter>src\Obstacles</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\DamageBar.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\EndingCredits.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\FinishLine.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\HealthBar.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\HUDLayer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\MainMenu.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PauseMenu.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\SinglePlayerMenu.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\SquareCircuit.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\ThrusterBar.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\TurretBody.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GameObject.cpp">
-      <Filter>src</Filter>
+      <Filter>src\Bars</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\DirectionWayPoint.cpp">
-      <Filter>src</Filter>
+      <Filter>src\Way Points</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Object.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\Classes\EndingCredits.cpp">
+      <Filter>src\Ending Credits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Enemy.cpp">
+      <Filter>src\Vehicles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Explosion.cpp">
+      <Filter>src\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\FinishLine.cpp">
+      <Filter>src\Finish Line</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\FirstWorld.cpp">
+      <Filter>src\Tracks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HealthBar.cpp">
+      <Filter>src\Bars</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HealthPickup.cpp">
+      <Filter>src\Pick Ups</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HUDLayer.cpp">
+      <Filter>src\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MainMenu.cpp">
+      <Filter>src\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PauseMenu.cpp">
+      <Filter>src\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PickUps.cpp">
+      <Filter>src\Pick Ups</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Player.cpp">
+      <Filter>src\Vehicles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SecondWorld.cpp">
+      <Filter>src\Tracks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SinglePlayerMenu.cpp">
+      <Filter>src\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Square.cpp">
+      <Filter>src\Obstacles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SquareCircuit.cpp">
+      <Filter>src\Obstacles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ThrusterBar.cpp">
+      <Filter>src\Bars</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ThrusterPickup.cpp">
+      <Filter>src\Pick Ups</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Triangle.cpp">
+      <Filter>src\Obstacles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TurretBody.cpp">
+      <Filter>src\Turret</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TurretBullet.cpp">
+      <Filter>src\Turret</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TurretHead.cpp">
+      <Filter>src\Turret</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Vehicle.cpp">
+      <Filter>src\Vehicles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\WeaponShieldPickUp.cpp">
+      <Filter>src\Pick Ups</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ExplosionLarge.cpp">
+      <Filter>src\Particles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Vehicle.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\FirstWorld.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\SecondWorld.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TurretBullet.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TurretHead.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\Classes\Ammo.h">
+      <Filter>src\Projectiles</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Bullet.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\LandMine.h">
-      <Filter>src</Filter>
+      <Filter>src\Projectiles</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Rocket.h">
-      <Filter>src</Filter>
+      <Filter>src\Projectiles</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Circle.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Square.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Triangle.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Explosion.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameObject.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameObjectPhysics.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HealthPickup.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PickUps.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\ThrusterPickup.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\WeaponShieldPickup.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Player.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Enemy.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Ammo.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\Classes\LandMine.h">
+      <Filter>src\Projectiles</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\BackgroundBar.h">
-      <Filter>src</Filter>
+      <Filter>src\Bars</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>src\App Delegate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Circle.h">
+      <Filter>src\Obstacles</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\CircleCircuit.h">
-      <Filter>src</Filter>
+      <Filter>src\Obstacles</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\DamageBar.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\EndingCredits.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\FinishLine.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HealthBar.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HUDLayer.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PauseMenu.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\SquareCircuit.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\ThrusterBar.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TurretBody.h">
-      <Filter>src</Filter>
+      <Filter>src\Bars</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\DirectionWayPoint.h">
-      <Filter>src</Filter>
+      <Filter>src\Way Points</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EndingCredits.h">
+      <Filter>src\Ending Credits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Enemy.h">
+      <Filter>src\Vehicles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Explosion.h">
+      <Filter>src\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\FinishLine.h">
+      <Filter>src\Finish Line</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\FirstWorld.h">
+      <Filter>src\Tracks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameObject.h">
+      <Filter>src\Base Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameObjectPhysics.h">
+      <Filter>src\Base Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HealthBar.h">
+      <Filter>src\Bars</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HealthPickup.h">
+      <Filter>src\Pick Ups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HUDLayer.h">
+      <Filter>src\HUD</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\MainMenu.h">
-      <Filter>src</Filter>
+      <Filter>src\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PauseMenu.h">
+      <Filter>src\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PickUps.h">
+      <Filter>src\Pick Ups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Player.h">
+      <Filter>src\Vehicles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SecondWorld.h">
+      <Filter>src\Tracks</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\SinglePlayerMenu.h">
-      <Filter>src</Filter>
+      <Filter>src\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Square.h">
+      <Filter>src\Obstacles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SquareCircuit.h">
+      <Filter>src\Obstacles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ThrusterBar.h">
+      <Filter>src\Bars</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ThrusterPickup.h">
+      <Filter>src\Pick Ups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Triangle.h">
+      <Filter>src\Obstacles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TurretBody.h">
+      <Filter>src\Turret</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TurretBullet.h">
+      <Filter>src\Turret</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TurretHead.h">
+      <Filter>src\Turret</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Vehicle.h">
+      <Filter>src\Vehicles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\WeaponShieldPickup.h">
+      <Filter>src\Pick Ups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ExplosionLarge.h">
+      <Filter>src\Particles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,7 @@
 #include "GameObjectPhysics.h"
 #include "Rocket.h"
 #include "Explosion.h"
+#include "ExplosionLarge.h"
 
 class FirstWorld : public cocos2d::Layer
 {
@@ -169,5 +170,6 @@ class FirstWorld : public cocos2d::Layer
 		float time;
 		cocos2d::Label* timer;
 		cocos2d::DelayTime* delay;
+		Explosion* explosion;
 };
 #endif

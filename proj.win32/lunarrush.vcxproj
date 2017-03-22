@@ -155,16 +155,14 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\EndingCredits.cpp" />
     <ClCompile Include="..\Classes\Enemy.cpp" />
     <ClCompile Include="..\Classes\Explosion.cpp" />
+    <ClCompile Include="..\Classes\ExplosionLarge.cpp" />
     <ClCompile Include="..\Classes\FinishLine.cpp" />
     <ClCompile Include="..\Classes\FirstWorld.cpp" />
-    <ClCompile Include="..\Classes\GameObject.cpp" />
-    <ClCompile Include="..\Classes\GameObjectPhysics.cpp" />
     <ClCompile Include="..\Classes\HealthBar.cpp" />
     <ClCompile Include="..\Classes\HealthPickup.cpp" />
     <ClCompile Include="..\Classes\HUDLayer.cpp" />
     <ClCompile Include="..\Classes\LandMine.cpp" />
     <ClCompile Include="..\Classes\MainMenu.cpp" />
-    <ClCompile Include="..\Classes\Object.cpp" />
     <ClCompile Include="..\Classes\PauseMenu.cpp" />
     <ClCompile Include="..\Classes\PickUps.cpp" />
     <ClCompile Include="..\Classes\Player.cpp" />
@@ -195,6 +193,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\EndingCredits.h" />
     <ClInclude Include="..\Classes\Enemy.h" />
     <ClInclude Include="..\Classes\Explosion.h" />
+    <ClInclude Include="..\Classes\ExplosionLarge.h" />
     <ClInclude Include="..\Classes\FinishLine.h" />
     <ClInclude Include="..\Classes\FirstWorld.h" />
     <ClInclude Include="..\Classes\GameObject.h" />
