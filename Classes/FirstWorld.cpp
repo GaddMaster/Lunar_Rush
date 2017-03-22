@@ -43,11 +43,7 @@ cocos2d::Scene* FirstWorld::createScene()
 
 //CONSTRUCTOR & DE-CONSTRUCTOR
 FirstWorld::FirstWorld() :
-TIscale(1.7068),//1.7068;//PHYSCIS SCALE ISSUE VARIABLE - DIVIDE ALL PHYSICS POINTS BY THIS VALUE TO FIX ISSUE - DANIEL
-time(0),
-weaponTimer(11),
-activeWeaponTimer(false),
-enemyOneWayPointSkill(2)//DEFAULT MEDIUM SKILL CORNER TAKING
+TIscale(1.7068)//1.7068;//PHYSCIS SCALE ISSUE VARIABLE - DIVIDE ALL PHYSICS POINTS BY THIS VALUE TO FIX ISSUE - DANIEL
 {
 };
 FirstWorld::~FirstWorld()
@@ -69,14 +65,15 @@ bool FirstWorld::init()
 	//RACING TRACK ONE PHYSICS AND BOUNDARIES _ DANIEL
 	addTrack();
 
+	//VEHICLE OBEJCTS CONSTRUCTION - DANIEL
+	vehicleObjects();
+
 	//POINTS ON THE TRACK FOR THE AI TO FOLLOW - BASIC LEVEL EXAMPLE - SAMUEL
 	AIWayPoints();
 
 	//TRACK DIRECTIONAL CONTROL - DANIEL
 	trackWayPoints();
 
-	//VEHICLE OBEJCTS CONSTRUCTION - DANIEL
-	vehicleObjects();
 
 	//OBSTACLES AND TRACK OBJECTS - SAMUEL
 	obstacles();
@@ -234,7 +231,7 @@ void FirstWorld::update(float delta)
 				cocos2d::Rect rect2 = projectile->getSprite()->getBoundingBox();
 
 				//CHECK FOR INTERSECTIONS AND SPAWN EXPLOSIONS
-				if (rect1.intersectsRect(rect2))
+				if (rect1.intersectsRect(rect2) && vehicle->getType() != "player")
 				{
 					vehicle->setDamage(projectile->returnType());
 					cocos2d::Vec2 location = projectile->getSprite()->getPosition();//SAVE INTERSECTION POINT TO SPAWN EXPLOSION
@@ -296,6 +293,7 @@ void FirstWorld::update(float delta)
 	//----------------------------------------------------------------
 	//HUD UPDATING - SPEED - BACKWARDS NOTIFICATION
 	HUD->setPosition(playerVehicleObject->getSprite()->getPosition().x - visibleSize.width / 2, playerVehicleObject->getSprite()->getPosition().y - visibleSize.height / 2);
+	lapCount->setString(std::to_string(lapN));
 	speed->setString(std::to_string(int(playerVehicleObject->getSpeed())));
 	if (playerVehicleObject->getSlowDownStatus())
 	{
@@ -353,6 +351,7 @@ void FirstWorld::update(float delta)
 			{
 					low = directionalTrigger;
 					backwardsLabel->setString("");
+					lapN++;
 			}
 			else
 			{
@@ -415,27 +414,29 @@ void FirstWorld::update(float delta)
 	{
 		if (vehicle->getType() == "enemy" )
 		{
-			enemyOneVehicleObject->autoControlAI(enemyOneCurrentWayPoint);
-			if (enemyOneVehicleObject->getActiveStatus())
-			{
-				enemyOneVehicleObject->setVelocityPoint();
-				enemyOneVehicleObject->setVelocity();
-				if (enemyOneVehicleObject->wayPointCollision(wayPointSprite))
-				{
-					WayPoint[wayPointCounter] = false;
+			vehicle->moveWayPointSprite(vehicle->getCurrentWayPoint());
 
-					if (wayPointCounter == 61)//CHECK IF AT END OF WAY POINTS AND RESET BACK TO ONE SO WE CAN DO MORE LAPS
+			vehicle->autoControlAI(vehicle->getCurrentWayPoint());
+			if (vehicle->getActiveStatus())
+			{
+				vehicle->setVelocityPoint();
+				vehicle->setVelocity();
+				if (vehicle->wayPointCollision(vehicle->returnWayPointSprite()))
+				{
+					WayPoint[vehicle->getWayPointCounter()] = false;
+
+					if (vehicle->getWayPointCounter() == 61)//CHECK IF AT END OF WAY POINTS AND RESET BACK TO ONE SO WE CAN DO MORE LAPS
 					{
-						wayPointCounter = 0;
-						WayPoint[wayPointCounter] = true;
+						vehicle->setWayPointCounter(0);
+						WayPoint[vehicle->getWayPointCounter()] = true;
 					}
 					else
 					{
-						wayPointCounter++;
-						WayPoint[wayPointCounter] = true;
+						vehicle->setWayPointCounter(vehicle->getWayPointCounter() + 1);
+						WayPoint[vehicle->getWayPointCounter()] = true;
 					}
-					enemyOneCurrentWayPoint = WayPoints[wayPointCounter][enemyOneWayPointSkill];
-					wayPointSprite->setPosition(enemyOneCurrentWayPoint);
+					vehicle->setCurrentWayPoint(WayPoints[vehicle->getWayPointCounter()][vehicle->getCornering()]);
+					vehicle->moveWayPointSprite(vehicle->getCurrentWayPoint());
 				}
 			}
 			//CHECK IF ENEMY ONE IS COLLIDING WITH CURRENT WAY POINT
@@ -444,6 +445,7 @@ void FirstWorld::update(float delta)
 	}
 	//ENEMY ONE VEHICLE CALCULATION - DANIEL
 	//----------------------------------------------------------------
+
 };
 
 //TRACK POINTS FOR TRACK SPRITE AND PHYSICS BOUNDARIES - DANIEL
@@ -863,11 +865,13 @@ void FirstWorld::AIWayPoints()
 	WayPoints[61][2] = cocos2d::Vec2(-2700 / TIscale, 650 / TIscale);
 
 
-	wayPointCounter = 0;
-	enemyOneCurrentWayPoint = WayPoints[wayPointCounter][enemyOneWayPointSkill];
-	wayPointSprite = Sprite::create("TrackOne/WayPoint.png");
-	wayPointSprite->setPosition(enemyOneCurrentWayPoint);
-	this->addChild(wayPointSprite, 2);
+
+	for (auto vehicle : this->vehicles)
+	{
+		vehicle->setCurrentWayPoint(WayPoints[vehicle->getWayPointCounter()][vehicle->getCornering()]);
+		this->addChild(vehicle->returnWayPointSprite());
+		vehicle->moveWayPointSprite(vehicle->getCurrentWayPoint());
+	}
 }
 
 //THE TRACK WAY POINTS USED FOR A LIST OF REASONS INCLUDING BACKWARDS DETECTION - DANIEL
@@ -1144,8 +1148,9 @@ void FirstWorld::vehicleObjects()
 	//PLAYER VEHICLE OBJECT - DANIEL
 	playerVehicleObject = new Vehicle();
 	playerVehicleObject->setAngle(-90);
-	playerVehicleObject->setPosition(Vec2(-2650 / TIscale, 0 / TIscale));
+	playerVehicleObject->setPosition(Vec2(-2500 / TIscale, 400 / TIscale));
 	playerVehicleObject->setSteeringPower(2);
+	playerVehicleObject->setCornering(1);
 	playerVehicleObject->setType("player");
 	this->addChild(playerVehicleObject->getSprite(), 9);
 	vehicles.push_back(playerVehicleObject);
@@ -1153,13 +1158,38 @@ void FirstWorld::vehicleObjects()
 	//AI CAR I VEHICLE OBJECT - DANIEL
 	enemyOneVehicleObject = new Vehicle();
 	enemyOneVehicleObject->setAngle(-90);
-	enemyOneVehicleObject->setPosition(Vec2(-2550 / TIscale, 0 / TIscale));
+	enemyOneVehicleObject->setPosition(Vec2(-2700 / TIscale, 400 / TIscale));
 	enemyOneVehicleObject->setAutoControl(true);
-	enemyOneVehicleObject->setSpeed(10);
-	enemyOneVehicleObject->setSteeringPower(3);
+	enemyOneVehicleObject->setSpeed(95);
+	enemyOneVehicleObject->setCornering(1);
+	enemyOneVehicleObject->setSteeringPower(2);
 	enemyOneVehicleObject->setType("enemy");
 	this->addChild(enemyOneVehicleObject->getSprite(), 9);
 	vehicles.push_back(enemyOneVehicleObject);
+
+	//AI CAR II VEHICLE OBJECT - DANIEL
+	enemyTwoVehicleObject = new Vehicle();
+	enemyTwoVehicleObject->setAngle(-90);
+	enemyTwoVehicleObject->setPosition(Vec2(-2700 / TIscale, 200 / TIscale));
+	enemyTwoVehicleObject->setAutoControl(true);
+	enemyTwoVehicleObject->setSpeed(105);
+	enemyTwoVehicleObject->setCornering(2);
+	enemyTwoVehicleObject->setSteeringPower(2);
+	enemyTwoVehicleObject->setType("enemy");
+	this->addChild(enemyTwoVehicleObject->getSprite(), 9);
+	vehicles.push_back(enemyTwoVehicleObject);
+
+	//AI CAR III VEHICLE OBJECT - DANIEL
+	enemyThreeVehicleObject = new Vehicle();
+	enemyThreeVehicleObject->setAngle(-90);
+	enemyThreeVehicleObject->setPosition(Vec2(-2500 / TIscale, 200 / TIscale));
+	enemyThreeVehicleObject->setAutoControl(true);
+	enemyThreeVehicleObject->setSpeed(120);
+	enemyThreeVehicleObject->setCornering(3);
+	enemyThreeVehicleObject->setSteeringPower(2);
+	enemyThreeVehicleObject->setType("enemy");
+	this->addChild(enemyThreeVehicleObject->getSprite(), 9);
+	vehicles.push_back(enemyThreeVehicleObject);
 	
 	this->runAction(cocos2d::Follow::create(playerVehicleObject->getSprite()));
 }
@@ -1363,6 +1393,7 @@ void FirstWorld::eventListeners()
 					//CHECK WHICH WEAPON IS AVAILABLE AND USE
 					if (playerVehicleObject->getRocketStatus())
 					{
+						bool fire = false;
 						cocos2d::Sprite* target;
 						for (auto vehicle : this->vehicles)
 						{
@@ -1373,12 +1404,17 @@ void FirstWorld::eventListeners()
 								if (distance < 300)
 								{
 									target = vehicle->getSprite();
+									fire = true;
+									break;
 								}
 							}
 						}
-						GameObject* rocket = playerVehicleObject->fireRocket(target, false);
-						this->addChild(rocket->getSprite());//ROCKET CAN BE LOCK ON OR NOT
-						projectiles.push_back(rocket);
+						if (fire)
+						{
+							GameObject* rocket = playerVehicleObject->fireRocket(target, false);
+							this->addChild(rocket->getSprite());//ROCKET CAN BE LOCK ON OR NOT
+							projectiles.push_back(rocket);
+						}
 					}
 					else if (playerVehicleObject->getMineStatus())
 					{
@@ -1413,6 +1449,7 @@ void FirstWorld::eventListeners()
 			break;
 		}
 	};
+
 	eventListener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		//REMOVE KEY
@@ -1466,7 +1503,7 @@ void FirstWorld::labels()
 	//TIMER - SAMUEL
 	timer = Label::createWithTTF("0", "fonts/Marker Felt.ttf", 20);
 	HUD->addChild(timer);
-	timer->setPosition(Vec2(50, visibleSize.height - 200));
+	timer->setPosition(Vec2(60, visibleSize.height - 200));
 	angle->setAnchorPoint(cocos2d::Vec2(0, 0));
 
 	//WEAPON AVAILABLE
@@ -1474,6 +1511,12 @@ void FirstWorld::labels()
 	HUD->addChild(weaponLabel);
 	weaponLabel->setPosition(Vec2(30, visibleSize.height - 250));
 	weaponLabel->setAnchorPoint(cocos2d::Vec2(0, 0));
+
+	//WEAPON AVAILABLE
+	lapCount = Label::createWithTTF("", "fonts/Marker Felt.ttf", 20);
+	HUD->addChild(lapCount);
+	lapCount->setPosition(Vec2(30, visibleSize.height - 300));
+	lapCount->setAnchorPoint(cocos2d::Vec2(0, 0));
 }
 
 //CAMERA

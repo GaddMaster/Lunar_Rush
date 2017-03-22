@@ -101,6 +101,8 @@ class FirstWorld : public cocos2d::Layer
 		cocos2d::PhysicsBody* trackInLetPhyscis;
 		Vehicle* playerVehicleObject;
 		Vehicle* enemyOneVehicleObject;
+		Vehicle* enemyTwoVehicleObject;
+		Vehicle* enemyThreeVehicleObject;
 
 		//LISTENERS
 		cocos2d::EventListenerKeyboard* keyboardEvent;
@@ -117,6 +119,7 @@ class FirstWorld : public cocos2d::Layer
 		bool backwards = false;
 		float weaponTimer;
 		bool activeWeaponTimer;
+		int lapN = 0;
 
 		//ARRAYS, VECTOR AND LISTS
 		cocos2d::Vec2 trackInArray[63];
@@ -160,6 +163,7 @@ class FirstWorld : public cocos2d::Layer
 		cocos2d::Label* slowDownStatus;
 		cocos2d::Label* angle;
 		cocos2d::Label* weaponLabel;
+		cocos2d::Label* lapCount;
 		
 		//CAMERA - WORKING ON IT
 		cocos2d::Sprite* sprite;

@@ -32,7 +32,9 @@ Vehicle::Vehicle() ://WE INITIALIZE ALL VARIABLES TO DEFAULT VALUES
 	rocketSpeed(200),
 	shieldLock(false),
 	rocketSpawnGap(30),
-	dead(false)
+	dead(false),
+	currentWayPoint(cocos2d::Vec2(0,0)),
+	wayPointCount(0)
 {
 	//CAR SPRITE
 	sprite = Sprite::create("Ship/VehicleOne/idleSingle.png");
@@ -54,6 +56,9 @@ Vehicle::Vehicle() ://WE INITIALIZE ALL VARIABLES TO DEFAULT VALUES
 	physicsBody->setDynamic(true);
 
 	sprite->setPhysicsBody(physicsBody);
+
+	wayPointSprite = Sprite::create("TrackOne/WayPoint.png");
+	wayPointSprite->setPosition(cocos2d::Vec2(0,0));
 }
 Vehicle::~Vehicle()
 {
@@ -892,9 +897,13 @@ void Vehicle::setCornering(int status)
 	switch (status)
 	{
 	case 1:cornering = 0;
+		break;
 	case 2:cornering = 1;
+		break;
 	case 3:cornering = 2;
+		break;
 	default:cornering = 1;
+		break;
 	}
 }
 
@@ -902,6 +911,31 @@ void Vehicle::setCornering(int status)
 int Vehicle::getCornering()
 {
 	return cornering;
+}
+cocos2d::Vec2 Vehicle::getCurrentWayPoint()
+{
+	return currentWayPoint;
+}
+void Vehicle::setCurrentWayPoint(cocos2d::Vec2 wayPoint)
+{
+	currentWayPoint = wayPoint;
+}
+int Vehicle::getWayPointCounter()
+{
+	return wayPointCount;
+}
+void Vehicle::setWayPointCounter(int counter)
+{
+	wayPointCount = counter;
+}
+cocos2d::Sprite* Vehicle::returnWayPointSprite()
+{
+	return wayPointSprite;
+
+}
+void Vehicle::moveWayPointSprite(cocos2d::Vec2 position)
+{
+	wayPointSprite->setPosition(position);
 }
 
 //AUTO PILOT ABILITY - CURRENTLY DEVELOPING

@@ -87,6 +87,14 @@ class Vehicle
 		void setSteeringPower(float power);
 		void setCornering(int status);
 		int getCornering();
+		cocos2d::Vec2 getCurrentWayPoint();
+		void setCurrentWayPoint(cocos2d::Vec2 wayPoint);
+		int getWayPointCounter();
+		void setWayPointCounter(int counter);
+
+		cocos2d::Sprite * returnWayPointSprite();
+
+		void moveWayPointSprite(cocos2d::Vec2 position);
 
 		//ANIMATIONS
 		void anim_drive();
@@ -100,6 +108,8 @@ class Vehicle
 		bool isDead();
 		void setType(std::string type);
 		std::string getType();
+
+
 
 	private://////////////////////////////////////////////////////////////
 
@@ -152,10 +162,15 @@ class Vehicle
 		float rocketSpawnGap;
 		std::string mType;
 		bool dead;
+		cocos2d::Vec2 currentWayPoint;
+		int cornerSkill;
+		int wayPointCount;
 
 		cocos2d::Vector<cocos2d::SpriteFrame*> animationFramesI;
 		cocos2d::Vector<cocos2d::SpriteFrame*> animationFramesII;
 		cocos2d::Vec2 mArray[13];//CHILD CLASSES COULD USE LESS - BUT ENOUGH GIVEN FOR ALL 
+
+		cocos2d::Sprite* wayPointSprite;
 };
 
 #endif
