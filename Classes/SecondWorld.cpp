@@ -19,6 +19,8 @@
 #include "Rocket.h"
 #include "LandMine.h"
 
+#include "EndingCredits.h"
+
 USING_NS_CC;
 
 cocos2d::Scene* SecondWorld::createScene()
@@ -1660,7 +1662,8 @@ void SecondWorld::endRace()
 {
 	if (lapCounter >= 11)
 	{
-		Director::getInstance()->end();
+		auto EndingCreditsScene = EndingCredits::createScene();
+		Director::getInstance()->replaceScene(EndingCreditsScene);
 	}
 }
 

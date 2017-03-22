@@ -3,6 +3,7 @@
 
 //Includes The EndingCredits Header
 #include "EndingCredits.h"
+#include "MainMenu.h"
 
 USING_NS_CC;
 
@@ -35,7 +36,7 @@ bool EndingCredits::init()
 
 	//Sets The Position Of The Sprite Relative To The X, Y Co-ordinates
 	//The Co-ordinates Are 0,0 Which In The Window Is The Bottom Left Corner Of The Window
-	endingCreditsSprite->setPosition(0, -1000);
+	endingCreditsSprite->setPosition(0 / TIscale, -1000 / TIscale);
 
 	//Sets The Anchor Point Of The Sprite
 	endingCreditsSprite->setAnchorPoint(Vec2(0.0, 0.0));
@@ -67,4 +68,8 @@ void EndingCredits::update(float move)
 	{
 		endingCreditsSprite->setPosition(position);
 	}
+
+	auto MainMenuScene= MainMenu::createScene();
+	Director::getInstance()->replaceScene(TransitionPageTurn::create(1, MainMenuScene, true));
+
 };

@@ -27,5 +27,6 @@ public:
 
 	//Variables
 	cocos2d::Sprite* endingCreditsSprite;
+	float TIscale = 1.705;
 };
 #endif
