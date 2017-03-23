@@ -13,23 +13,23 @@
 //WeaponShieldPickup Class That Inherits The PickUps Class
 class WeaponShieldPickup : public PickUps
 {
-	public:
-		//WeaponShieldPickup Constructor
-		WeaponShieldPickup();
-		
-		//WeaponShieldPickup Destructor
-		~WeaponShieldPickup();
+public:
+	//WeaponShieldPickup Constructor
+	WeaponShieldPickup();
 
-		//Returns The WeaponShieldPickup Sprite
-		cocos2d::Sprite* getSprite();
+	//WeaponShieldPickup Destructor
+	~WeaponShieldPickup();
 
-		//Returns The WeaponShieldPickup Physics Body
-		cocos2d::PhysicsBody* getPhysicsBody();
+	//Returns The WeaponShieldPickup Sprite
+	cocos2d::Sprite* getSprite();
 
-		//Rotates The WeaponShieldPickup
-		void rotate();
+	//Returns The WeaponShieldPickup Physics Body
+	cocos2d::PhysicsBody* getPhysicsBody();
 
-		void seeID();
+	//Rotates The WeaponShieldPickup
+	void rotate();
+
+	void seeID();
 };
 
 #endif

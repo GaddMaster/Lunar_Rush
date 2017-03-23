@@ -13,20 +13,20 @@
 //HealthPickup Class That Inherits The PickUps Class
 class HealthPickup : public PickUps
 {
-	public:
-		//HealthPickup Constructor
-		HealthPickup();
+public:
+	//HealthPickup Constructor
+	HealthPickup();
 
-		//HealthPickup Destructor
-		~HealthPickup();
+	//HealthPickup Destructor
+	~HealthPickup();
 
-		//Returns The HealthPickup Sprite
-		cocos2d::Sprite* getSprite();
+	//Returns The HealthPickup Sprite
+	cocos2d::Sprite* getSprite();
 
-		//Returns The HealthPickup Physics Body
-		cocos2d::PhysicsBody* getPhysicsBody();
+	//Returns The HealthPickup Physics Body
+	cocos2d::PhysicsBody* getPhysicsBody();
 
-		//Rotates The HealthPickup
-		void rotate();
+	//Rotates The HealthPickup
+	void rotate();
 };
 #endif

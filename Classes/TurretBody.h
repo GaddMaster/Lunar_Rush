@@ -1,6 +1,3 @@
-//SAMANTHA MARAH
-//K00200782
-
 //SAMUEL MACSWEENEY
 //K00200955
 
@@ -10,23 +7,17 @@
 #include "cocos2d.h"
 #include "SecondWorld.h"
 
-class TurretBody : public cocos2d::Sprite
+class TurretBody
 {
 public:
 	TurretBody();
 	~TurretBody();
 
-	void init_turret_body(SecondWorld* SecondWorldScene);
+	cocos2d::Sprite* getSprite();
+	cocos2d::PhysicsBody* getPhysicsBody();
 
-	float set_turret_body_position(float x, float y);
+	cocos2d::Sprite* sprite;
 
-	CREATE_FUNC(TurretBody);
-
-	cocos2d::Sprite* turret_body_sprite;
-
-	cocos2d::PhysicsBody* turret_body_physics;
-
-	float m_position_x;
-	float m_position_y;
+	cocos2d::PhysicsBody* physics;
 };
 #endif

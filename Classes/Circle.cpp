@@ -7,10 +7,11 @@ USING_NS_CC;
 Circle::Circle()
 {
 	m_type = "circle";
-	sprite = Sprite::create("Obstacles/circle.png");
+	sprite = Sprite::create("Obstacles/circlecircuit.png");
+	sprite->setScale(0.1);
 	physicsBody = PhysicsBody::createCircle(10 / TIscale, PhysicsMaterial(0.1, 0, 0));
 	sprite->setPhysicsBody(physicsBody);
-	physicsBody->setCollisionBitmask(4);
+	physicsBody->setCollisionBitmask(9);
 	physicsBody->setContactTestBitmask(true);
 	physicsBody->setVelocityLimit(30);
 	physicsBody->setAngularDamping(10);

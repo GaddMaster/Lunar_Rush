@@ -20,7 +20,7 @@ WeaponShieldPickup::WeaponShieldPickup()
 
 	//Creates The Type Of Physics Body -> Box Physics Body Is Being Created Here
 	physicsBody = PhysicsBody::createBox(sprite->getContentSize(), PhysicsMaterial(0, 0, 0));
-	
+
 	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
 	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
 	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To

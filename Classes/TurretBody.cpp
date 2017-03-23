@@ -1,6 +1,3 @@
-//SAMANTHA MARAH
-//K00200782
-
 //SAMUEL MACSWEENEY
 //K00200955
 
@@ -9,32 +6,29 @@
 USING_NS_CC;
 
 TurretBody::TurretBody()
-{};
+{
+	sprite = Sprite::create("Turret/turretbase.png");
+	sprite->setAnchorPoint(Vec2(0.5, 0.5));
+	sprite->setScale(0.5);
+
+	physics = PhysicsBody::createBox(sprite->getContentSize(), PhysicsMaterial(0, 0, 0));
+	physics->setCollisionBitmask(10);
+	physics->setContactTestBitmask(true);
+	physics->setDynamic(false);
+
+	sprite->setPhysicsBody(physics);
+};
 
 TurretBody::~TurretBody()
 {};
 
-void TurretBody::init_turret_body(SecondWorld* SecondWorldScene)
+cocos2d::Sprite* TurretBody::getSprite()
 {
-	turret_body_sprite = Sprite::create("Turret/turretbase.png");
-	turret_body_sprite->setAnchorPoint(Vec2(0.5, 0.5));
-	turret_body_sprite->setScale(0.5);
-	turret_body_sprite->setPosition(Vec2(m_position_x, m_position_y));
-
-	turret_body_physics = PhysicsBody::createBox(turret_body_sprite->getContentSize(), PhysicsMaterial(0, 0, 0));
-	turret_body_physics->setCollisionBitmask(9);
-	turret_body_physics->setContactTestBitmask(true);
-	turret_body_physics->setDynamic(false);
-
-	turret_body_sprite->setPhysicsBody(turret_body_physics);
-
-	SecondWorldScene->addChild(turret_body_sprite, 2);
+	return sprite;
 };
 
-float TurretBody::set_turret_body_position(float x, float y)
+cocos2d::PhysicsBody* TurretBody::getPhysicsBody()
 {
-	m_position_x = x;
-	m_position_y = y;
-
-	return m_position_x, m_position_y;
+	return physics;
 };
+

@@ -4,11 +4,9 @@
 //Includes The EndingCredits Header
 #include "EndingCredits.h"
 
-//This Is The Cocos2d-x Equivalent Of "using namespace cocos2d;"
 USING_NS_CC;
 
 //createScene Function
-//There Is A Scene Pointer That Points To This Specific Scene
 Scene* EndingCredits::createScene()
 {
 	//Creates The Scene
@@ -32,30 +30,41 @@ bool EndingCredits::init()
 		return false;
 	}
 
-	ending_credits = Sprite::create("EndingCredits/endingcredits.png");
+	//Set The Image For endingCredits Sprite
+	endingCreditsSprite = Sprite::create("EndingCredits/endingcredits.png");
 
 	//Sets The Position Of The Sprite Relative To The X, Y Co-ordinates
 	//The Co-ordinates Are 0,0 Which In The Window Is The Bottom Left Corner Of The Window
-	ending_credits->setPosition(0, -1000);
+	endingCreditsSprite->setPosition(0, -1000);
 
-	//This Sets The Centerpoint Of The Sprite Itself
-	ending_credits->setAnchorPoint(Vec2(0.0, 0.0));
+	//Sets The Anchor Point Of The Sprite
+	endingCreditsSprite->setAnchorPoint(Vec2(0.0, 0.0));
 
 	//You Use addChild() To Put The Sprite Into The Display List
 	//This Displays The Sprite Onto The Screen
-	this->addChild(ending_credits, 0);
+	this->addChild(endingCreditsSprite, 0);
+
+	//Schedules An Update Of The Scene Functions
 	this->scheduleUpdate();
 
 	return true;
 };
 
+//update Function
 void EndingCredits::update(float move)
 {
-	auto position = ending_credits->getPosition();
+	//Gets The Position Of The endingCredits Sprite
+	//And Assigns It To The Variable position
+	auto position = endingCreditsSprite->getPosition();
+
+	//Increments The Variable position's Y Co-Ordinate
 	position.y += 100 * move;
 
+	//It Will Increment And Set The New Y Co-Ordinate
+	//20 Times Which Scrolls The endingCredits Sprite
+	//Vertically
 	for (int i = 0; i < 20; i++)
 	{
-		ending_credits->setPosition(position);
+		endingCreditsSprite->setPosition(position);
 	}
 };
