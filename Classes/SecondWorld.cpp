@@ -1210,17 +1210,17 @@ void SecondWorld::finishLine()
 	FinishLine* lineThree = new FinishLine();
 
 	//WE HAVE THREE LINES WITH 3 ID's. VEHICLE MUST ADD THEM TO VECTOR IN CORRECT ORDER FOR LAP TO INCREMENT - BY INTERSECTING THEM IN UPDATE
-	lineOne->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, 250 / TIscale));
+	lineOne->getSprite()->setPosition(cocos2d::Vec2(-3650 / TIscale, 250 / TIscale));
 	lineOne->setID(3);
 	this->addChild(lineOne->getSprite());
 	finishLines.push_back(lineOne);
 
-	lineTwo->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, -0 / TIscale));
+	lineTwo->getSprite()->setPosition(cocos2d::Vec2(-3650 / TIscale, -0 / TIscale));
 	lineTwo->setID(2);
 	this->addChild(lineTwo->getSprite());
 	finishLines.push_back(lineTwo);
 
-	lineThree->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, -250 / TIscale));
+	lineThree->getSprite()->setPosition(cocos2d::Vec2(-3650 / TIscale, -250 / TIscale));
 	lineThree->setID(1);
 	this->addChild(lineThree->getSprite());
 	finishLines.push_back(lineThree);
