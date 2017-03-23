@@ -7,8 +7,8 @@ USING_NS_CC;
 Circle::Circle()
 {
 	m_type = "circle";
-	sprite = Sprite::create("Obstacles/circlecircuit.png");
-	sprite->setScale(0.1);
+	sprite = Sprite::create("Obstacles/circle.png");
+	//sprite->setScale(0.1);
 	physicsBody = PhysicsBody::createCircle(10 / TIscale, PhysicsMaterial(0.1, 0, 0));
 	sprite->setPhysicsBody(physicsBody);
 	physicsBody->setCollisionBitmask(9);
@@ -71,7 +71,6 @@ bool Circle::isDestoryed()
 {
 	return destroyed;
 }
-
 
 //DELETE OBJECT _ GARBAGE COLLECTION
 void Circle::DisposeObject()

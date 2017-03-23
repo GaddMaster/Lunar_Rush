@@ -1,32 +1,46 @@
 //SAMANTHA MARAH
 //K00200782
 
-//Includes The FinishLine Header File
+//INCLUDE THE FINISH LINE HEADER
 #include "FinishLine.h"
 
 USING_NS_CC;
 
-//FinishLine Constructor
+////CONSTRUCTOR & DE-CONSTRUCTOR
 FinishLine::FinishLine()
 {
-	//Creates Sprite And Parses In Image Location For
-	//finishLineSprite
-	finishLineSprite = Sprite::create("FinishLine/finishline.png");
-
-	//Sets finishLineSprite Anchor Point
-	finishLineSprite->setAnchorPoint(Vec2(0.0, 0.0));
-
-	//Sets The Scale For The finishLineSprite Image
-	//I Have Reduced The Size To Where It Will Fit
-	finishLineSprite->setScaleX(0.7);
+	sprite = Sprite::create("FinishLine/8by1.png");
 };
-
-//FinishLine Destructor
 FinishLine::~FinishLine()
-{};
+{}
 
-//Returns The Finish Line Sprites
-cocos2d::Sprite* FinishLine::getFinishLineSprite()
+cocos2d::Sprite* FinishLine::getSprite()
 {
-	return finishLineSprite;
-};
+	return sprite;
+}
+
+int FinishLine::returnID()
+{
+	return m_id;
+}
+
+void FinishLine::setID(int ID)
+{
+	m_id = ID;
+}
+
+int FinishLine::getID()
+{
+	return m_id;
+}
+
+bool FinishLine::getActive()
+{
+	return m_active;
+}
+
+void FinishLine::setActive(bool status)
+{
+	m_active = status;
+}
+

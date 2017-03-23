@@ -73,16 +73,17 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-	// create a scene. it's an autorelease object
-	//auto MainMenuScene = MainMenu::createScene();
-	//auto SinglePlayerMenuScene = SinglePlayerMenu::createScene();
+
+	// create a scene. it's an autorelease object - SAMUEL
+	auto MainMenuScene = MainMenu::createScene();
+	auto SinglePlayerMenuScene = SinglePlayerMenu::createScene();
 	auto FirstWorldScene = FirstWorld::createScene();
-	//auto SecondWorldScene = SecondWorld::createScene();
-	//auto EndingCreditsScene = EndingCredits::createScene();
+	auto SecondWorldScene = SecondWorld::createScene();
+	auto EndingCreditsScene = EndingCredits::createScene();
 
 
 	//RUN
-	director->runWithScene(FirstWorldScene);
+	director->runWithScene(MainMenuScene);
 
 
     return true;

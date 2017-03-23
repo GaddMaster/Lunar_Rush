@@ -7,7 +7,7 @@ USING_NS_CC;
 Triangle::Triangle()
 {
 	m_type = "triangle";
-	sprite = Sprite::create("Obstacles/trianglecircuit.png");
+	sprite = Sprite::create("Obstacles/triangle.png");
 	sprite->setScale(0.1);
 	mArray[0] = Vec2(-10 / TIscale, -11 / TIscale);
 	mArray[1] = Vec2(-13 / TIscale, -7 / TIscale);

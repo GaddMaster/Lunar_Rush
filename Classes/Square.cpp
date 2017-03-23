@@ -7,8 +7,8 @@ USING_NS_CC;
 Square::Square()
 {
 	m_type = "square";
-	sprite = Sprite::create("Obstacles/squarecircuit.png");
-	sprite->setScale(0.1);
+	sprite = Sprite::create("Obstacles/square.png");
+	//sprite->setScale(0.1);
 	mArray[0] = cocos2d::Vec2(-8 / TIscale, -11 / TIscale);
 	mArray[1] = cocos2d::Vec2(-11 / TIscale, -8 / TIscale);
 	mArray[2] = cocos2d::Vec2(-11 / TIscale, 8 / TIscale);

@@ -21,7 +21,7 @@ cocos2d::Sprite* LandMine::getSprite()
 //MAIN ANIMATION FOR OBJECT
 void LandMine::animate()
 {
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		auto frame = SpriteFrame::create("Weapons/Mine/mineSprite.png", Rect(20 * i / TIscale, 0 / TIscale, 20 / TIscale, 20 / TIscale));
 		animationFrames.pushBack(frame);
@@ -47,7 +47,7 @@ void LandMine::explode()
 //RETURN THE OBJECT TYPE - STRING
 std::string LandMine::returnType()
 {
-	return std::string();
+	return m_type;
 }
 
 //RETURN OBJECT STATUS - ALIVE | DESTROYED - OBJECT EXPLODES ON CONTACT

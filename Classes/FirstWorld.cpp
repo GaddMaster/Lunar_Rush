@@ -1,4 +1,5 @@
 #include "FirstWorld.h"
+#include "SecondWorld.h"
 
 
 USING_NS_CC;
@@ -49,7 +50,10 @@ cocos2d::Scene* FirstWorld::createScene()
 
 //CONSTRUCTOR & DE-CONSTRUCTOR
 FirstWorld::FirstWorld() :
-TIscale(1.7068)//1.7068;//PHYSCIS SCALE ISSUE VARIABLE - DIVIDE ALL PHYSICS POINTS BY THIS VALUE TO FIX ISSUE - DANIEL
+	weaponTimer(0),
+	time(0),
+	activeWeaponTimer(false),
+	TIscale(1.7068)//1.7068;//PHYSCIS SCALE ISSUE VARIABLE - DIVIDE ALL PHYSICS POINTS BY THIS VALUE TO FIX ISSUE - DANIEL
 {
 };
 FirstWorld::~FirstWorld()
@@ -541,7 +545,7 @@ void FirstWorld::update(float delta)
 	timer->setString(timeToDisplay->getCString());
 
 	//----------------------------------------------------------------
-	//PROJECTILES COLLISION - EXPLOSION ON COLLISION -  REDUCE HEALTH OF VEHICLES - DESTROY VEHICLE/OBJECTS
+	//PROJECTILES COLLISION - EXPLOSION ON COLLISION -  REDUCE HEALTH OF VEHICLES - DESTROY VEHICLE/OBJECTS - DANIEL
 	if (!projectiles.empty())
 	{
 		for (auto vehicle : this->vehicles)
@@ -599,32 +603,14 @@ void FirstWorld::update(float delta)
 		{
 			//TIMER - SAMUEL
 			weaponTimer += delta;
-			__String *timeToDisplay = __String::createWithFormat("%.2f", time);
-			timer->setString(std::to_string(weaponTimer));
-			CCLOG("WEAPON TIMER : %f.0f", weaponTimer);
 		}
 		else if (weaponTimer >= 10)
 		{
 			playerVehicleObject->endWeapon();
-			timer->setString("NO WEAPON");
 			activeWeaponTimer = false;
 		}
 	}
 	weaponLabel->setString(playerVehicleObject->getWeapon());
-	//----------------------------------------------------------------
-
-	//----------------------------------------------------------------
-	//HUD UPDATING - SPEED - BACKWARDS NOTIFICATION
-	HUD->setPosition(playerVehicleObject->getSprite()->getPosition().x - visibleSize.width / 2, playerVehicleObject->getSprite()->getPosition().y - visibleSize.height / 2);
-	speed->setString(std::to_string(int(playerVehicleObject->getSpeed())));
-	if (playerVehicleObject->getSlowDownStatus())
-	{
-		slowDownStatus->setString("SLOW DOWN : TRUE");
-	}
-	else
-	{
-		slowDownStatus->setString("SLOW DOWN : FALSE");
-	}
 	//----------------------------------------------------------------
 
 	//----------------------------------------------------------------
@@ -670,7 +656,7 @@ void FirstWorld::update(float delta)
 		{
 			if (low == 0) { low = directionalTrigger; }
 			
-			if (low == 44 && directionalTrigger == 1)
+			if (low == 43 && directionalTrigger == 1)
 			{
 					low = directionalTrigger;
 					backwardsLabel->setString("");
@@ -694,7 +680,75 @@ void FirstWorld::update(float delta)
 	//----------------------------------------------------------------
 
 	//----------------------------------------------------------------
-	//BACKWARDS CHECKING - NOTIFY PLAYER THEY ARE GOING BACKWARDS - SAMANTHA
+	//FINISH LINE - SAMANTHA
+	if (!finishLines.empty())//CHECK FOR VEHICLE INTERSECTING WAY POINTS - MARK WAY POINT CROSSED - ADD WAY POINT NUMBER TO VECTOR FOR ORDER CHECKING IN NEXT SECTION 
+	{
+		for (auto finishLine : this->finishLines)
+		{
+			Rect rect1 = playerVehicleObject->getSprite()->getBoundingBox();
+			Rect rect2 = finishLine->getSprite()->getBoundingBox();
+			if (rect1.intersectsRect(rect2))
+			{
+				if (!finishLine->getActive())
+				{
+					finishLine->setActive(true);
+					finishLineTriggers.push_back(finishLine->getID());
+					CCLOG("FINISH LINE INTERSECTION");
+
+					if (finishLineTriggers.size() > 2)//WE MAKE SURE OUR VECTOR ONLY HAS THREE ITEMS - MAKE SURE ITEMS ARE IN CORRECT ORDER FROM LOW TO HIGH, ELSE WE ARE GOING BACKWARDS
+					{
+						if (finishLineTriggers.size() > 3) { finishLineTriggers.erase(finishLineTriggers.begin()); }//KEEP IT AT THREE MAX
+
+						int lowest = 0;
+						int inc = 0;//CHECK IF WE ARE GOING RIGHT WAY ACROSS LINES
+						int dec = 2;//CHECK IF WE ARE GOING WRONG WAY ACROSS LINES
+
+						for (auto finishLineTrigger : this->finishLineTriggers)
+						{
+							if (lowest == 0) { lowest = finishLineTrigger; }
+
+							if (lowest == 3 && finishLineTrigger == 1)//RESTART
+							{
+								lowest = finishLineTrigger;//MAKE IT ONE AGAIN
+								CCLOG("FL BLANK");
+							}
+							else
+							{
+								if (lowest < finishLineTrigger)//CHECK IF WE ARE GOING RIGHT WAY ACROSS LINES
+								{
+									inc++;
+									if (inc == 2)
+									{
+										lapCounter++;
+										lapNumber->setString(std::to_string(lapCounter) + "/10");
+									}
+									lowest = finishLineTrigger;
+								}
+								else if (lowest > finishLineTrigger)//CHECK IF WE ARE GOING WRONG WAY ACROSS LINES
+								{
+									dec--;
+									if (dec == 0)
+									{
+										lapCounter--;
+										lapNumber->setString(std::to_string(lapCounter) + "/10");
+									}
+									lowest = finishLineTrigger;
+								}
+							}
+
+						}
+
+					}
+				}
+
+
+			}
+			else
+			{
+				finishLine->setActive(false);
+			}
+		}
+	}
 	//----------------------------------------------------------------
 
 	//----------------------------------------------------------------
@@ -726,7 +780,7 @@ void FirstWorld::update(float delta)
 	{
 		playerVehicleObject->VelocityDamping();
 	}
-	angle->setString(std::to_string(playerVehicleObject->getAngle()));
+	//angle->setString(std::to_string(playerVehicleObject->getAngle()));
 	//PLAYER VEHICLE CALCULATION - DANIEL
 	//----------------------------------------------------------------
 
@@ -1337,102 +1391,30 @@ void FirstWorld::AIWayPoints()
 //FINISH LINE FUNCTION - SAMANTHA MARAH
 void FirstWorld::finishLine()
 {
-	//FINISH LINE - SAMANTHA
-	FinishLine* f1 = new FinishLine();
+	FinishLine* lineOne = new FinishLine();
+	FinishLine* lineTwo = new FinishLine();
+	FinishLine* lineThree = new FinishLine();
 
-	//Sets finishLineSprite Position
-	f1->getFinishLineSprite()->setPosition(-4115 / TIscale, -900 / TIscale);
+	//WE HAVE THREE LINES WITH 3 ID's. VEHICLE MUST ADD THEM TO VECTOR IN CORRECT ORDER FOR LAP TO INCREMENT - BY INTERSECTING THEM IN UPDATE
+	lineOne->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, 250 / TIscale));
+	lineOne->setID(3);
+	this->addChild(lineOne->getSprite());
+	finishLines.push_back(lineOne);
 
-	//Sets The finishLineSprite Sprite To The Scene On Layer 0
-	this->addChild(f1->getFinishLineSprite(), 0);
+	lineTwo->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, -0 / TIscale));
+	lineTwo->setID(2);
+	this->addChild(lineTwo->getSprite());
+	finishLines.push_back(lineTwo);
 
-	//Creates Sprite For detectorSprite
-	//Is An Empty Sprite With No Image
-	detectorSprite = Sprite::create();
-
-	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
-	//Positions Are Being Parsed In To Create The Length Of The Physics Body
-	detectorPhysics = PhysicsBody::createEdgeSegment((Vec2(-4100 / TIscale, -700 / TIscale)), (Vec2(-3500 / TIscale, -700 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
-
-	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
-	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
-	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
-	//Know What Sprite Has Collided With Another.
-	detectorPhysics->setCollisionBitmask(2);
-
-	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
-	detectorPhysics->setContactTestBitmask(true);
-
-	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
-	detectorPhysics->setDynamic(false);
-
-	//Sets The Physics Body Onto The detectorSprite Itself
-	detectorSprite->setPhysicsBody(detectorPhysics);
-
-	//Sets The detectorSprite Sprite To The Scene On Layer 0
-	this->addChild(detectorSprite, 0);
-
-	//Creates Sprite For preDetector1Sprite
-	//Is An Empty Sprite With No Image
-	preDetector1Sprite = Sprite::create();
-
-	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
-	//Positions Are Being Parsed In To Create The Length Of The Physics Body
-	preDetector1Physics = PhysicsBody::createEdgeSegment((Vec2(-4100 / TIscale, -900 / TIscale)), (Vec2(-3500 / TIscale, -900 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
-
-	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
-	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
-	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
-	//Know What Sprite Has Collided With Another.
-	preDetector1Physics->setCollisionBitmask(3);
-
-	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
-	preDetector1Physics->setContactTestBitmask(true);
-
-	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
-	preDetector1Physics->setDynamic(false);
-
-	//Sets The Physics Body Onto The preDetector1Sprite Itself
-	preDetector1Sprite->setPhysicsBody(preDetector1Physics);
-
-	//Sets The preDetector1Sprite Sprite To The Scene On Layer 0
-	this->addChild(preDetector1Sprite, 0);
-
-	//Creates Sprite For preDetector2Sprite
-	//Is An Empty Sprite With No Image
-	preDetector2Sprite = Sprite::create();
-
-	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
-	//Positions Are Being Parsed In To Create The Length Of The Physics Body
-	preDetector2Physics = PhysicsBody::createEdgeSegment((Vec2(3700 / TIscale, 0 / TIscale)), (Vec2(4400 / TIscale, 0 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
-
-	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
-	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
-	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
-	//Know What Sprite Has Collided With Another.
-	preDetector2Physics->setCollisionBitmask(4);
-
-	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
-	preDetector2Physics->setContactTestBitmask(true);
-
-	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
-	preDetector2Physics->setDynamic(false);
-
-	//Sets The Physics Body Onto The preDetector1Sprite Itself
-	preDetector2Sprite->setPhysicsBody(preDetector2Physics);
-
-	//Sets The preDetector2Sprite Sprite To The Scene On Layer 0
-	this->addChild(preDetector2Sprite, 0);
+	lineThree->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, -250 / TIscale));
+	lineThree->setID(1);
+	this->addChild(lineThree->getSprite());
+	finishLines.push_back(lineThree);
 };
 
 //THE TRACK WAY POINTS USED FOR A LIST OF REASONS INCLUDING BACKWARDS DETECTION - DANIEL
 void FirstWorld::trackWayPoints()
 {
-	DirectionWayPoint* finishLine = new DirectionWayPoint();
-	finishLine->setID(false, 1 + 0, "5by2");
-	finishLine->getSprite()->setPosition(Vec2(-2650 / TIscale, 0 / TIscale));
-	this->addChild(finishLine->getSprite(), 2);
-	this->directionalWayPoints.push_back(finishLine);
 
 	DirectionWayPoint* dir1 = new DirectionWayPoint();
 	dir1->setID(false, 1 + 1, "5by2");
@@ -1700,7 +1682,7 @@ void FirstWorld::vehicleObjects()
 	playerVehicleObject = new Vehicle();
 	playerVehicleObject->setAngle(-90);
 	playerVehicleObject->setPosition(Vec2(-2500 / TIscale, -400 / TIscale));
-	playerVehicleObject->setSteeringPower(2);
+	playerVehicleObject->setSteeringPower(1);
 	playerVehicleObject->setCornering(1);
 	playerVehicleObject->setType("player");
 	this->addChild(playerVehicleObject->getSprite(), 9);
@@ -1750,19 +1732,9 @@ void FirstWorld::thrusterPickup()
 {
 	//ALL THE THRUSTER PICKUP OBJECTS IN THIS TRACK
 	PickUps* t1 = new ThrusterPickup(); //CREATES THRUSTERPICKUP OBJECT AND ASSIGNS IT TO t1
-	t1->getSprite()->setPosition(3800 / TIscale, -500 / TIscale); //SETS THE POSITION OF t1
+	t1->getSprite()->setPosition(1000 / TIscale, -1000 / TIscale); //SETS THE POSITION OF t1
 	t1->rotate(); //CALLS THE ROTATE FUNCTION FOR t1
 	this->addChild(t1->getSprite(), 2); //ADDS T1 TO THE SCENE LAYER 2
-
-	PickUps* t2 = new ThrusterPickup(); //CREATES THRUSTERPICKUP OBJECT AND ASSIGNS IT TO t2
-	t2->getSprite()->setPosition(4300 / TIscale, -500 / TIscale); //SETS THE POSITION OF t2
-	t2->rotate(); //CALLS THE ROTATE FUNCTION FOR t2
-	this->addChild(t2->getSprite(), 2); //ADDS T2 TO THE SCENE LAYER 2
-
-	PickUps* t3 = new ThrusterPickup(); //CREATES THRUSTERPICKUP OBJECT AND ASSIGNS IT TO t3
-	t3->getSprite()->setPosition(-800 / TIscale, 400 / TIscale); //SETS THE POSITION OF t3
-	t3->rotate(); //CALLS THE ROTATE FUNCTION FOR t3
-	this->addChild(t3->getSprite(), 2); //ADDS T3 TO THE SCENE LAYER 2
 };
 
 //HEALTH PICKUP FUNCTION - SAMANTHA MARAH
@@ -1770,19 +1742,14 @@ void FirstWorld::healthPickup()
 {
 	//ALL HEALTH PICKUP OBJECTS IN THIS TRACK
 	PickUps* h1 = new HealthPickup(); //CREATES HEALTHPICKUP OBJECT AND ASSIGNS IT TO h1
-	h1->getSprite()->setPosition(4050 / TIscale, -500 / TIscale); //SETS THE POSITION OF h1
+	h1->getSprite()->setPosition(-1000 / TIscale, 100 / TIscale); //SETS THE POSITION OF h1
 	h1->rotate(); //CALLS THE ROTATE FUNCTION FOR h1
 	this->addChild(h1->getSprite(), 2); //ADDS h1 TO THE SCENE LAYER 2
 
 	PickUps* h2 = new HealthPickup(); //CREATES HEALTHPICKUP OBJECT AND ASSIGNS IT TO h2
-	h2->getSprite()->setPosition(-800 / TIscale, 200 / TIscale); //SETS THE POSITION OF h2
+	h2->getSprite()->setPosition(-1000 / TIscale, 200 / TIscale); //SETS THE POSITION OF h2
 	h2->rotate(); //CALLS THE ROTATE FUNCTION FOR h2
 	this->addChild(h2->getSprite(), 2); //ADDS h2 TO THE SCENE LAYER 2
-
-	PickUps* h3 = new HealthPickup(); //CREATES HEALTHPICKUP OBJECT AND ASSIGNS IT TO h3
-	h3->getSprite()->setPosition(-800 / TIscale, 600 / TIscale); //SETS THE POSITION OF h3
-	h3->rotate(); //CALLS THE ROTATE FUNCTION FOR h3
-	this->addChild(h3->getSprite(), 2); //ADDS h3 TO THE SCENE LAYER 2
 };
 
 //WEAPON-SHIELD PICKUP FUNCTION - SAMANTHA MARAH
@@ -1790,43 +1757,23 @@ void FirstWorld::weaponShieldPickup()
 {
 	//ALL THE WEAPON-SHIELD PICKUP OBJECTS IN THIS TRACK
 	PickUps* ws1 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws1
-	ws1->getSprite()->setPosition(2000 / TIscale, -200 / TIscale); //SETS THE POSITION OF ws1
+	ws1->getSprite()->setPosition(-1000 / TIscale, 1000 / TIscale); //SETS THE POSITION OF ws1
 	ws1->rotate(); //CALLS THE ROTATE FUNCTION FOR ws1
 	this->addChild(ws1->getSprite(), 2); //ADDS ws1 TO THE SCENE LAYER 2
 
 	PickUps* ws2 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws2
-	ws2->getSprite()->setPosition(2000 / TIscale, 0 / TIscale); //SETS THE POSITION OF ws2
+	ws2->getSprite()->setPosition(-900 / TIscale, 1000 / TIscale); //SETS THE POSITION OF ws2
 	ws2->rotate(); //CALLS THE ROTATE FUNCTION FOR ws2
 	this->addChild(ws2->getSprite(), 2); //ADDS ws2 TO THE SCENE LAYER 2
 
 	PickUps* ws3 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws3
-	ws3->getSprite()->setPosition(2000 / TIscale, 200 / TIscale); //SETS THE POSITION OF ws3
+	ws3->getSprite()->setPosition(-800 / TIscale, 1000 / TIscale); //SETS THE POSITION OF ws3
 	ws3->rotate(); //CALLS THE ROTATE FUNCTION FOR ws3
 	this->addChild(ws3->getSprite(), 2); //ADDS ws3 TO THE SCENE LAYER 2
 
-	PickUps* ws4 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws4
-	ws4->getSprite()->setPosition(1000 / TIscale, -1100 / TIscale); //SETS THE POSITION OF ws4
-	ws4->rotate(); //CALLS THE ROTATE FUNCTION FOR ws4
-	this->addChild(ws4->getSprite(), 2); //ADDS ws4 TO THE SCENE LAYER 2
-
-	PickUps* ws5 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws5
-	ws5->getSprite()->setPosition(800 / TIscale, -1300 / TIscale); //SETS THE POSITION OF ws5
-	ws5->rotate(); //CALLS THE ROTATE FUNCTION FOR ws5
-	this->addChild(ws5->getSprite(), 2); //ADDS ws5 TO THE SCENE LAYER 2
-
-	PickUps* ws6 = new WeaponShieldPickup(); //CREATES WEAPONSHIELDPICKUP OBJECT AND ASSIGNS IT TO ws6
-	ws6->getSprite()->setPosition(600 / TIscale, -1500 / TIscale); //SETS THE POSITION OF ws6
-	ws6->rotate(); //CALLS THE ROTATE FUNCTION FOR ws6
-	this->addChild(ws6->getSprite(), 2); //ADDS ws6 TO THE SCENE LAYER 2
-
-										 //PUSHING EACH INSTANCE OF THE WEAPONSHIELDPICKUP
-										 //OBJECT INTO A VECTOR
 	weaponPickups.push_back(ws1);
 	weaponPickups.push_back(ws2);
 	weaponPickups.push_back(ws3);
-	weaponPickups.push_back(ws4);
-	weaponPickups.push_back(ws5);
-	weaponPickups.push_back(ws6);
 
 	//CYCLES THROUGH THE VECTOR AND GIVES EACH WEAPONSHIELDPICKUP OBJECT
 	//A RANDOM ID BETWEEN 1-4;
@@ -2046,6 +1993,8 @@ void FirstWorld::eventListeners()
 					{
 						bool fire = false;
 						cocos2d::Sprite* target;
+
+						//GET NEARBY ENEMY VEHICLE FOR TARGETING
 						for (auto vehicle : this->vehicles)
 						{
 							if (vehicle->getType() != "player")
@@ -2060,6 +2009,8 @@ void FirstWorld::eventListeners()
 								}
 							}
 						}
+
+
 						if (fire)
 						{
 							GameObject* rocket = playerVehicleObject->fireRocket(target, false);
@@ -2098,6 +2049,36 @@ void FirstWorld::eventListeners()
 				}
 			}
 			break;
+			case EventKeyboard::KeyCode::KEY_1://TESTING TRUSTER ACTIVATE
+			{
+				playerVehicleObject->endWeapon();
+				playerVehicleObject->setTrusterStatus(true);
+			}
+			break;
+			case EventKeyboard::KeyCode::KEY_2://TESTING ROCKET ACTIVATE
+			{
+				playerVehicleObject->endWeapon();
+				playerVehicleObject->setRocketStatus(true);
+			}
+			break;
+			case EventKeyboard::KeyCode::KEY_3://TESTING MINE ACTIVATE
+			{
+				playerVehicleObject->endWeapon();
+				playerVehicleObject->setMineStatus(true);
+			}
+			break;
+			case EventKeyboard::KeyCode::KEY_4://TESTING SHIELD ACTIVATE
+			{
+				playerVehicleObject->endWeapon();
+				playerVehicleObject->setShieldStatus(true);
+			}
+			break;
+			case EventKeyboard::KeyCode::KEY_5://TESTING MACHINE GUN ACTIVATE
+			{
+				playerVehicleObject->endWeapon();
+				playerVehicleObject->setMachineGunStatus(true);
+			}
+			break;
 		}
 	};
 
@@ -2128,7 +2109,7 @@ void FirstWorld::hud()
 
 	//LAP NUMBER SAMUEL & SAMANTHA
 	lapNumber = Label::createWithTTF("LAP NUMBER: ", "fonts/Marker Felt.ttf", 20);
-	lapNumber->setPosition(Vec2(-300, visibleSize.height + 350));
+	lapNumber->setPosition(Vec2(visibleSize.width / 2 - 300, visibleSize.height -50));
 	lapNumber->setAnchorPoint(Vec2(0, 0));
 	lapNumber->setString("LAP NUMBER: " + std::to_string(lapCounter) + "/10");
 
@@ -2136,14 +2117,14 @@ void FirstWorld::hud()
 
 	//TIMER - SAMUEL
 	timer = Label::createWithTTF("0", "fonts/Marker Felt.ttf", 30);
-	timer->setPosition(Vec2(-50, visibleSize.height + 350));
+	timer->setPosition(Vec2(visibleSize.width / 2 + 50, visibleSize.height -50));
 	timer->setAnchorPoint(Vec2(0, 0));
 
 	HUD->addChild(timer, 6);
 
 	//HEALTH BAR - SAMANTHA
 	backgroundBarSprite1 = Sprite::create("Bars/backgroundbar.png");
-	backgroundBarSprite1->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 305));
+	backgroundBarSprite1->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 705));
 
 	HUD->addChild(backgroundBarSprite1, 6);
 
@@ -2152,7 +2133,7 @@ void FirstWorld::hud()
 	this->damageTimer1->setType(ProgressTimerType::BAR);
 	this->damageTimer1->setBarChangeRate(Vec2(1, 0));
 	this->damageTimer1->setAnchorPoint(Vec2(0, 0));
-	this->damageTimer1->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 315));
+	this->damageTimer1->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 715));
 	this->damageTimer1->setVisible(true);
 	this->damageTimer1->setPercentage(100);
 	this->damageTimer1->setMidpoint(Vec2(0, 0));
@@ -2163,7 +2144,7 @@ void FirstWorld::hud()
 	this->healthTimer->setType(ProgressTimerType::BAR);
 	this->healthTimer->setBarChangeRate(Vec2(1, 0));
 	this->healthTimer->setAnchorPoint(Vec2(0, 0));
-	this->healthTimer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 315));
+	this->healthTimer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 715));
 	this->healthTimer->setVisible(true);
 	this->healthTimer->setPercentage(100);
 	this->healthTimer->setMidpoint(Vec2(0, 0));
@@ -2171,7 +2152,7 @@ void FirstWorld::hud()
 
 	//THRUSTER BAR - SAMANTHA
 	backgroundBarSprite2 = Sprite::create("Bars/backgroundbar.png");
-	backgroundBarSprite2->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 365));
+	backgroundBarSprite2->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 765));
 
 	HUD->addChild(backgroundBarSprite2, 6);
 
@@ -2180,7 +2161,7 @@ void FirstWorld::hud()
 	this->damageTimer2->setType(ProgressTimerType::BAR);
 	this->damageTimer2->setBarChangeRate(Vec2(1, 0));
 	this->damageTimer2->setAnchorPoint(Vec2(0, 0));
-	this->damageTimer2->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 375));
+	this->damageTimer2->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 775));
 	this->damageTimer2->setVisible(true);
 	this->damageTimer2->setPercentage(100);
 	this->damageTimer2->setMidpoint(Vec2(0, 0));
@@ -2191,7 +2172,7 @@ void FirstWorld::hud()
 	this->thrusterTimer->setType(ProgressTimerType::BAR);
 	this->thrusterTimer->setBarChangeRate(Vec2(1, 0));
 	this->thrusterTimer->setAnchorPoint(Vec2(0, 0));
-	this->thrusterTimer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 375));
+	this->thrusterTimer->setPosition(Vec2(visibleSize.width / 2 - 145, visibleSize.height - 775));
 	this->thrusterTimer->setVisible(true);
 	this->thrusterTimer->setPercentage(100);
 	this->thrusterTimer->setMidpoint(Vec2(0, 0));
@@ -2202,7 +2183,7 @@ void FirstWorld::hud()
 	this->speedTimer->setType(ProgressTimerType::BAR);
 	this->speedTimer->setBarChangeRate(Vec2(1, 0));
 	this->speedTimer->setAnchorPoint(Vec2(0, 0));
-	this->speedTimer->setPosition(Vec2(visibleSize.width / 2 + 300, visibleSize.height - 375));
+	this->speedTimer->setPosition(Vec2(visibleSize.width / 2 + 300, visibleSize.height - 775));
 	this->speedTimer->setVisible(true);
 	this->speedTimer->setPercentage(100);
 	this->speedTimer->setMidpoint(Vec2(0, 0));
@@ -2215,7 +2196,9 @@ void FirstWorld::endRace()
 {
 	if (lapCounter >= 11)
 	{
-		Director::getInstance()->end();
+		auto SecondWorldScene = SecondWorld::createScene();
+		Director::getInstance()->replaceScene(SecondWorldScene);
+
 	}
 }
 
@@ -2236,26 +2219,26 @@ void FirstWorld::labels()
 	backwardsLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 
 	//SPEED STATUS
-	speed = Label::createWithTTF(std::to_string(playerVehicleObject->getSpeed()), "fonts/Marker Felt.ttf", 20);
-	HUD->addChild(speed);
-	speed->setPosition(Vec2(20, visibleSize.height - 50));
-	speed->setAnchorPoint(cocos2d::Vec2(0,0));
+	//speed = Label::createWithTTF(std::to_string(playerVehicleObject->getSpeed()), "fonts/Marker Felt.ttf", 20);
+	//HUD->addChild(speed);
+	//speed->setPosition(Vec2(20, visibleSize.height - 50));
+	//speed->setAnchorPoint(cocos2d::Vec2(0,0));
 
-	slowDownStatus = Label::createWithTTF("TRUE", "fonts/Marker Felt.ttf", 20);
-	HUD->addChild(slowDownStatus);
-	slowDownStatus->setPosition(Vec2(20, visibleSize.height - 100));
-	slowDownStatus->setAnchorPoint(cocos2d::Vec2(0, 0));
+	//slowDownStatus = Label::createWithTTF("TRUE", "fonts/Marker Felt.ttf", 20);
+	//HUD->addChild(slowDownStatus);
+	//slowDownStatus->setPosition(Vec2(20, visibleSize.height - 100));
+	//slowDownStatus->setAnchorPoint(cocos2d::Vec2(0, 0));
 
-	angle = Label::createWithTTF("", "fonts/Marker Felt.ttf", 20);
-	HUD->addChild(angle);
-	angle->setPosition(Vec2(20, visibleSize.height - 150));
-	angle->setAnchorPoint(cocos2d::Vec2(0, 0));
+	//angle = Label::createWithTTF("", "fonts/Marker Felt.ttf", 20);
+	//HUD->addChild(angle);
+	//angle->setPosition(Vec2(20, visibleSize.height - 150));
+	//angle->setAnchorPoint(cocos2d::Vec2(0, 0));
 
 	//TIMER - SAMUEL
-	timer = Label::createWithTTF("0", "fonts/Marker Felt.ttf", 20);
-	HUD->addChild(timer);
-	timer->setPosition(Vec2(60, visibleSize.height - 200));
-	angle->setAnchorPoint(cocos2d::Vec2(0, 0));
+	//timer = Label::createWithTTF("0", "fonts/Marker Felt.ttf", 20);
+	//HUD->addChild(timer);
+	//timer->setPosition(Vec2(60, visibleSize.height - 200));
+	//angle->setAnchorPoint(cocos2d::Vec2(0, 0));
 
 	//WEAPON AVAILABLE
 	weaponLabel = Label::createWithTTF("", "fonts/Marker Felt.ttf", 20);

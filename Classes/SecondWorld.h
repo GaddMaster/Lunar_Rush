@@ -4,6 +4,9 @@
 //SAMUEL MACSWEENEY
 //K00200955
 
+//DANIEL GADD
+//K00202350
+
 #ifndef SECOND_WORLD_H
 #define SECOND_WORLD_H
 
@@ -23,11 +26,15 @@
 #include "ThrusterPickup.h"
 #include "HealthPickup.h"
 #include "WeaponShieldPickup.h"
+#include "FinishLine.h"
 
+//INCLUDE VEHICLE OBJECTS, WAY POINTS, GAME BASE OBJECTS AND EXPLOSION OBJECTS - DANIEL
 #include "Vehicle.h"
 #include "DirectionWayPoint.h"
 #include "GameObjectPhysics.h"
 #include "GameObject.h"
+#include "Explosion.h"
+#include "ExplosionLarge.h"
 
 class SecondWorld : public cocos2d::Layer
 {
@@ -142,6 +149,8 @@ public:
 
 	Vehicle* playerVehicleObject;
 	Vehicle* enemyOneVehicleObject;
+	Vehicle* enemyTwoVehicleObject;
+	Vehicle* enemyThreeVehicleObject;
 
 	//PHYSICS BODIES
 	cocos2d::PhysicsBody* trackInphysics;
@@ -167,17 +176,21 @@ public:
 
 	//AI POINTS
 	cocos2d::Vec2 WayPoints[37][3];//VECTOR TO CAPTURE ALL OUR WAY POOINTS FOR AI
-	bool WayPoint[31];//BOOLEAN FOR TRACKING WHICH WAY POINT WE ARE ON
+	bool WayPoint[37];//BOOLEAN FOR TRACKING WHICH WAY POINT WE ARE ON
 	int wayPointCounter;//DECIDES WHICH WAY POINT IS CURRENTLY ON
 	int enemyOneWayPointSkill;//DECIDES HOW TIGHT THE AI CUTS AROUND CORNER. 0=HARD - 1=MEDIUM, 2=EASY
 	cocos2d::Sprite* wayPointSprite;//SPRITE FOR VISUAL BEBUGGING
 	cocos2d::Rect wayPointRect_I;//RECTANGLE I INTERSECTION CHECKING
 	cocos2d::Rect wayPointRect_II;//RECTANGLE II INTERSECTION CHECKING
 
-								  //DIRECTIONAL VECTORS, INT & WAY POINT OBJECTS
+	//DIRECTIONAL VECTORS, INT & WAY POINT OBJECTS
 	std::vector<DirectionWayPoint*> directionalWayPoints;
 	int directionalTriggerPoint[44];
 	std::vector<int> directionalTriggers;
+
+	//FINISH LINE VECTORS - SAMANTHA
+	std::vector<int> finishLineTriggers;
+	std::vector<FinishLine*> finishLines;
 
 	//LISTENERS
 	cocos2d::EventListenerKeyboard* keyboardEvent;
@@ -220,6 +233,11 @@ public:
 	//LABEL
 	cocos2d::Label* lapNumber;
 	cocos2d::Label* timer;
+	cocos2d::Label* backwardsLabel;
+	cocos2d::Label* speed;
+	cocos2d::Label* slowDownStatus;
+	cocos2d::Label* angle;
+	cocos2d::Label* weaponLabel;
 
 	//PROGRESS TIMERS
 	cocos2d::ProgressTimer* healthTimer;

@@ -6,7 +6,7 @@ USING_NS_CC;
 Vehicle::Vehicle() ://WE INITIALIZE ALL VARIABLES TO DEFAULT VALUES
 	trusterStatus(false),
 	machineGunStatus(false),
-	rocketStatus(true),
+	rocketStatus(false),
 	shieldStatus(false),
 	mineStatus(false),
 	velocityPoint(cocos2d::Vec2(0, 0)),
@@ -25,7 +25,7 @@ Vehicle::Vehicle() ://WE INITIALIZE ALL VARIABLES TO DEFAULT VALUES
 	driveOffTimer(5),
 	machineGunVelocity(500),
 	machineGunSpawnGap(50),
-	m_health(24),
+	m_health(50),
 	bullets(10),
 	accelerateLock(false),
 	de_accelerateLock(false),
@@ -410,7 +410,7 @@ void Vehicle::accelerate()
 {
 	if (slowDown) slowDown = false;
 
-	if (m_speed < 300) m_speed++;
+	if (m_speed < 130) m_speed++;
 }
 void Vehicle::brake()
 {
@@ -675,8 +675,8 @@ void Vehicle::setDamage(std::string projectile)
 		m_health = m_health - 25;
 	else if (projectile == "mine")
 		m_health = m_health - 30;
-	else if (projectile == "rocket")
-		m_health = m_health - 10;
+	else if (projectile == "bullet")
+		m_health = m_health - 5;
 
 	if (m_health <= 0)
 	{

@@ -1,24 +1,30 @@
-//SAMANTHA MARAH
-//K00200782
+//SAMANTHA MARAH - K00200782
 
 #ifndef FINISHLINE_H
 #define FINISHLINE_H
 
 #include "cocos2d.h"
 
-class FinishLine
+class FinishLine 
 {
-public:
-	//FinishLine Constructor
-	FinishLine();
+	public://///PUBLIC/////////////////
 
-	//FinishLine Destructor
-	~FinishLine();
+		//CONSTRUCTOR & DE-CONSTRUCTOR
+		FinishLine();
+		~FinishLine();
 
-	//Returns The Finish Line Sprites
-	cocos2d::Sprite* getFinishLineSprite();
+		//RETURN SPRITE POINTER
+		cocos2d::Sprite* getSprite();
 
-	//Variables
-	cocos2d::Sprite* finishLineSprite;
+		int returnID();
+		void setID(int ID);
+		int getID();
+		bool getActive();
+		void setActive(bool status);
+
+		//SPRITE
+		cocos2d::Sprite* sprite;
+		int m_id;
+		bool m_active;
 };
 #endif

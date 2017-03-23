@@ -1,3 +1,12 @@
+//SAMANTHA MARAH
+//K00200782
+
+//SAMUEL MACSWEENEY
+//K00200955
+
+//DANIEL GADD
+//K00202350
+
 #ifndef _FIRST_WORLD_H_
 #define _FIRST_WORLD_H_
 
@@ -190,6 +199,10 @@ private:////////////////////////////////////////////////////////////////////////
 	std::vector<DirectionWayPoint*> directionalWayPoints;
 	int directionalTriggerPoint[44];
 	std::vector<int> directionalTriggers;
+
+	//FINISH LINE VECTORS - SAMANTHA
+	std::vector<int> finishLineTriggers;
+	std::vector<FinishLine*> finishLines;
 
 	//HUD
 	cocos2d::LayerGradient* HUD;

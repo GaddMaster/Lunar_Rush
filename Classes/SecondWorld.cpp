@@ -19,6 +19,8 @@
 #include "Rocket.h"
 #include "LandMine.h"
 
+#include "EndingCredits.h"
+
 USING_NS_CC;
 
 cocos2d::Scene* SecondWorld::createScene()
@@ -28,7 +30,7 @@ cocos2d::Scene* SecondWorld::createScene()
 	auto layer = SecondWorld::create();
 	layer->SetPhysicsWorld(SecondWorldScene->getPhysicsWorld());
 
-	SecondWorldScene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	//SecondWorldScene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	SecondWorldScene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	SecondWorldScene->addChild(layer);
@@ -86,15 +88,14 @@ bool SecondWorld::init()
 	//TRACK FUNCTION - SAMANTHA
 	track();
 
+	//PLAYER SHIP FUNCTION - DANIEL
+	vehicleObjects();
+
 	//AI WAYPOINTS FOR AI TO FOLLOW - SAMUEL
 	AIWayPoints();
 
 	//FINISH LINE FUNCTION - SAMANTHA
 	finishLine();
-
-	//PLAYER SHIP FUNCTION - DANIEL
-	//this->player_ship();
-	vehicleObjects();
 
 	//THRUSTER PICKUP FUNCTION - SAMANTHA
 	thrusterPickup();
@@ -163,9 +164,32 @@ void SecondWorld::listeners()
 				//CHECK WHICH WEAPON IS AVAILABLE AND USE
 				if (playerVehicleObject->getRocketStatus())
 				{
-					GameObject* rocket = playerVehicleObject->fireRocket(enemyOneVehicleObject->getSprite(), false);
-					this->addChild(rocket->getSprite());//ROCKET CAN BE LOCK ON OR NOT
-					projectiles.push_back(rocket);
+					bool fire = false;
+					cocos2d::Sprite* target;
+
+					//GET NEARBY ENEMY VEHICLE FOR TARGETING
+					for (auto vehicle : this->vehicles)
+					{
+						if (vehicle->getType() != "player")
+						{
+							float distance = std::sqrt(std::pow((vehicle->getSprite()->getPosition().x - playerVehicleObject->getSprite()->getPosition().x), 2) + std::pow((vehicle->getSprite()->getPosition().y - playerVehicleObject->getSprite()->getPosition().y), 2));
+							CCLOG("DISTANCE ROCKET : %f", distance);
+							if (distance < 300)
+							{
+								target = vehicle->getSprite();
+								fire = true;
+								break;
+							}
+						}
+					}
+
+
+					if (fire)
+					{
+						GameObject* rocket = playerVehicleObject->fireRocket(target, false);
+						this->addChild(rocket->getSprite());//ROCKET CAN BE LOCK ON OR NOT
+						projectiles.push_back(rocket);
+					}
 				}
 				else if (playerVehicleObject->getMineStatus())
 				{
@@ -198,6 +222,36 @@ void SecondWorld::listeners()
 			}
 		}
 		break;
+		case EventKeyboard::KeyCode::KEY_1://TESTING TRUSTER ACTIVATE
+		{
+			playerVehicleObject->endWeapon();
+			playerVehicleObject->setTrusterStatus(true);
+		}
+		break;
+		case EventKeyboard::KeyCode::KEY_2://TESTING ROCKET ACTIVATE
+		{
+			playerVehicleObject->endWeapon();
+			playerVehicleObject->setRocketStatus(true);
+		}
+		break;
+		case EventKeyboard::KeyCode::KEY_3://TESTING MINE ACTIVATE
+		{
+			playerVehicleObject->endWeapon();
+			playerVehicleObject->setMineStatus(true);
+		}
+		break;
+		case EventKeyboard::KeyCode::KEY_4://TESTING SHIELD ACTIVATE
+		{
+			playerVehicleObject->endWeapon();
+			playerVehicleObject->setShieldStatus(true);
+		}
+		break;
+		case EventKeyboard::KeyCode::KEY_5://TESTING MACHINE GUN ACTIVATE
+		{
+			playerVehicleObject->endWeapon();
+			playerVehicleObject->setMachineGunStatus(true);
+		}
+		break;
 		}
 	};
 	eventListener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event* event)
@@ -212,17 +266,17 @@ void SecondWorld::listeners()
 //MENU CLOSE FUNCTION - SAMUEL MACSWEENEY
 void SecondWorld::menuCloseCallback(Ref* pSender)
 {
-	//MENU - SAMUEL
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
-	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.", "Alert");
-	return;
-#endif
+		//MENU - SAMUEL
+	#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
+		MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.", "Alert");
+		return;
+	#endif
 
-	Director::getInstance()->end();
+		Director::getInstance()->end();
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
-#endif
+	#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+		exit(0);
+	#endif
 };
 
 //ON TOUCH BEGIN FUNCTION - DANIEL GADD
@@ -252,10 +306,10 @@ bool SecondWorld::onTouchBegan(Touch* touch, Event* event)
 		y = playerVehicleObject->getPosition().y + (touch->getLocation().y - visibleSize.height / 2);
 	}
 
-	auto sprite = Sprite::create("TrackOne/WayPoint.png");
-	sprite->setPosition(cocos2d::Vec2(x, y));
-	this->addChild(sprite);
-	CCLOG("X %f Y %f", x*TIscale, y*TIscale);
+	//auto sprite = Sprite::create("TrackOne/WayPoint.png");
+	//sprite->setPosition(cocos2d::Vec2(x, y));
+	//this->addChild(sprite);
+	//CCLOG("X %f Y %f", x*TIscale, y*TIscale);
 
 	return true;
 };
@@ -639,6 +693,147 @@ void SecondWorld::update(float delta)
 	timer->setString(timeToDisplay->getCString());
 
 	//----------------------------------------------------------------
+	//PROJECTILES COLLISION - EXPLOSION ON COLLISION -  REDUCE HEALTH OF VEHICLES - DESTROY VEHICLE/OBJECTS - DANIEL
+	if (!projectiles.empty())
+	{
+		for (auto vehicle : this->vehicles)
+		{
+
+			//CHECKING PROJECTILES AGAINST VEHICLES - INTERSECTION
+			for (auto projectile : this->projectiles)
+			{
+				cocos2d::Rect rect1 = vehicle->getSprite()->getBoundingBox();
+				cocos2d::Rect rect2 = projectile->getSprite()->getBoundingBox();
+
+				//CHECK FOR INTERSECTIONS AND SPAWN EXPLOSIONS
+				if (rect1.intersectsRect(rect2) && vehicle->getType() != "player")
+				{
+					vehicle->setDamage(projectile->returnType());
+					cocos2d::Vec2 location = projectile->getSprite()->getPosition();//SAVE INTERSECTION POINT TO SPAWN EXPLOSION
+					auto it = find(projectiles.begin(), projectiles.end(), projectile);//FIND CURRENT PROJECTILE
+					if (it != projectiles.end())projectiles.erase(it);//ERASE CURRENT PROJECTILE
+					this->removeChild(projectile->getSprite());
+					projectile->DisposeObject();
+					Explosion* explosion = new Explosion();
+					explosion->getSprite()->setPosition(location);
+					this->addChild(explosion->getSprite());
+					explosion->explode();
+					break;
+				}
+			}
+		}
+
+	}
+	for (auto vehicle : this->vehicles)
+	{
+		//CHECK FOR VEHICLE HEALTH & EXPLODE IF DEAD
+		if (vehicle->isDead())
+		{
+			cocos2d::Vec2 position = vehicle->getSprite()->getPosition();
+			this->removeChild(vehicle->getSprite());
+			auto it = find(vehicles.begin(), vehicles.end(), vehicle);//FIND CURRENT PROJECTILE
+			if (it != vehicles.end())vehicles.erase(it);//ERASE CURRENT PROJECTILE
+			vehicle->destroyVehicle();
+			ExplosionLarge* explosionLarge = new ExplosionLarge();
+			explosionLarge->getSprite()->setPosition(position);
+			this->addChild(explosionLarge->getSprite());
+			explosionLarge->explode();
+			break;
+		}
+	}
+	//----------------------------------------------------------------
+
+	//----------------------------------------------------------------
+	//WEAPON TIMER 10 SECONDS DURATION OF SHIELD ACVTIVE - SAMUAL
+	if (activeWeaponTimer)
+	{
+		if (weaponTimer < 10)
+		{
+			//TIMER - SAMUEL
+			weaponTimer += delta;
+		}
+		else if (weaponTimer >= 10)
+		{
+			playerVehicleObject->endWeapon();
+			activeWeaponTimer = false;
+		}
+	}
+	weaponLabel->setString(playerVehicleObject->getWeapon());
+	//----------------------------------------------------------------
+
+	//----------------------------------------------------------------
+	//FINISH LINE - SAMANTHA
+	if (!finishLines.empty())//CHECK FOR VEHICLE INTERSECTING WAY POINTS - MARK WAY POINT CROSSED - ADD WAY POINT NUMBER TO VECTOR FOR ORDER CHECKING IN NEXT SECTION 
+	{
+		for (auto finishLine : this->finishLines)
+		{
+			Rect rect1 = playerVehicleObject->getSprite()->getBoundingBox();
+			Rect rect2 = finishLine->getSprite()->getBoundingBox();
+			if (rect1.intersectsRect(rect2))
+			{
+				if (!finishLine->getActive())
+				{
+					finishLine->setActive(true);
+					finishLineTriggers.push_back(finishLine->getID());
+					CCLOG("FINISH LINE INTERSECTION");
+
+					if (finishLineTriggers.size() > 2)//WE MAKE SURE OUR VECTOR ONLY HAS THREE ITEMS - MAKE SURE ITEMS ARE IN CORRECT ORDER FROM LOW TO HIGH, ELSE WE ARE GOING BACKWARDS
+					{
+						if (finishLineTriggers.size() > 3) { finishLineTriggers.erase(finishLineTriggers.begin()); }//KEEP IT AT THREE MAX
+
+						int lowest = 0;
+						int inc = 0;//CHECK IF WE ARE GOING RIGHT WAY ACROSS LINES
+						int dec = 2;//CHECK IF WE ARE GOING WRONG WAY ACROSS LINES
+
+						for (auto finishLineTrigger : this->finishLineTriggers)
+						{
+							if (lowest == 0) { lowest = finishLineTrigger; }
+
+							if (lowest == 3 && finishLineTrigger == 1)//RESTART
+							{
+								lowest = finishLineTrigger;//MAKE IT ONE AGAIN
+								CCLOG("FL BLANK");
+							}
+							else
+							{
+								if (lowest < finishLineTrigger)//CHECK IF WE ARE GOING RIGHT WAY ACROSS LINES
+								{
+									inc++;
+									if (inc == 2)
+									{
+										lapCounter++;
+										lapNumber->setString(std::to_string(lapCounter) + "/10");
+									}
+									lowest = finishLineTrigger;
+								}
+								else if (lowest > finishLineTrigger)//CHECK IF WE ARE GOING WRONG WAY ACROSS LINES
+								{
+									dec--;
+									if (dec == 0)
+									{
+										lapCounter--;
+										lapNumber->setString(std::to_string(lapCounter) + "/10");
+									}
+									lowest = finishLineTrigger;
+								}
+							}
+
+						}
+
+					}
+				}
+
+
+			}
+			else
+			{
+				finishLine->setActive(false);
+			}
+		}
+	}
+	//----------------------------------------------------------------
+
+	//----------------------------------------------------------------
 	//PLAYER VEHICLE CALCULATION - DANIEL
 	//HLDING DOWN ARROW KEYS FOR CONTROLS
 	//Node::update(delta);
@@ -669,6 +864,44 @@ void SecondWorld::update(float delta)
 	}
 	//angle->setString(std::to_string(playerVehicleObject->getAngle()));
 	//PLAYER VEHICLE CALCULATION - DANIEL
+	//----------------------------------------------------------------
+
+	//----------------------------------------------------------------
+	//ENEMY ONE VEHICLE CALCULATION - - VELOCITY - DRIVE - DANIEL - SAMUEL
+	for (auto vehicle : this->vehicles)
+	{
+		if (vehicle->getType() == "enemy")
+		{
+			vehicle->moveWayPointSprite(vehicle->getCurrentWayPoint());
+
+			vehicle->autoControlAI(vehicle->getCurrentWayPoint());
+			if (vehicle->getActiveStatus())
+			{
+				vehicle->setVelocityPoint();
+				vehicle->setVelocity();
+				if (vehicle->wayPointCollision(vehicle->returnWayPointSprite()))
+				{
+					WayPoint[vehicle->getWayPointCounter()] = false;
+
+					if (vehicle->getWayPointCounter() == 61)//CHECK IF AT END OF WAY POINTS AND RESET BACK TO ONE SO WE CAN DO MORE LAPS
+					{
+						vehicle->setWayPointCounter(0);
+						WayPoint[vehicle->getWayPointCounter()] = true;
+					}
+					else
+					{
+						vehicle->setWayPointCounter(vehicle->getWayPointCounter() + 1);
+						WayPoint[vehicle->getWayPointCounter()] = true;
+					}
+					vehicle->setCurrentWayPoint(WayPoints[vehicle->getWayPointCounter()][vehicle->getCornering()]);
+					vehicle->moveWayPointSprite(vehicle->getCurrentWayPoint());
+				}
+			}
+			//CHECK IF ENEMY ONE IS COLLIDING WITH CURRENT WAY POINT
+		}
+
+	}
+	//ENEMY ONE VEHICLE CALCULATION - DANIEL
 	//----------------------------------------------------------------
 
 	//THRUSTER FUEL PERCENTAGE - SAMANTHA
@@ -778,7 +1011,6 @@ void SecondWorld::update(float delta)
 	{
 		this->speedTimer->setPercentage(100);
 	}
-
 	if (playerVehicleObject->getSpeed() >= 50 && playerVehicleObject->getSpeed() <= 100)
 	{
 		this->speedTimer->setPercentage(82);
@@ -810,37 +1042,6 @@ void SecondWorld::update(float delta)
 
 	//END RACE - SAMANTHA
 	this->endRace();
-
-	//ENEMY ONE VEHICLE CALCULATION - SAMUEL
-	enemyOneVehicleObject->autoControlAI(enemyOneCurrentWayPoint);
-
-	if (enemyOneVehicleObject->getActiveStatus())
-	{
-		enemyOneVehicleObject->setVelocityPoint();
-		enemyOneVehicleObject->setVelocity();
-	}
-
-	//CHECK IF ENEMY ONE IS COLLIDING WITH CURRENT WAY POINT - SAMUEL
-	if (enemyOneVehicleObject->wayPointCollision(wayPointSprite))
-	{
-		WayPoint[wayPointCounter] = false;
-
-		//CHECK IF AI IS AT THE END OF WAYPOINTS IF TRUE RESET TO ONE TO LOOP LAPS
-		if (wayPointCounter == 37)
-		{
-			wayPointCounter = 0;
-			WayPoint[wayPointCounter] = true;
-		}
-
-		else
-		{
-			wayPointCounter++;
-			WayPoint[wayPointCounter] = true;
-		}
-
-		enemyOneCurrentWayPoint = WayPoints[wayPointCounter][enemyOneWayPointSkill];
-		wayPointSprite->setPosition(enemyOneCurrentWayPoint);
-	}
 };
 
 std::map<cocos2d::EventKeyboard::KeyCode, std::chrono::high_resolution_clock::time_point> SecondWorld::keys;
@@ -999,6 +1200,30 @@ void SecondWorld::track()
 
 	//Sets The trackOutsprite Sprite To The Scene On Layer 1
 	this->addChild(trackOutsprite, 1);
+};
+
+//FINISH LINE FUNCTION - SAMANTHA MARAH
+void SecondWorld::finishLine()
+{
+	FinishLine* lineOne = new FinishLine();
+	FinishLine* lineTwo = new FinishLine();
+	FinishLine* lineThree = new FinishLine();
+
+	//WE HAVE THREE LINES WITH 3 ID's. VEHICLE MUST ADD THEM TO VECTOR IN CORRECT ORDER FOR LAP TO INCREMENT - BY INTERSECTING THEM IN UPDATE
+	lineOne->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, 250 / TIscale));
+	lineOne->setID(3);
+	this->addChild(lineOne->getSprite());
+	finishLines.push_back(lineOne);
+
+	lineTwo->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, -0 / TIscale));
+	lineTwo->setID(2);
+	this->addChild(lineTwo->getSprite());
+	finishLines.push_back(lineTwo);
+
+	lineThree->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, -250 / TIscale));
+	lineThree->setID(1);
+	this->addChild(lineThree->getSprite());
+	finishLines.push_back(lineThree);
 };
 
 //AI WAYPOINTS FUNCTION - SAMUEL MACSWEENEY
@@ -1160,121 +1385,62 @@ void SecondWorld::AIWayPoints()
 	WayPoints[36][1] = cocos2d::Vec2(-3800 / TIscale, -700 / TIscale);//WAY POINT 37 /*USE HERE AS START FOR TURN IN FOR REFULE*/
 	WayPoints[36][2] = cocos2d::Vec2(-3900 / TIscale, -800 / TIscale);
 
-	wayPointCounter = 0;
-	//enemyOneCurrentWayPoint = WayPoints[wayPointCounter][enemyOneWayPointSkill];
-	wayPointSprite = Sprite::create("TrackOne/WayPoint.png");
-	//wayPointSprite->setPosition(enemyOneCurrentWayPoint);
-	this->addChild(wayPointSprite, 2);
+	for (auto vehicle : this->vehicles)
+	{
+		vehicle->setCurrentWayPoint(WayPoints[vehicle->getWayPointCounter()][vehicle->getCornering()]);
+		this->addChild(vehicle->returnWayPointSprite());
+		vehicle->moveWayPointSprite(vehicle->getCurrentWayPoint());
+	}
 };
 
-//FINISH LINE FUNCTION - SAMANTHA MARAH
-void SecondWorld::finishLine()
-{
-	//FINISH LINE - SAMANTHA
-	FinishLine* f1 = new FinishLine();
-
-	//Sets finishLineSprite Position
-	f1->getFinishLineSprite()->setPosition(-4115 / TIscale, -900 / TIscale);
-
-	//Sets The finishLineSprite Sprite To The Scene On Layer 0
-	this->addChild(f1->getFinishLineSprite(), 0);
-
-	//Creates Sprite For detectorSprite
-	//Is An Empty Sprite With No Image
-	detectorSprite = Sprite::create();
-
-	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
-	//Positions Are Being Parsed In To Create The Length Of The Physics Body
-	detectorPhysics = PhysicsBody::createEdgeSegment((Vec2(-4100 / TIscale, -700 / TIscale)), (Vec2(-3500 / TIscale, -700 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
-
-	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
-	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
-	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
-	//Know What Sprite Has Collided With Another.
-	detectorPhysics->setCollisionBitmask(2);
-
-	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
-	detectorPhysics->setContactTestBitmask(true);
-
-	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
-	detectorPhysics->setDynamic(false);
-
-	//Sets The Physics Body Onto The detectorSprite Itself
-	detectorSprite->setPhysicsBody(detectorPhysics);
-
-	//Sets The detectorSprite Sprite To The Scene On Layer 0
-	this->addChild(detectorSprite, 0);
-
-	//Creates Sprite For preDetector1Sprite
-	//Is An Empty Sprite With No Image
-	preDetector1Sprite = Sprite::create();
-
-	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
-	//Positions Are Being Parsed In To Create The Length Of The Physics Body
-	preDetector1Physics = PhysicsBody::createEdgeSegment((Vec2(-4100 / TIscale, -900 / TIscale)), (Vec2(-3500 / TIscale, -900 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
-
-	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
-	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
-	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
-	//Know What Sprite Has Collided With Another.
-	preDetector1Physics->setCollisionBitmask(3);
-
-	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
-	preDetector1Physics->setContactTestBitmask(true);
-
-	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
-	preDetector1Physics->setDynamic(false);
-
-	//Sets The Physics Body Onto The preDetector1Sprite Itself
-	preDetector1Sprite->setPhysicsBody(preDetector1Physics);
-
-	//Sets The preDetector1Sprite Sprite To The Scene On Layer 0
-	this->addChild(preDetector1Sprite, 0);
-
-	//Creates Sprite For preDetector2Sprite
-	//Is An Empty Sprite With No Image
-	preDetector2Sprite = Sprite::create();
-
-	//Creates The Type Of Physics Body -> Edge Segment Physics Body Is Being Created Here
-	//Positions Are Being Parsed In To Create The Length Of The Physics Body
-	preDetector2Physics = PhysicsBody::createEdgeSegment((Vec2(3700 / TIscale, 0 / TIscale)), (Vec2(4400 / TIscale, 0 / TIscale)), PhysicsMaterial(0, 0, 0), 0.5);
-
-	//Sets The Physics Body's Collision Bitmask Which Will Be Used When The Sprite
-	//Is Collided With. Collision Bitmask Gives Me More Control Over What Happens When
-	//The Sprite Is In Contact With Another Sprite. It Also Allows The Program To
-	//Know What Sprite Has Collided With Another.
-	preDetector2Physics->setCollisionBitmask(4);
-
-	//Sets The Physics Body Contact To True. This Makes The Sprite Collidable
-	preDetector2Physics->setContactTestBitmask(true);
-
-	//Sets The Physics Body Dynamics To False. This Makes The Sprite Immovable
-	preDetector2Physics->setDynamic(false);
-
-	//Sets The Physics Body Onto The preDetector1Sprite Itself
-	preDetector2Sprite->setPhysicsBody(preDetector2Physics);
-
-	//Sets The preDetector2Sprite Sprite To The Scene On Layer 0
-	this->addChild(preDetector2Sprite, 0);
-};
-
-void SecondWorld::vehicleObjects()//VEHICLES OBJECTS FOR OUR FIRST SCENE - DANIEL
+//VEHICLES OBJECTS FOR OUR FIRST SCENE - DANIEL
+void SecondWorld::vehicleObjects()
 {
 	//PLAYER VEHICLE OBJECT - DANIEL
 	playerVehicleObject = new Vehicle();
 	playerVehicleObject->setAngle(-90);
-	playerVehicleObject->setPosition(Vec2(-3800 / TIscale, -300 / TIscale));
-	playerVehicleObject->setSteeringPower(2);
-	this->addChild(playerVehicleObject->getSprite(), 2);
+	playerVehicleObject->setPosition(Vec2(-3700 / TIscale, -500 / TIscale));
+	playerVehicleObject->setSteeringPower(1);
+	playerVehicleObject->setCornering(1);
+	playerVehicleObject->setType("player");
+	this->addChild(playerVehicleObject->getSprite(), 9);
+	vehicles.push_back(playerVehicleObject);
 
-	//AI CAR I VEHICLE OBJECT - DANIEL & SAMUEL
+	//AI CAR I VEHICLE OBJECT - DANIEL
 	enemyOneVehicleObject = new Vehicle();
 	enemyOneVehicleObject->setAngle(-90);
-	enemyOneVehicleObject->setPosition(Vec2(-3700 / TIscale, -300 / TIscale));
+	enemyOneVehicleObject->setPosition(Vec2(-3700 / TIscale, -700 / TIscale));
 	enemyOneVehicleObject->setAutoControl(true);
-	enemyOneVehicleObject->setSpeed(220);
+	enemyOneVehicleObject->setSpeed(95);
+	enemyOneVehicleObject->setCornering(1);
 	enemyOneVehicleObject->setSteeringPower(2);
+	enemyOneVehicleObject->setType("enemy");
 	this->addChild(enemyOneVehicleObject->getSprite(), 9);
+	vehicles.push_back(enemyOneVehicleObject);
+
+	//AI CAR II VEHICLE OBJECT - DANIEL
+	enemyTwoVehicleObject = new Vehicle();
+	enemyTwoVehicleObject->setAngle(-90);
+	enemyTwoVehicleObject->setPosition(Vec2(-3900 / TIscale, -500 / TIscale));
+	enemyTwoVehicleObject->setAutoControl(true);
+	enemyTwoVehicleObject->setSpeed(105);
+	enemyTwoVehicleObject->setCornering(2);
+	enemyTwoVehicleObject->setSteeringPower(2);
+	enemyTwoVehicleObject->setType("enemy");
+	this->addChild(enemyTwoVehicleObject->getSprite(), 9);
+	vehicles.push_back(enemyTwoVehicleObject);
+
+	//AI CAR III VEHICLE OBJECT - DANIEL
+	enemyThreeVehicleObject = new Vehicle();
+	enemyThreeVehicleObject->setAngle(-90);
+	enemyThreeVehicleObject->setPosition(Vec2(-3900 / TIscale, -700 / TIscale));
+	enemyThreeVehicleObject->setAutoControl(true);
+	enemyThreeVehicleObject->setSpeed(120);
+	enemyThreeVehicleObject->setCornering(3);
+	enemyThreeVehicleObject->setSteeringPower(2);
+	enemyThreeVehicleObject->setType("enemy");
+	this->addChild(enemyThreeVehicleObject->getSprite(), 9);
+	vehicles.push_back(enemyThreeVehicleObject);
 
 	this->runAction(cocos2d::Follow::create(playerVehicleObject->getSprite()));
 }
@@ -1558,11 +1724,18 @@ void SecondWorld::turretShoot(float delta)
 //HUD LAYER FUNCTION - SAMUEL & SAMANTHA
 void SecondWorld::hudLayer()
 {
+
 	//HUD LAYER - SAMUEL & SAMANTHA
 	HUD = LayerGradient::create(Color4B(0, 0, 0, 0), Color4B(0, 0, 0, 0));
 	HUD->setContentSize(visibleSize);
 
 	this->addChild(HUD, 4);
+
+	//WEAPON AVAILABLE - DANIEL
+	weaponLabel = Label::createWithTTF("", "fonts/Marker Felt.ttf", 20);
+	HUD->addChild(weaponLabel);
+	weaponLabel->setPosition(Vec2(30, visibleSize.height - 250));
+	weaponLabel->setAnchorPoint(cocos2d::Vec2(0, 0));
 
 	//HUD LAYER TEMPLATE - SAMUEL & SAMANTHA
 	hudTemplatesprite = Sprite::create("HUD/hudtemplate.png");
@@ -1660,7 +1833,8 @@ void SecondWorld::endRace()
 {
 	if (lapCounter >= 11)
 	{
-		Director::getInstance()->end();
+		auto EndingCreditsScene = EndingCredits::createScene();
+		Director::getInstance()->replaceScene(EndingCreditsScene);
 	}
 }
 
