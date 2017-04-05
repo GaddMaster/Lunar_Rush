@@ -148,6 +148,7 @@ void Vehicle::setVelocityPoint()
 		}
 	}
 }
+
 cocos2d::Vec2 Vehicle::getVelocityPoint()
 {
 	return velocityPoint;//GET VELOCITY POINT OF PHYSICS BODY
@@ -704,27 +705,17 @@ float Vehicle::getAngle()
 
 	//SORTING ANGLE SO ITS USABLE
 	if (angle_I < 0)
-	{
 		angle_II = int(round(angle_I)) % -360;
-	}
 	else if (angle_I >= 0)
-	{
 		angle_II = int(round(angle_I)) % 360;
-	}
 	else if (angle_I == -0)
-	{
 		angle_II = 0;
-	}
 
 	//FIX OUT OF BOUNDS (ABOVE 180 OR BELOW -180)
 	if (angle_II > 180)
-	{
 		angle_II = (float(int(angle_II) % 180)) + (-180);
-	}
 	else if (angle_II < -180)
-	{
 		angle_II = float(((int(angle_II) % -180)) + (180));
-	}
 
 	return angle_II;//RETURN TRANSFORMED ANGLE(FLIPPED)
 }

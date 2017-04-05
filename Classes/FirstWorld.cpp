@@ -624,7 +624,8 @@ void FirstWorld::update(float delta)
 
 	//----------------------------------------------------------------
 	//BACKWARDS CHECKING - NOTIFY PLAYER THEY ARE GOING BACKWARDS - DANIEL
-	if (!directionalWayPoints.empty())//CHECK FOR VEHICLE INTERSECTING WAY POINTS - MARK WAY POINT CROSSED - ADD WAY POINT NUMBER TO VECTOR FOR ORDER CHECKING IN NEXT SECTION 
+
+	if (!directionalWayPoints.empty()) 
 	{
 		for (auto directionalWayPoint : this->directionalWayPoints)
 		{
@@ -646,6 +647,7 @@ void FirstWorld::update(float delta)
 			}
 		}
 	}
+
 	if (directionalTriggers.size() > 1)//WE MAKE SURE OUR VECTOR ONLY HAS THREE ITEMS - MAKE SURE ITEMS ARE IN CORRECT ORDER FROM LOW TO HIGH, ELSE WE ARE GOING BACKWARDS
 	{
 		if (directionalTriggers.size() > 3) { directionalTriggers.erase(directionalTriggers.begin());}//KEEP IT AT THREE MAX
@@ -755,22 +757,16 @@ void FirstWorld::update(float delta)
 	//PLAYER VEHICLE CALCULATION - DANIEL
 	//HLDING DOWN ARROW KEYS FOR CONTROLS
 	//Node::update(delta);
+
 	if (isKeyPressed(EventKeyboard::KeyCode::KEY_LEFT_ARROW)) 
-	{ 
 		playerVehicleObject->turnLeft();
-	}
 	else if (isKeyPressed(EventKeyboard::KeyCode::KEY_RIGHT_ARROW)) 
-	{ 
 		playerVehicleObject->turnRight();
-	}
 	else if (isKeyPressed(EventKeyboard::KeyCode::KEY_UP_ARROW))
-	{ 
 		playerVehicleObject->accelerate();
-	}
 	else if (isKeyPressed(EventKeyboard::KeyCode::KEY_DOWN_ARROW)) 
-	{ 
 		playerVehicleObject->brake();
-	}
+
 	if (playerVehicleObject->getActiveStatus() && playerVehicleObject->getSpeed() > 0)
 	{
 		playerVehicleObject->setVelocityPoint();
@@ -780,6 +776,8 @@ void FirstWorld::update(float delta)
 	{
 		playerVehicleObject->VelocityDamping();
 	}
+
+
 	//angle->setString(std::to_string(playerVehicleObject->getAngle()));
 	//PLAYER VEHICLE CALCULATION - DANIEL
 	//----------------------------------------------------------------
@@ -1398,17 +1396,17 @@ void FirstWorld::finishLine()
 	//WE HAVE THREE LINES WITH 3 ID's. VEHICLE MUST ADD THEM TO VECTOR IN CORRECT ORDER FOR LAP TO INCREMENT - BY INTERSECTING THEM IN UPDATE
 	lineOne->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, 250 / TIscale));
 	lineOne->setID(3);
-	this->addChild(lineOne->getSprite());
+	this->addChild(lineOne->getSprite() , 0);
 	finishLines.push_back(lineOne);
 
 	lineTwo->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, -0 / TIscale));
 	lineTwo->setID(2);
-	this->addChild(lineTwo->getSprite());
+	this->addChild(lineTwo->getSprite(), 0);
 	finishLines.push_back(lineTwo);
 
 	lineThree->getSprite()->setPosition(cocos2d::Vec2(-2500 / TIscale, -250 / TIscale));
 	lineThree->setID(1);
-	this->addChild(lineThree->getSprite());
+	this->addChild(lineThree->getSprite(), 0);
 	finishLines.push_back(lineThree);
 };
 

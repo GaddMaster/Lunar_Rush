@@ -10,15 +10,13 @@ class Explosion : public GameObject
 {
 	public://///////////// PUBLIC FUNCTIONS ////////////
 
-		//CONSTRUCTOR & DE-CONSTRUCTOR
 		Explosion();
 		~Explosion();
 		void DisposeObject();
-
-		cocos2d::Sprite* getSprite();//RETURN SPRITE POINTER
-		void animate();//MINE ANIMATION - REPEAT FOREVER
-		void explode();//EXPLOSION SPRITE - REPEAT ONLY ONCE
-		std::string returnType();//RETUNR OBJECT TYPE - STRING
-		bool isDestoryed();//RETURN IF THE OBJECT IS DESTROYED YET
+		cocos2d::Sprite* getSprite();
+		void animate();
+		void explode();
+		std::string returnType();
+		bool isDestoryed();
 };
 #endif//DEFINE - EXPLOSION_H

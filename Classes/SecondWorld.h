@@ -163,9 +163,9 @@ public:
 	cocos2d::PhysicsBody* preDetector2Physics;
 
 	//ARRAYS
-	cocos2d::Vec2 trackInarray[28];
-	cocos2d::Vec2 trackIslandarray[4];
-	cocos2d::Vec2 trackOutarray[38];
+	cocos2d::Vec2 trackInarray[29];
+	cocos2d::Vec2 trackIslandarray[5];
+	cocos2d::Vec2 trackOutarray[39];
 
 	std::vector<cocos2d::Vec2> wayPointVectors;
 	std::vector<cocos2d::Vec2*>::const_iterator iterator;
